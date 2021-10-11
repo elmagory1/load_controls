@@ -1,0 +1,330 @@
+{
+ "actions": [],
+ "autoname": "naming_series:",
+ "creation": "2021-10-07 11:39:30.437259",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "status",
+  "naming_series",
+  "opportunity",
+  "customer",
+  "customer_name",
+  "column_break_5",
+  "posting_date",
+  "expected_closing_date",
+  "rate_of_materials_based_on",
+  "refresh_availability_stock",
+  "material_request",
+  "electrical_bom_section",
+  "electrical_bom_details",
+  "electrical_from_template",
+  "electrical_item_template",
+  "generate_electrical_item_template",
+  "electrical_bom_raw_material",
+  "mechanical_bom_section",
+  "mechanical_bom_details",
+  "mechanical_from_template",
+  "mechanical_item_template",
+  "generate_mechanical_item_template",
+  "mechanical_bom_raw_material",
+  "fgsellable_bom_section",
+  "fg_sellable_bom_details",
+  "fg_sellable_from_template",
+  "fg_sellable_item_template",
+  "generate_fg_sellable_item_template",
+  "fg_sellable_bom_raw_material",
+  "section_break_29",
+  "total_operation_cost",
+  "discount",
+  "column_break_32",
+  "total_additional_operation_cost",
+  "margin_",
+  "column_break_35",
+  "total_raw_material_cost",
+  "total_cost",
+  "additional_operational_cost_section",
+  "additional_operation_cost",
+  "amended_from",
+  "quotation_amended"
+ ],
+ "fields": [
+  {
+   "fieldname": "naming_series",
+   "fieldtype": "Select",
+   "label": "BOM Series",
+   "options": "BUDGET-.YYYY.-"
+  },
+  {
+   "fieldname": "opportunity",
+   "fieldtype": "Link",
+   "label": "Opportunity",
+   "options": "Opportunity"
+  },
+  {
+   "fetch_from": "opportunity.party_name",
+   "fetch_if_empty": 1,
+   "fieldname": "customer",
+   "fieldtype": "Link",
+   "label": "Customer",
+   "options": "Customer"
+  },
+  {
+   "fetch_from": "customer.customer_name",
+   "fieldname": "customer_name",
+   "fieldtype": "Data",
+   "label": "Customer Name",
+   "read_only": 1
+  },
+  {
+   "fieldname": "column_break_5",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "posting_date",
+   "fieldtype": "Date",
+   "label": "Posting Date"
+  },
+  {
+   "fieldname": "expected_closing_date",
+   "fieldtype": "Date",
+   "label": "Expected Closing Date"
+  },
+  {
+   "fieldname": "rate_of_materials_based_on",
+   "fieldtype": "Select",
+   "label": "Rate of Materials Based On",
+   "options": "Last Purchase Rate\nValuation Rate"
+  },
+  {
+   "fieldname": "refresh_availability_stock",
+   "fieldtype": "Button",
+   "label": "Refresh Availability Stock"
+  },
+  {
+   "fieldname": "material_request",
+   "fieldtype": "Button",
+   "label": "Material Request"
+  },
+  {
+   "fieldname": "electrical_bom_section",
+   "fieldtype": "Section Break",
+   "label": "Electrical BOM"
+  },
+  {
+   "fieldname": "electrical_bom_details",
+   "fieldtype": "Table",
+   "label": "Electrical BOM Detail",
+   "options": "Budget BOM Details"
+  },
+  {
+   "allow_on_submit": 1,
+   "fieldname": "electrical_bom_raw_material",
+   "fieldtype": "Table",
+   "label": "Electrical Raw Material",
+   "options": "Budget BOM Raw Material"
+  },
+  {
+   "fieldname": "mechanical_bom_section",
+   "fieldtype": "Section Break",
+   "label": "Mechanical BOM"
+  },
+  {
+   "fieldname": "mechanical_bom_details",
+   "fieldtype": "Table",
+   "label": "Mechanical BOM Detail",
+   "options": "Budget BOM Details"
+  },
+  {
+   "allow_on_submit": 1,
+   "fieldname": "mechanical_bom_raw_material",
+   "fieldtype": "Table",
+   "label": "Mechanical Raw Material",
+   "options": "Budget BOM Raw Material"
+  },
+  {
+   "fieldname": "fgsellable_bom_section",
+   "fieldtype": "Section Break",
+   "label": "FG/Sellable BOM"
+  },
+  {
+   "fieldname": "fg_sellable_bom_details",
+   "fieldtype": "Table",
+   "label": "FG/Sellable BOM Detail",
+   "options": "Budget BOM FG Details"
+  },
+  {
+   "allow_on_submit": 1,
+   "fieldname": "fg_sellable_bom_raw_material",
+   "fieldtype": "Table",
+   "label": "FG/Sellable Raw Material",
+   "options": "Budget BOM Raw Material"
+  },
+  {
+   "fieldname": "amended_from",
+   "fieldtype": "Link",
+   "label": "Amended From",
+   "no_copy": 1,
+   "options": "Budget BOM",
+   "print_hide": 1,
+   "read_only": 1
+  },
+  {
+   "default": "0",
+   "fieldname": "electrical_from_template",
+   "fieldtype": "Check",
+   "label": "From Template"
+  },
+  {
+   "depends_on": "eval: doc.electrical_from_template",
+   "fieldname": "electrical_item_template",
+   "fieldtype": "Link",
+   "label": "Item Template",
+   "mandatory_depends_on": "eval: doc.electrical_from_template",
+   "options": "BOM Item Template"
+  },
+  {
+   "default": "0",
+   "fieldname": "mechanical_from_template",
+   "fieldtype": "Check",
+   "label": "From Template"
+  },
+  {
+   "depends_on": "eval: doc.mechanical_from_template",
+   "fieldname": "mechanical_item_template",
+   "fieldtype": "Link",
+   "label": "Item Template",
+   "mandatory_depends_on": "eval: doc.mechanical_from_template",
+   "options": "BOM Item Template"
+  },
+  {
+   "default": "0",
+   "fieldname": "fg_sellable_from_template",
+   "fieldtype": "Check",
+   "label": "From Template"
+  },
+  {
+   "depends_on": "eval: doc.fg_sellable_from_template",
+   "fieldname": "fg_sellable_item_template",
+   "fieldtype": "Link",
+   "label": "Item Template",
+   "mandatory_depends_on": "eval: doc.fg_sellable_from_template",
+   "options": "BOM Item Template"
+  },
+  {
+   "depends_on": "eval: !doc.electrical_from_template",
+   "fieldname": "generate_electrical_item_template",
+   "fieldtype": "Button",
+   "label": "Generate Item Template"
+  },
+  {
+   "depends_on": "eval: !doc.mechanical_from_template",
+   "fieldname": "generate_mechanical_item_template",
+   "fieldtype": "Button",
+   "label": "Generate Item Template"
+  },
+  {
+   "depends_on": "eval: !doc.fg_sellable_from_template",
+   "fieldname": "generate_fg_sellable_item_template",
+   "fieldtype": "Button",
+   "label": "Generate Item Template"
+  },
+  {
+   "fieldname": "section_break_29",
+   "fieldtype": "Section Break"
+  },
+  {
+   "default": "0",
+   "fieldname": "total_operation_cost",
+   "fieldtype": "Currency",
+   "label": "Total Operation Cost"
+  },
+  {
+   "default": "0",
+   "fieldname": "discount",
+   "fieldtype": "Currency",
+   "label": "DIscount"
+  },
+  {
+   "fieldname": "column_break_32",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "additional_operation_cost",
+   "fieldtype": "Table",
+   "options": "Additional Operational Cost"
+  },
+  {
+   "default": "0",
+   "fieldname": "margin_",
+   "fieldtype": "Data",
+   "label": "Margin %"
+  },
+  {
+   "fieldname": "column_break_35",
+   "fieldtype": "Column Break"
+  },
+  {
+   "default": "0",
+   "fieldname": "total_raw_material_cost",
+   "fieldtype": "Currency",
+   "label": "Total Raw Material Cost"
+  },
+  {
+   "default": "0",
+   "fieldname": "total_cost",
+   "fieldtype": "Currency",
+   "label": "Total Cost"
+  },
+  {
+   "fieldname": "additional_operational_cost_section",
+   "fieldtype": "Section Break",
+   "label": "Additional Operational Cost"
+  },
+  {
+   "default": "To Quotation",
+   "fieldname": "status",
+   "fieldtype": "Select",
+   "label": "Status",
+   "options": "To Quotation\nTo Design\nPending\nRejected\nTo Purchase Order"
+  },
+  {
+   "default": "0",
+   "fieldname": "total_additional_operation_cost",
+   "fieldtype": "Currency",
+   "label": "Additional Operation Cost"
+  },
+  {
+   "default": "0",
+   "fieldname": "quotation_amended",
+   "fieldtype": "Check",
+   "label": "Quotation Amended"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "is_submittable": 1,
+ "links": [],
+ "modified": "2021-10-09 19:10:19.585442",
+ "modified_by": "Administrator",
+ "module": "Load Controls",
+ "name": "Budget BOM",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "track_changes": 1
+}
