@@ -46,6 +46,8 @@
   "total_cost",
   "additional_operational_cost_section",
   "additional_operation_cost",
+  "more_information_section",
+  "rejection_note",
   "amended_from",
   "quotation_amended"
  ],
@@ -103,6 +105,7 @@
    "label": "Refresh Availability Stock"
   },
   {
+   "depends_on": "eval: doc.status == \"To Purchase Order\"",
    "fieldname": "material_request",
    "fieldtype": "Button",
    "label": "Material Request"
@@ -300,12 +303,24 @@
    "fieldname": "quotation_amended",
    "fieldtype": "Check",
    "label": "Quotation Amended"
+  },
+  {
+   "fieldname": "more_information_section",
+   "fieldtype": "Section Break",
+   "label": "More Information"
+  },
+  {
+   "allow_on_submit": 1,
+   "depends_on": "eval: doc.status == \"Rejected\"",
+   "fieldname": "rejection_note",
+   "fieldtype": "Small Text",
+   "label": "Rejection Note"
   }
  ],
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2021-10-09 19:10:19.585442",
+ "modified": "2021-10-12 00:06:44.613823",
  "modified_by": "Administrator",
  "module": "Load Controls",
  "name": "Budget BOM",

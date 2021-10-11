@@ -129,16 +129,34 @@ frappe.ui.form.on('Budget BOM', {
                 }, "Action")
 
 
+        } else if(cur_frm.doc.docstatus && cur_frm.doc.status === "Rejected"){
+
+                frm.add_custom_button(__("Create BOM"), () => {
+                    cur_frm.call({
+                        doc: cur_frm.doc,
+                        method: 'create_bom',
+                        args: {},
+                        freeze: true,
+                        freeze_message: "Creating BOM...",
+                        callback: (r) => {
+                            cur_frm.reload_doc()
+                        }
+                    })
+                })
+
         }
-        cur_frm.set_df_property("electrical_bom_raw_material", "read_only", !cur_frm.doc.quotation_amended)
-        cur_frm.set_df_property("mechanical_bom_raw_material", "read_only", !cur_frm.doc.quotation_amended)
-        cur_frm.set_df_property("fg_sellable_bom_raw_material", "read_only", !cur_frm.doc.quotation_amended)
-        var fields = ["item_code","item_name","qty","valuation_rate","rate","amount","available_qty", "discount", "uom", "batch", "warehouse"]
-        for(var x=0;x<fields.length;x+=1){
-            console.log(fields[x])
-            var field = frappe.meta.get_docfield("Budget BOM Raw Material", fields[x], cur_frm.doc.name);
-            field.read_only = !cur_frm.doc.quotation_amended
+        if(cur_frm.doc.docstatus){
+            cur_frm.set_df_property("electrical_bom_raw_material", "read_only", !cur_frm.doc.quotation_amended)
+            cur_frm.set_df_property("mechanical_bom_raw_material", "read_only", !cur_frm.doc.quotation_amended)
+            cur_frm.set_df_property("fg_sellable_bom_raw_material", "read_only", !cur_frm.doc.quotation_amended)
+            var fields = ["item_code","item_name","qty","valuation_rate","rate","amount","available_qty", "discount", "uom", "batch", "warehouse"]
+            for(var x=0;x<fields.length;x+=1){
+                console.log(fields[x])
+                var field = frappe.meta.get_docfield("Budget BOM Raw Material", fields[x], cur_frm.doc.name);
+                field.read_only = !cur_frm.doc.quotation_amended
+            }
         }
+
 
     },
 	onload_post_render: function(frm) {
@@ -184,7 +202,7 @@ frappe.ui.form.on('Budget BOM', {
      total_operation_cost: function(frm) {
         compute_total_cost_expense(cur_frm)
 	},
-    additional_operation_cost: function(frm) {
+    total_additional_operation_cost: function(frm) {
         compute_total_cost_expense(cur_frm)
 	},
     discount: function(frm) {
@@ -192,6 +210,12 @@ frappe.ui.form.on('Budget BOM', {
 	},
     margin_: function(frm) {
         compute_total_cost_expense(cur_frm)
+	},
+    material_request: function(frm) {
+       frappe.model.open_mapped_doc({
+			method: "load_controls.load_controls.doctype.budget_bom.budget_bom.make_mr",
+			frm: cur_frm
+		})
 	},
 });
 
@@ -225,8 +249,8 @@ frappe.ui.form.on('Additional Operational Cost', {
 	}
 });
 function compute_total_cost_expense(cur_frm) {
-   cur_frm.doc.total_cost = ((cur_frm.doc.total_operation_cost + cur_frm.doc.additional_operation_cost) - cur_frm.doc.discount) + cur_frm.doc.margin_
-    cur_frm.refrsh_field("total_cost")
+   cur_frm.doc.total_cost = ((cur_frm.doc.total_operation_cost + cur_frm.doc.total_additional_operation_cost) - cur_frm.doc.discount) + cur_frm.doc.margin_
+    cur_frm.refresh_field("total_cost")
 }
 function compute_total_cost(cur_frm) {
     var fieldnames = ['electrical_bom_raw_material','mechanical_bom_raw_material','fg_sellable_bom_raw_material']
