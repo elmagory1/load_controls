@@ -171,4 +171,20 @@ user_data_fields = [
 # auth_hooks = [
 # 	"load_controls.auth.validate"
 # ]
-
+fixtures = [
+    {
+        "doctype": "Custom Field",
+        "filters": [
+            [
+                "name",
+                "in",
+                [
+                    "Quotation-budget_bom",
+                    "Manufacturing Settings-default_routing",
+                    "Manufacturing Settings-default_operation",
+                    "Manufacturing Settings-default_workstation",
+				]
+			]
+		]
+	}
+]
