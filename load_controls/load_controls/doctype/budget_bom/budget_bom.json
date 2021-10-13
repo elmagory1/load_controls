@@ -15,7 +15,6 @@
   "posting_date",
   "expected_closing_date",
   "rate_of_materials_based_on",
-  "refresh_availability_stock",
   "material_request",
   "electrical_bom_section",
   "electrical_bom_details",
@@ -30,11 +29,11 @@
   "generate_mechanical_item_template",
   "mechanical_bom_raw_material",
   "fgsellable_bom_section",
-  "fg_sellable_bom_details",
+  "fg_sellable_bom_raw_material",
   "fg_sellable_from_template",
   "fg_sellable_item_template",
   "generate_fg_sellable_item_template",
-  "fg_sellable_bom_raw_material",
+  "fg_sellable_bom_details",
   "section_break_29",
   "total_operation_cost",
   "discount",
@@ -100,11 +99,6 @@
    "options": "Last Purchase Rate\nValuation Rate"
   },
   {
-   "fieldname": "refresh_availability_stock",
-   "fieldtype": "Button",
-   "label": "Refresh Availability Stock"
-  },
-  {
    "depends_on": "eval: doc.status == \"To Purchase Order\"",
    "fieldname": "material_request",
    "fieldtype": "Button",
@@ -149,7 +143,7 @@
   {
    "fieldname": "fgsellable_bom_section",
    "fieldtype": "Section Break",
-   "label": "FG/Sellable BOM"
+   "label": "Enclosure"
   },
   {
    "fieldname": "fg_sellable_bom_details",
@@ -161,7 +155,7 @@
    "allow_on_submit": 1,
    "fieldname": "fg_sellable_bom_raw_material",
    "fieldtype": "Table",
-   "label": "FG/Sellable Raw Material",
+   "label": "Enclosure",
    "options": "Budget BOM Raw Material"
   },
   {
@@ -177,6 +171,7 @@
    "default": "0",
    "fieldname": "electrical_from_template",
    "fieldtype": "Check",
+   "hidden": 1,
    "label": "From Template"
   },
   {
@@ -191,6 +186,7 @@
    "default": "0",
    "fieldname": "mechanical_from_template",
    "fieldtype": "Check",
+   "hidden": 1,
    "label": "From Template"
   },
   {
@@ -205,12 +201,14 @@
    "default": "0",
    "fieldname": "fg_sellable_from_template",
    "fieldtype": "Check",
+   "hidden": 1,
    "label": "From Template"
   },
   {
    "depends_on": "eval: doc.fg_sellable_from_template",
    "fieldname": "fg_sellable_item_template",
    "fieldtype": "Link",
+   "hidden": 1,
    "label": "Item Template",
    "mandatory_depends_on": "eval: doc.fg_sellable_from_template",
    "options": "BOM Item Template"
@@ -219,18 +217,21 @@
    "depends_on": "eval: !doc.electrical_from_template",
    "fieldname": "generate_electrical_item_template",
    "fieldtype": "Button",
+   "hidden": 1,
    "label": "Generate Item Template"
   },
   {
    "depends_on": "eval: !doc.mechanical_from_template",
    "fieldname": "generate_mechanical_item_template",
    "fieldtype": "Button",
+   "hidden": 1,
    "label": "Generate Item Template"
   },
   {
    "depends_on": "eval: !doc.fg_sellable_from_template",
    "fieldname": "generate_fg_sellable_item_template",
    "fieldtype": "Button",
+   "hidden": 1,
    "label": "Generate Item Template"
   },
   {
@@ -320,7 +321,7 @@
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2021-10-12 00:06:44.613823",
+ "modified": "2021-10-13 14:07:32.004846",
  "modified_by": "Administrator",
  "module": "Load Controls",
  "name": "Budget BOM",

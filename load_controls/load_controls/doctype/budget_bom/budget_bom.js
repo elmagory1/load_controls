@@ -1,12 +1,114 @@
 // Copyright (c) 2021, jan and contributors
 // For license information, please see license.txt
 var workstation = ""
-var operation = ""
+var electrical_operation = ""
+var mechanical_operation = ""
 var routing = ""
 var has_quotation = false
 var generating_quotation = false
+var table_name = ""
+cur_frm.cscript.item_templates = function () {
+    var d = new frappe.ui.form.MultiSelectDialog({
+        doctype: "BOM Item Template",
+        target: this.cur_frm,
+        setters: {},
+        add_filters_group: 1,
+        date_field: "posting_date",
+        get_query() {
+            return {
+                filters: { docstatus: ['!=', 2] }
+            }
+        },
+        action(selections) {
+            console.log(d)
+
+            get_template(selections, table_name)
+            d.dialog.hide()
+        }
+    });
+}
+cur_frm.cscript.generate_item_template = function () {
+    let d = new frappe.ui.Dialog({
+        title: 'Enter details',
+        fields: [
+            {
+                label: 'Description',
+                fieldname: 'description',
+                fieldtype: 'Data',
+                reqd: 1
+            }
+        ],
+        primary_action_label: 'Submit',
+        primary_action(values) {
+            console.log(values)
+            frappe.call({
+                method: "load_controls.load_controls.doctype.budget_bom.budget_bom.generate_item_templates",
+                args: {
+                    items: cur_frm.doc[table_name],
+                    description: values.description
+                },
+                async: false,
+                callback: function (r) {
+                        frappe.show_alert({
+                            message:__('BOM Item Template Created'),
+                            indicator:'green'
+                        }, 3);
+                }
+            })
+            d.hide();
+        }
+    });
+
+    d.show();
+
+}
 frappe.ui.form.on('Budget BOM', {
 	refresh: function(frm) {
+	    //ELECTRICAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAL
+	    cur_frm.fields_dict["electrical_bom_raw_material"].grid.add_custom_button(__('Refresh Available Stock'),
+			function() {
+	        cur_frm.trigger("refresh_electrical_available_stock")
+        }).css('background-color','#00008B').css('color','white').css('margin-left','10px').css('margin-right','10px')
+
+	    cur_frm.fields_dict["electrical_bom_raw_material"].grid.add_custom_button(__('Generate Item Template'),
+			function() {
+	        table_name = "electrical_bom_raw_material"
+	        cur_frm.trigger("generate_item_template")
+        }).css('background-color','#CCCC00').css('margin-left','10px')
+
+        cur_frm.fields_dict["electrical_bom_raw_material"].grid.add_custom_button(__('From Template'),
+			function() {
+	        table_name = "electrical_bom_raw_material"
+
+	        cur_frm.trigger("item_templates")
+        }).css('background-color','brown').css('color','white')
+
+        //MECHANICAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAL
+	    cur_frm.fields_dict["mechanical_bom_raw_material"].grid.add_custom_button(__('Refresh Available Stock'),
+			function() {
+            cur_frm.trigger("refresh_mechanical_available_stock")
+        }).css('background-color','#00008B').css('color','white').css('margin-left','10px').css('margin-right','10px')
+
+	    cur_frm.fields_dict["mechanical_bom_raw_material"].grid.add_custom_button(__('Generate Item Template'),
+			function() {
+	        table_name = "mechanical_bom_raw_material"
+	        cur_frm.trigger("generate_item_template")
+        }).css('background-color','#CCCC00').css('margin-left','10px')
+
+        cur_frm.fields_dict["mechanical_bom_raw_material"].grid.add_custom_button(__('From Template'),
+			function() {
+            table_name = "mechanical_bom_raw_material"
+	        cur_frm.trigger("item_templates")
+        }).css('background-color','brown').css('color','white')
+
+        //ENCLOSUUUUUUUUUURE
+	    cur_frm.fields_dict["fg_sellable_bom_raw_material"].grid.add_custom_button(__('Refresh Available Stock'),
+			function() {
+	        	        cur_frm.trigger("refresh_fg_sellable_available_stock")
+
+        }).css('background-color','#00008B').css('color','white').css('margin-left','10px').css('margin-right','10px')
+
+
 	    if(!generating_quotation){
 	        cur_frm.call({
                 doc: cur_frm.doc,
@@ -29,9 +131,15 @@ frappe.ui.form.on('Budget BOM', {
             })
             frappe.db.get_single_value("Manufacturing Settings","default_operation")
                 .then(d_operation => {
-                    operation = d_operation
+                    electrical_operation = d_operation
 
             })
+            frappe.db.get_single_value("Manufacturing Settings","mechanical_bom_default_operation")
+                .then(d_operation => {
+                    mechanical_operation = d_operation
+
+            })
+
             frappe.db.get_single_value("Manufacturing Settings","default_routing")
                 .then(d_routing => {
                     routing = d_routing
@@ -164,15 +272,18 @@ frappe.ui.form.on('Budget BOM', {
 
             cur_frm.add_child("electrical_bom_details", {
                 workstation: workstation,
-                operation: operation
+                operation: electrical_operation,
+                qty: 1
             })
             cur_frm.add_child("mechanical_bom_details", {
                 workstation:workstation,
-                operation: operation
+                operation: mechanical_operation,
+                qty: 1
             })
             cur_frm.add_child("fg_sellable_bom_details", {
                 workstation: workstation,
-                routing:routing
+                routing:routing,
+                qty: 1
             })
             cur_frm.get_field("electrical_bom_details").grid.cannot_add_rows = true;
             cur_frm.get_field("mechanical_bom_details").grid.cannot_add_rows = true;
@@ -219,6 +330,60 @@ frappe.ui.form.on('Budget BOM', {
 	},
 });
 
+cur_frm.cscript.refresh_electrical_available_stock = function () {
+     frappe.call({
+            method: "load_controls.load_controls.doctype.budget_bom.budget_bom.set_available_qty",
+            args: {
+                items: cur_frm.doc.electrical_bom_raw_material
+            },
+            callback: function (r) {
+                var objIndex = 0
+               for(var x=0;x<r.message.length;x+=1){
+                    console.log("NAA")
+                   objIndex = cur_frm.doc.electrical_bom_raw_material.findIndex(obj => obj.name === r.message[x]['name'])
+
+                    cur_frm.doc.electrical_bom_raw_material[objIndex].available_qty = r.message[x]['available_qty']
+                   cur_frm.refresh_field("electrical_bom_raw_material")
+               }
+            }
+        })
+}
+cur_frm.cscript.refresh_mechanical_available_stock = function () {
+     frappe.call({
+            method: "load_controls.load_controls.doctype.budget_bom.budget_bom.set_available_qty",
+            args: {
+                items: cur_frm.doc.mechanical_bom_raw_material
+            },
+            callback: function (r) {
+                var objIndex = 0
+               for(var x=0;x<r.message.length;x+=1){
+                    console.log("NAA")
+                   objIndex = cur_frm.doc.mechanical_bom_raw_material.findIndex(obj => obj.name === r.message[x]['name'])
+
+                    cur_frm.doc.mechanical_bom_raw_material[objIndex].available_qty = r.message[x]['available_qty']
+                   cur_frm.refresh_field("mechanical_bom_raw_material")
+               }
+            }
+        })
+}
+cur_frm.cscript.refresh_fg_sellable_available_stock = function () {
+     frappe.call({
+            method: "load_controls.load_controls.doctype.budget_bom.budget_bom.set_available_qty",
+            args: {
+                items: cur_frm.doc.fg_sellable_bom_raw_material
+            },
+            callback: function (r) {
+                var objIndex = 0
+               for(var x=0;x<r.message.length;x+=1){
+                    console.log("NAA")
+                   objIndex = cur_frm.doc.fg_sellable_bom_raw_material.findIndex(obj => obj.name === r.message[x]['name'])
+
+                    cur_frm.doc.fg_sellable_bom_raw_material[objIndex].available_qty = r.message[x]['available_qty']
+                   cur_frm.refresh_field("fg_sellable_bom_raw_material")
+               }
+            }
+        })
+}
 frappe.ui.form.on('Budget BOM Raw Material', {
     qty: function(frm, cdt, cdn) {
         var d = locals[cdt][cdn]
@@ -266,18 +431,25 @@ function compute_total_cost(cur_frm) {
     cur_frm.doc.total_raw_material_cost = total
     cur_frm.refresh_field("total_raw_material_cost")
 }
-function get_template(template_name, raw_material_table){
-    frappe.db.get_doc("BOM Item Template", template_name)
-        .then(doc => {
-            for(var x=0;x<doc.items.length;x+=1){
-                cur_frm.add_child(raw_material_table, {
-                    item_code: doc.items[x].item_code,
-                    item_name: doc.items[x].item_name,
-                    uom: doc.items[x].uom,
-                    qty: doc.items[x].qty,
-                })
-                cur_frm.refresh_field(raw_material_table)
-            }
+function get_template(template_names, raw_material_table){
+    console.log("template")
+    console.log("templatessssss")
+    console.log(template_names)
+    console.log(raw_material_table)
+    for(var x=0;x<template_names.length;x+=1){
+        console.log(template_names[x])
+         frappe.db.get_doc("BOM Item Template", template_names[x])
+            .then(doc => {
+                for(var x=0;x<doc.items.length;x+=1){
+                    cur_frm.add_child(raw_material_table, {
+                        item_code: doc.items[x].item_code,
+                        item_name: doc.items[x].item_name,
+                        uom: doc.items[x].uom,
+                        qty: doc.items[x].qty,
+                    })
+                    cur_frm.refresh_field(raw_material_table)
+                }
 
-    })
+        })
+    }
 }
