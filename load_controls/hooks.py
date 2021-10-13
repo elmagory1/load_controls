@@ -180,6 +180,7 @@ fixtures = [
                 "in",
                 [
                     "Quotation-budget_bom",
+                    "BOM-budget_bom",
                     "Manufacturing Settings-default_routing",
                     "Manufacturing Settings-default_operation",
                     "Manufacturing Settings-mechanical_bom_default_operation",
