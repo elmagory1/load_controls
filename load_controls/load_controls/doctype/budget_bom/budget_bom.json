@@ -87,7 +87,9 @@
   {
    "fieldname": "posting_date",
    "fieldtype": "Date",
-   "label": "Posting Date"
+   "in_list_view": 1,
+   "label": "Posting Date",
+   "reqd": 1
   },
   {
    "fieldname": "expected_closing_date",
@@ -95,6 +97,7 @@
    "label": "Expected Closing Date"
   },
   {
+   "default": "Price List",
    "fieldname": "rate_of_materials_based_on",
    "fieldtype": "Select",
    "label": "Rate of Materials Based On",
@@ -341,7 +344,7 @@
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2021-10-13 18:41:24.211038",
+ "modified": "2021-10-13 18:44:59.377259",
  "modified_by": "Administrator",
  "module": "Load Controls",
  "name": "Budget BOM",
