@@ -15,6 +15,7 @@
   "posting_date",
   "expected_closing_date",
   "rate_of_materials_based_on",
+  "price_list",
   "material_request",
   "electrical_bom_section",
   "electrical_bom_details",
@@ -96,7 +97,7 @@
    "fieldname": "rate_of_materials_based_on",
    "fieldtype": "Select",
    "label": "Rate of Materials Based On",
-   "options": "Last Purchase Rate\nValuation Rate"
+   "options": "Last Purchase Rate\nValuation Rate\nPrice List"
   },
   {
    "depends_on": "eval: doc.status == \"To Purchase Order\"",
@@ -316,12 +317,20 @@
    "fieldname": "rejection_note",
    "fieldtype": "Small Text",
    "label": "Rejection Note"
+  },
+  {
+   "default": "Standard Buying",
+   "depends_on": "eval:doc.rate_of_materials_based_on == \"Price List\"",
+   "fieldname": "price_list",
+   "fieldtype": "Select",
+   "label": "Price List",
+   "options": "Standard Buying\nStandard Selling"
   }
  ],
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2021-10-13 14:07:32.004846",
+ "modified": "2021-10-13 15:24:14.305835",
  "modified_by": "Administrator",
  "module": "Load Controls",
  "name": "Budget BOM",

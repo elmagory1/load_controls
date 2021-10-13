@@ -184,6 +184,7 @@ fixtures = [
                     "Manufacturing Settings-default_operation",
                     "Manufacturing Settings-mechanical_bom_default_operation",
                     "Manufacturing Settings-default_workstation",
+                    "Manufacturing Settings-default_raw_material_warehouse",
 				]
 			]
 		]

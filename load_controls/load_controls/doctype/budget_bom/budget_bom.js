@@ -7,6 +7,8 @@ var routing = ""
 var has_quotation = false
 var generating_quotation = false
 var table_name = ""
+var net_hour_rate = 0
+var raw_material_warehouse = 0
 cur_frm.cscript.item_templates = function () {
     var d = new frappe.ui.form.MultiSelectDialog({
         doctype: "BOM Item Template",
@@ -22,7 +24,7 @@ cur_frm.cscript.item_templates = function () {
         action(selections) {
             console.log(d)
 
-            get_template(selections, table_name)
+            get_template(selections, table_name, cur_frm)
             d.dialog.hide()
         }
     });
@@ -127,7 +129,10 @@ frappe.ui.form.on('Budget BOM', {
 	        frappe.db.get_single_value("Manufacturing Settings","default_workstation")
                 .then(d_workstation => {
                     workstation = d_workstation
-
+                    frappe.db.get_doc('Workstation', d_workstation)
+                        .then(doc => {
+                            net_hour_rate = doc.hour_rate
+                        })
             })
             frappe.db.get_single_value("Manufacturing Settings","default_operation")
                 .then(d_operation => {
@@ -143,6 +148,11 @@ frappe.ui.form.on('Budget BOM', {
             frappe.db.get_single_value("Manufacturing Settings","default_routing")
                 .then(d_routing => {
                     routing = d_routing
+
+            })
+        frappe.db.get_single_value("Manufacturing Settings","default_raw_material_warehouse")
+                .then(warehouse => {
+                    raw_material_warehouse = warehouse
 
             })
                             console.log(" BUTTON")
@@ -273,17 +283,20 @@ frappe.ui.form.on('Budget BOM', {
             cur_frm.add_child("electrical_bom_details", {
                 workstation: workstation,
                 operation: electrical_operation,
-                qty: 1
+                qty: 1,
+                net_hour_rate: net_hour_rate
             })
             cur_frm.add_child("mechanical_bom_details", {
                 workstation:workstation,
                 operation: mechanical_operation,
-                qty: 1
+                qty: 1,
+                net_hour_rate: net_hour_rate
             })
             cur_frm.add_child("fg_sellable_bom_details", {
                 workstation: workstation,
                 routing:routing,
-                qty: 1
+                qty: 1,
+                net_hour_rate: net_hour_rate
             })
             cur_frm.get_field("electrical_bom_details").grid.cannot_add_rows = true;
             cur_frm.get_field("mechanical_bom_details").grid.cannot_add_rows = true;
@@ -402,6 +415,12 @@ frappe.ui.form.on('Budget BOM Raw Material', {
                 compute_total_cost_expense(cur_frm)
 
 	},
+    item_code: function (frm, cdt, cdn) {
+        var d = locals[cdt][cdn]
+        d.rate = get_rate(cur_frm, d).responseJSON.message[0]
+
+        cur_frm.refresh_field(d.parentfield)
+    }
 });
 frappe.ui.form.on('Additional Operational Cost', {
     amount: function(frm, cdt, cdn) {
@@ -431,25 +450,63 @@ function compute_total_cost(cur_frm) {
     cur_frm.doc.total_raw_material_cost = total
     cur_frm.refresh_field("total_raw_material_cost")
 }
-function get_template(template_names, raw_material_table){
-    console.log("template")
-    console.log("templatessssss")
-    console.log(template_names)
-    console.log(raw_material_table)
+function get_template(template_names, raw_material_table, cur_frm){
     for(var x=0;x<template_names.length;x+=1){
         console.log(template_names[x])
          frappe.db.get_doc("BOM Item Template", template_names[x])
             .then(doc => {
                 for(var x=0;x<doc.items.length;x+=1){
+                    var rate = get_rate(cur_frm, doc.items[x])
                     cur_frm.add_child(raw_material_table, {
                         item_code: doc.items[x].item_code,
                         item_name: doc.items[x].item_name,
                         uom: doc.items[x].uom,
                         qty: doc.items[x].qty,
+                        rate: rate.responseJSON.message[0]
                     })
                     cur_frm.refresh_field(raw_material_table)
                 }
 
         })
     }
+}
+
+function get_rate(cur_frm, d) {
+    if(d.item_code){
+        return frappe.call({
+            method: "load_controls.load_controls.doctype.budget_bom.budget_bom.get_rate",
+            args: {
+                item_code: d.item_code,
+                warehouse: d.warehouse ? d.warehouse : "",
+                based_on: cur_frm.doc.rate_of_materials_based_on ? cur_frm.doc.rate_of_materials_based_on : "",
+                price_list: cur_frm.doc.price_list ? cur_frm.doc.price_list : ""
+
+            },
+            async: false,
+            callback: function (r) {
+                console.log("RAAAAAAAAAAAAAAATE")
+                console.log(r.message[0])
+                return r.message[0]
+            }
+        })
+    }
+
+}
+
+cur_frm.cscript.electrical_bom_raw_material_add = function (frm, cdt,cdn) {
+    var d = locals[cdt][cdn]
+    d.warehouse = raw_material_warehouse
+    cur_frm.refresh_field(d.parentfield)
+}
+cur_frm.cscript.mechanical_bom_raw_material_add = function (frm, cdt,cdn) {
+    var d = locals[cdt][cdn]
+    d.warehouse = raw_material_warehouse
+        cur_frm.refresh_field(d.parentfield)
+
+}
+cur_frm.cscript.fg_sellable_bom_raw_material_add = function (frm, cdt,cdn) {
+    var d = locals[cdt][cdn]
+    d.warehouse = raw_material_warehouse
+        cur_frm.refresh_field(d.parentfield)
+
 }
