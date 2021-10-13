@@ -3,6 +3,7 @@
 var workstation = ""
 var electrical_operation = ""
 var mechanical_operation = ""
+var fg_sellable_operation = ""
 var routing = ""
 var has_quotation = false
 var generating_quotation = false
@@ -155,6 +156,11 @@ frappe.ui.form.on('Budget BOM', {
                     raw_material_warehouse = warehouse
 
             })
+        frappe.db.get_single_value("Manufacturing Settings","enclosure_default_operation")
+                .then(d_operation => {
+                    fg_sellable_operation = d_operation
+
+            })
                             console.log(" BUTTON")
 
         if(cur_frm.doc.docstatus && cur_frm.doc.status === "To Quotation" && !has_quotation){
@@ -295,6 +301,7 @@ frappe.ui.form.on('Budget BOM', {
             cur_frm.add_child("fg_sellable_bom_details", {
                 workstation: workstation,
                 routing:routing,
+                operation:fg_sellable_operation,
                 qty: 1,
                 net_hour_rate: net_hour_rate
             })
@@ -309,6 +316,8 @@ frappe.ui.form.on('Budget BOM', {
             cur_frm.refresh_field("electrical_bom_details")
             cur_frm.refresh_field("mechanical_bom_details")
             cur_frm.refresh_field("fg_sellable_bom_details")
+            compute_total_operation_cost(cur_frm)
+            compute_total_cost_expense(cur_frm)
         }
 
 
@@ -329,7 +338,12 @@ frappe.ui.form.on('Budget BOM', {
     total_additional_operation_cost: function(frm) {
         compute_total_cost_expense(cur_frm)
 	},
-    discount: function(frm) {
+    discount_amount: function(frm) {
+        compute_total_cost_expense(cur_frm)
+	},
+    discount_percentage: function(frm) {
+	    cur_frm.doc.discount_amount = (cur_frm.doc.discount_percentage / 100) * cur_frm.doc.total_raw_material_cost
+        cur_frm.refresh_field("discount_amount")
         compute_total_cost_expense(cur_frm)
 	},
     margin_: function(frm) {
@@ -432,8 +446,14 @@ frappe.ui.form.on('Additional Operational Cost', {
         cur_frm.refresh_field("total_additional_operation_cost")
 	}
 });
+frappe.ui.form.on('Budget BOM Details', {
+    workstation: function(frm, cdt, cdn) {
+       compute_total_operation_cost(cur_frm)
+        compute_total_cost_expense(cur_frm)
+	}
+});
 function compute_total_cost_expense(cur_frm) {
-   cur_frm.doc.total_cost = ((cur_frm.doc.total_operation_cost + cur_frm.doc.total_additional_operation_cost) - cur_frm.doc.discount) + cur_frm.doc.margin_
+   cur_frm.doc.total_cost = ((cur_frm.doc.total_operation_cost + cur_frm.doc.total_additional_operation_cost + cur_frm.doc.total_raw_material_cost) - cur_frm.doc.discount_amount) + parseFloat(cur_frm.doc.margin_)
     cur_frm.refresh_field("total_cost")
 }
 function compute_total_cost(cur_frm) {
@@ -449,6 +469,22 @@ function compute_total_cost(cur_frm) {
     }
     cur_frm.doc.total_raw_material_cost = total
     cur_frm.refresh_field("total_raw_material_cost")
+}
+function compute_total_operation_cost(cur_frm) {
+    var fieldnames = ['electrical_bom_details','mechanical_bom_details','fg_sellable_bom_details']
+    var total_hour_rate = 0
+    for(var i=0;i<fieldnames.length;i+=1){
+        if(cur_frm.doc[fieldnames[i]]){
+            for(var ii=0;ii<cur_frm.doc[fieldnames[i]].length;ii+=1){
+                total_hour_rate += cur_frm.doc[fieldnames[i]][ii].net_hour_rate
+            }
+        }
+
+    }
+    console.log("TOTAL HOUR RATE")
+    console.log(total_hour_rate)
+    cur_frm.doc.total_operation_cost = total_hour_rate
+    cur_frm.refresh_field("total_operation_cost")
 }
 function get_template(template_names, raw_material_table, cur_frm){
     for(var x=0;x<template_names.length;x+=1){

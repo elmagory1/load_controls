@@ -37,7 +37,8 @@
   "fg_sellable_bom_details",
   "section_break_29",
   "total_operation_cost",
-  "discount",
+  "discount_percentage",
+  "discount_amount",
   "column_break_32",
   "total_additional_operation_cost",
   "margin_",
@@ -243,13 +244,8 @@
    "default": "0",
    "fieldname": "total_operation_cost",
    "fieldtype": "Currency",
-   "label": "Total Operation Cost"
-  },
-  {
-   "default": "0",
-   "fieldname": "discount",
-   "fieldtype": "Currency",
-   "label": "DIscount"
+   "label": "Total Operation Cost",
+   "read_only": 1
   },
   {
    "fieldname": "column_break_32",
@@ -274,13 +270,15 @@
    "default": "0",
    "fieldname": "total_raw_material_cost",
    "fieldtype": "Currency",
-   "label": "Total Raw Material Cost"
+   "label": "Total Raw Material Cost",
+   "read_only": 1
   },
   {
    "default": "0",
    "fieldname": "total_cost",
    "fieldtype": "Currency",
-   "label": "Total Cost"
+   "label": "Total Cost",
+   "read_only": 1
   },
   {
    "fieldname": "additional_operational_cost_section",
@@ -298,7 +296,8 @@
    "default": "0",
    "fieldname": "total_additional_operation_cost",
    "fieldtype": "Currency",
-   "label": "Additional Operation Cost"
+   "label": "Total Additional Operation Cost",
+   "read_only": 1
   },
   {
    "default": "0",
@@ -325,12 +324,24 @@
    "fieldtype": "Select",
    "label": "Price List",
    "options": "Standard Buying\nStandard Selling"
+  },
+  {
+   "default": "0",
+   "fieldname": "discount_amount",
+   "fieldtype": "Currency",
+   "label": "Discount Amount"
+  },
+  {
+   "default": "0",
+   "fieldname": "discount_percentage",
+   "fieldtype": "Data",
+   "label": "Discount Percentage"
   }
  ],
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2021-10-13 15:24:14.305835",
+ "modified": "2021-10-13 18:41:24.211038",
  "modified_by": "Administrator",
  "module": "Load Controls",
  "name": "Budget BOM",

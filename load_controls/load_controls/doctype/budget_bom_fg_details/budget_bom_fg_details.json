@@ -12,6 +12,7 @@
   "uom",
   "workstation",
   "routing",
+  "operation",
   "net_hour_rate"
  ],
  "fields": [
@@ -62,7 +63,6 @@
    "columns": 1,
    "fieldname": "routing",
    "fieldtype": "Link",
-   "in_list_view": 1,
    "label": "Routing",
    "options": "Routing"
   },
@@ -72,12 +72,19 @@
    "fieldtype": "Data",
    "label": "Net Hour Rate",
    "read_only": 1
+  },
+  {
+   "fieldname": "operation",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Operation",
+   "options": "Operation"
   }
  ],
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2021-10-13 15:54:50.209954",
+ "modified": "2021-10-13 17:55:14.077917",
  "modified_by": "Administrator",
  "module": "Load Controls",
  "name": "Budget BOM FG Details",
