@@ -316,11 +316,11 @@ frappe.ui.form.on('Budget BOM', {
             cur_frm.refresh_field("electrical_bom_details")
             cur_frm.refresh_field("mechanical_bom_details")
             cur_frm.refresh_field("fg_sellable_bom_details")
-            compute_total_operation_cost(cur_frm)
-            compute_total_cost_expense(cur_frm)
+
         }
 
-
+compute_total_operation_cost(cur_frm)
+            compute_total_cost_expense(cur_frm)
 	},
     electrical_item_template: function(frm) {
         get_template(cur_frm.doc.electrical_item_template, "electrical_bom_raw_material")
@@ -416,6 +416,17 @@ frappe.ui.form.on('Budget BOM Raw Material', {
         var d = locals[cdt][cdn]
         d.amount = d.qty * d.rate
         cur_frm.refresh_field(d.parentfield)
+
+
+        if(d.amount > 0 && d.discount_percentage > 0){
+            d.discount_amount = (d.discount_percentage / 100) * d.amount
+            d.amount = d.amount - d.discount_amount
+            cur_frm.refresh_field(d.parentfield)
+        } else if (d.amount > 0 && d.discount_amount > 0){
+             d.amount = d.amount - d.discount_amount
+            cur_frm.refresh_field(d.parentfield)
+        }
+
         compute_total_cost(cur_frm)
         compute_total_cost_expense(cur_frm)
 
@@ -425,15 +436,50 @@ frappe.ui.form.on('Budget BOM Raw Material', {
         d.amount = d.qty * d.rate
         cur_frm.refresh_field(d.parentfield)
 
+
+        if(d.amount > 0 && d.discount_percentage > 0){
+            d.discount_amount = (d.discount_percentage / 100) * d.amount
+            d.amount = d.amount - d.discount_amount
+            cur_frm.refresh_field(d.parentfield)
+        } else if (d.amount > 0 && d.discount_amount > 0){
+             d.amount = d.amount - d.discount_amount
+            cur_frm.refresh_field(d.parentfield)
+        }
+
+
         compute_total_cost(cur_frm)
-                compute_total_cost_expense(cur_frm)
+        compute_total_cost_expense(cur_frm)
 
 	},
     item_code: function (frm, cdt, cdn) {
-        var d = locals[cdt][cdn]
-        d.rate = get_rate(cur_frm, d).responseJSON.message[0]
+         var d = locals[cdt][cdn]
+        if(d.item_code){
+            d.rate = get_rate(cur_frm, d).responseJSON.message[0]
+            cur_frm.refresh_field(d.parentfield)
+        }
 
-        cur_frm.refresh_field(d.parentfield)
+    },
+    discount_percentage: function (frm, cdt, cdn) {
+        var d = locals[cdt][cdn]
+        if(d.amount > 0 && d.discount_percentage > 0){
+            d.discount_amount = (d.discount_percentage / 100) * d.amount
+            d.amount = d.amount - d.discount_amount
+            cur_frm.refresh_field(d.parentfield)
+
+        }
+         compute_total_cost(cur_frm)
+        compute_total_cost_expense(cur_frm)
+
+    },
+    discount_amount: function (frm, cdt, cdn) {
+        var d = locals[cdt][cdn]
+        if(d.amount > 0){
+            d.amount = d.amount - d.discount_amount
+            cur_frm.refresh_field(d.parentfield)
+        }
+         compute_total_cost(cur_frm)
+        compute_total_cost_expense(cur_frm)
+
     }
 });
 frappe.ui.form.on('Additional Operational Cost', {
@@ -476,7 +522,7 @@ function compute_total_operation_cost(cur_frm) {
     for(var i=0;i<fieldnames.length;i+=1){
         if(cur_frm.doc[fieldnames[i]]){
             for(var ii=0;ii<cur_frm.doc[fieldnames[i]].length;ii+=1){
-                total_hour_rate += cur_frm.doc[fieldnames[i]][ii].net_hour_rate
+                total_hour_rate += parseFloat(cur_frm.doc[fieldnames[i]][ii].net_hour_rate)
             }
         }
 

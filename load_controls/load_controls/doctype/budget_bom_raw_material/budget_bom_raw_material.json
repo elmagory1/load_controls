@@ -9,7 +9,8 @@
   "item_name",
   "qty",
   "rate",
-  "discount",
+  "discount_percentage",
+  "discount_amount",
   "amount",
   "column_break_7",
   "available_qty",
@@ -77,13 +78,6 @@
   },
   {
    "allow_on_submit": 1,
-   "default": "0",
-   "fieldname": "discount",
-   "fieldtype": "Currency",
-   "label": "Discount"
-  },
-  {
-   "allow_on_submit": 1,
    "fetch_from": "item_code.stock_uom",
    "fieldname": "uom",
    "fieldtype": "Link",
@@ -103,12 +97,24 @@
    "fieldtype": "Link",
    "label": "Warehouse",
    "options": "Warehouse"
+  },
+  {
+   "allow_on_submit": 1,
+   "default": "0",
+   "fieldname": "discount_percentage",
+   "fieldtype": "Data",
+   "label": "Discount Percentage"
+  },
+  {
+   "fieldname": "discount_amount",
+   "fieldtype": "Currency",
+   "label": "Discount Amount"
   }
  ],
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2021-10-13 17:45:17.112968",
+ "modified": "2021-10-14 17:43:55.304963",
  "modified_by": "Administrator",
  "module": "Load Controls",
  "name": "Budget BOM Raw Material",
