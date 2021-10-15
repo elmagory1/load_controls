@@ -15,7 +15,9 @@ class BudgetBOM(Document):
             "transaction_date": self.posting_date,
             "valid_till": self.posting_date,
             "party_name": self.customer,
-            "budget_bom": self.name,
+            "budget_bom_reference": [{
+                "budget_bom": self.name
+            }],
             "items": [{
                 "item_code": self.fg_sellable_bom_details[0].item_code,
                 "item_name": self.fg_sellable_bom_details[0].item_name,
@@ -23,8 +25,6 @@ class BudgetBOM(Document):
                 "uom": self.fg_sellable_bom_details[0].uom,
             }]
         }
-        print("QUOTATION")
-        print(obj)
         quotation = frappe.get_doc(obj).insert()
         frappe.db.sql(""" UPDATE `tabBudget BOM` SET status='To Quotation', quotation_amended=0 WHERE name=%s """,
                       self.name)
@@ -33,7 +33,21 @@ class BudgetBOM(Document):
 
     @frappe.whitelist()
     def get_quotation(self):
-        quotation = frappe.db.sql(""" SELECT COUNT(*) as count, docstatus FROM `tabQuotation` WHERE budget_bom=%s and docstatus < 2""", self.name, as_dict=1)
+        quotation = frappe.db.sql(""" 
+                          SELECT COUNT(*) as count, Q.docstatus
+                           FROM tabQuotation as Q
+                           INNER JOIN `tabBudget BOM References` as BBR ON BBR.parent = Q.name
+                          WHERE BBR.budget_bom=%s and Q.docstatus < 2""", self.name, as_dict=1)
+
+        return quotation[0].count > 0
+
+    @frappe.whitelist()
+    def check_sales_order(self):
+        quotation = frappe.db.sql(""" 
+                          SELECT COUNT(*) as count, SO.docstatus, SO.status
+                           FROM `tabSales Order`as SO
+                           INNER JOIN `tabBudget BOM References` as BBR ON BBR.parent = SO.name
+                          WHERE BBR.budget_bom=%s and SO.docstatus < 2 and SO.status in ('To Deliver and Bill', 'Overdue')""", self.name, as_dict=1)
 
         return quotation[0].count > 0
 

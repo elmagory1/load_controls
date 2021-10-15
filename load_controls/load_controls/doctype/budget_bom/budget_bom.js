@@ -6,6 +6,7 @@ var mechanical_operation = ""
 var fg_sellable_operation = ""
 var routing = ""
 var has_quotation = false
+var has_so = false
 var generating_quotation = false
 var table_name = ""
 var net_hour_rate = 0
@@ -126,6 +127,17 @@ frappe.ui.form.on('Budget BOM', {
                 }
             })
         }
+        cur_frm.call({
+                doc: cur_frm.doc,
+                method: 'check_sales_order',
+                args: {},
+                freeze: true,
+                freeze_message: "Checking Sales Order...",
+                async:false,
+                callback: (r) => {
+                    has_so= r.message
+                }
+            })
 
 	        frappe.db.get_single_value("Manufacturing Settings","default_workstation")
                 .then(d_workstation => {
@@ -266,6 +278,12 @@ frappe.ui.form.on('Budget BOM', {
                             cur_frm.reload_doc()
                         }
                     })
+                })
+
+        }  else if(cur_frm.doc.docstatus && cur_frm.doc.status === "To Purchase Order" && has_so){
+
+                frm.add_custom_button(__("Material Request"), () => {
+                    cur_frm.trigger("material_request")
                 })
 
         }
@@ -578,17 +596,20 @@ function get_rate(cur_frm, d) {
 cur_frm.cscript.electrical_bom_raw_material_add = function (frm, cdt,cdn) {
     var d = locals[cdt][cdn]
     d.warehouse = raw_material_warehouse
+    d.schedule_date = cur_frm.doc.posting_date
     cur_frm.refresh_field(d.parentfield)
 }
 cur_frm.cscript.mechanical_bom_raw_material_add = function (frm, cdt,cdn) {
     var d = locals[cdt][cdn]
     d.warehouse = raw_material_warehouse
-        cur_frm.refresh_field(d.parentfield)
+    d.schedule_date = cur_frm.doc.posting_date
+    cur_frm.refresh_field(d.parentfield)
 
 }
 cur_frm.cscript.fg_sellable_bom_raw_material_add = function (frm, cdt,cdn) {
     var d = locals[cdt][cdn]
     d.warehouse = raw_material_warehouse
-        cur_frm.refresh_field(d.parentfield)
+    d.schedule_date = cur_frm.doc.posting_date
+    cur_frm.refresh_field(d.parentfield)
 
 }

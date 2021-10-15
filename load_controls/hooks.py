@@ -31,7 +31,9 @@ app_license = "MIT"
 # page_js = {"page" : "public/js/file.js"}
 
 # include js in doctype views
-# doctype_js = {"doctype" : "public/js/doctype.js"}
+doctype_js = {
+	"Purchase Order" : "public/js/purchase_order.js"
+}
 # doctype_list_js = {"doctype" : "public/js/doctype_list.js"}
 # doctype_tree_js = {"doctype" : "public/js/doctype_tree.js"}
 # doctype_calendar_js = {"doctype" : "public/js/doctype_calendar.js"}
@@ -93,6 +95,9 @@ doc_events = {
 	"Quotation": {
 		"on_submit": "load_controls.doc_events.quotation.submit_q",
 		"on_cancel": "load_controls.doc_events.quotation.cancel_q",
+	},
+	"Material Request": {
+		"validate": "load_controls.doc_events.material_request.validate_mr",
 	}
 }
 
@@ -180,7 +185,14 @@ fixtures = [
                 "in",
                 [
                     "Quotation-budget_bom",
+                    "Quotation-reference",
+                    "Quotation-budget_bom_reference",
+                    "Sales Order-budget_bom_reference",
+                    "Sales Order-reference",
                     "BOM-budget_bom",
+                    "Material Request Item-budget_bom_rate",
+                    "Material Request-budget_bom",
+                    "Purchase Order Item-budget_bom_rate",
                     "Manufacturing Settings-default_routing",
                     "Manufacturing Settings-default_operation",
                     "Manufacturing Settings-mechanical_bom_default_operation",

@@ -1,15 +1,18 @@
 {
  "actions": [],
  "allow_rename": 1,
+ "autoname": "naming_series:",
  "creation": "2021-10-12 09:58:54.641616",
  "doctype": "DocType",
  "editable_grid": 1,
  "engine": "InnoDB",
  "field_order": [
+  "naming_series",
   "supplier",
   "supplier_name",
   "column_break_3",
   "posting_date",
+  "purchase_order",
   "gate_pass_items_section",
   "items",
   "amended_from"
@@ -56,12 +59,26 @@
    "fieldname": "items",
    "fieldtype": "Table",
    "options": "Gate Pass Items"
+  },
+  {
+   "fieldname": "purchase_order",
+   "fieldtype": "Link",
+   "label": "Purchase Order",
+   "options": "Purchase Order"
+  },
+  {
+   "default": "GP-",
+   "fieldname": "naming_series",
+   "fieldtype": "Select",
+   "label": "Series",
+   "options": "GP-",
+   "read_only": 1
   }
  ],
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2021-10-12 10:01:11.449721",
+ "modified": "2021-10-16 00:48:54.451258",
  "modified_by": "Administrator",
  "module": "Load Controls",
  "name": "Gate Pass",
