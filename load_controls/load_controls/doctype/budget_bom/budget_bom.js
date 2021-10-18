@@ -520,7 +520,8 @@ frappe.ui.form.on('Budget BOM Details', {
 	}
 });
 function compute_total_cost_expense(cur_frm) {
-   cur_frm.doc.total_cost = ((cur_frm.doc.total_operation_cost + cur_frm.doc.total_additional_operation_cost + cur_frm.doc.total_raw_material_cost) - cur_frm.doc.discount_amount) + parseFloat(cur_frm.doc.margin_)
+    var total_cost = (cur_frm.doc.total_operation_cost + cur_frm.doc.total_additional_operation_cost + cur_frm.doc.total_raw_material_cost) - cur_frm.doc.discount_amount
+   cur_frm.doc.total_cost = ( total_cost * (parseFloat(cur_frm.doc.margin_ ) / 100)) + total_cost
     cur_frm.refresh_field("total_cost")
 }
 function compute_total_cost(cur_frm) {
