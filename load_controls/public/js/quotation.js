@@ -70,9 +70,10 @@ function fetch_boms(cur_frm, selections) {
                             "description": doc.fg_sellable_bom_details[0].item_name,
                             "qty": doc.fg_sellable_bom_details[0].qty,
                             "uom": doc.fg_sellable_bom_details[0].uom,
+                            "rate": doc.total_cost,
+                            "amount": doc.total_cost * doc.fg_sellable_bom_details[0].qty,
                         })
                         cur_frm.refresh_field("items")
-                            cur_frm.trigger("party_name")
                         }
 
 
