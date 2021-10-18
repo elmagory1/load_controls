@@ -510,6 +510,7 @@ frappe.ui.form.on('Additional Operational Cost', {
         }
         cur_frm.doc.total_additional_operation_cost = total
         cur_frm.refresh_field("total_additional_operation_cost")
+         compute_total_cost_expense(cur_frm)
 	}
 });
 frappe.ui.form.on('Budget BOM Details', {
