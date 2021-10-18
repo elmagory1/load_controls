@@ -486,7 +486,10 @@ frappe.ui.form.on('Budget BOM Raw Material', {
             var fieldname = d.parentfield === "electrical_bom_raw_material" ? "refresh_electrical_available_stock" :
                             d.parentfield === "mechanical_bom_raw_material" ? "refresh_mechanical_available_stock" :
                                 d.parentfield === "fg_sellable_bom_raw_material" ? "refresh_fg_sellable_available_stock" : ""
-            cur_frm.trigger(fieldname)
+            if(fieldname){
+                            cur_frm.trigger(fieldname)
+
+            }
             cur_frm.refresh_field(d.parentfield)
         }
 
