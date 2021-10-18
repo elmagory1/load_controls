@@ -67,10 +67,12 @@ function fetch_boms(cur_frm, selections) {
                               cur_frm.add_child("items",{
                             "item_code": doc.fg_sellable_bom_details[0].item_code,
                             "item_name": doc.fg_sellable_bom_details[0].item_name,
+                            "description": doc.fg_sellable_bom_details[0].item_name,
                             "qty": doc.fg_sellable_bom_details[0].qty,
                             "uom": doc.fg_sellable_bom_details[0].uom,
                         })
                         cur_frm.refresh_field("items")
+                            cur_frm.trigger("party_name")
                         }
 
 
