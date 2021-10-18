@@ -80,7 +80,7 @@ class BudgetBOM(Document):
     def create_bom(self):
         self.create_first_bom()
         self.create_second_bom()
-        self.create_third_bom()
+        # self.create_third_bom()
 
     @frappe.whitelist()
     def create_first_bom(self):
