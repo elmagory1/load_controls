@@ -7,6 +7,10 @@ def submit_q(doc, event):
             frappe.db.sql(""" UPDATE `tabBudget BOM` SET status=%s WHERE name=%s  """,("To Design", i.budget_bom))
             frappe.db.commit()
 
+    for ii in doc.budget_bom_opportunity:
+        frappe.db.sql(""" UPDATE `tabOpportunity` SET status='Quotation' WHERE name=%s  """, (ii.opportunity))
+        frappe.db.commit()
+
 @frappe.whitelist()
 def cancel_q(doc, event):
     for i in doc.budget_bom_reference:
@@ -14,6 +18,10 @@ def cancel_q(doc, event):
         if i.budget_bom:
             frappe.db.sql(""" UPDATE `tabBudget BOM` SET status=%s, quotation_amended=1 WHERE name=%s  """,("To Quotation", i.budget_bom))
             frappe.db.commit()
+
+    for ii in doc.budget_bom_opportunity:
+        frappe.db.sql(""" UPDATE `tabOpportunity` SET status='Open' WHERE name=%s  """, (ii.opportunity))
+        frappe.db.commit()
 
 @frappe.whitelist()
 def get_opportunity(doctype,target,e,r,t,filter):
@@ -29,6 +37,6 @@ def get_opportunity(doctype,target,e,r,t,filter):
         party = filter['party_name']
         condition += " and O.party_name = '{0}' ".format(party)
 
-    query = """ SELECT O.name, O.party_name FROM `tabOpportunity` as O INNER JOIN `tabBudget BOM` as BB ON BB.opportunity = O.name  WHERE O.status='Open' {0} GROUP BY O.name """.format(condition)
+    query = """ SELECT O.name, O.party_name FROM `tabOpportunity` as O INNER JOIN `tabBudget BOM` as BB ON BB.opportunity = O.name  WHERE O.status='Open' and BB.docstatus = 1 {0} GROUP BY O.name """.format(condition)
     opportunities = frappe.db.sql(query,as_dict=1)
     return opportunities

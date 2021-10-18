@@ -53,7 +53,10 @@ function fetch_boms(cur_frm, selections) {
 
                     frappe.db.get_doc('Budget BOM', null, { opportunity: selections[x]})
                     .then(doc => {
-
+                        cur_frm.doc.party_name = doc.customer
+                        cur_frm.doc.customer_name = doc.customer_name
+                        cur_frm.refresh_field("party_name")
+                        cur_frm.refresh_field("customer_name")
                         cur_frm.add_child("budget_bom_reference",{
                             budget_bom: doc.name
                         })
