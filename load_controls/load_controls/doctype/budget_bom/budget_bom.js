@@ -15,7 +15,9 @@ cur_frm.cscript.item_templates = function () {
     var d = new frappe.ui.form.MultiSelectDialog({
         doctype: "BOM Item Template",
         target: this.cur_frm,
-        setters: {},
+        setters: {
+            description: null
+        },
         add_filters_group: 1,
         date_field: "posting_date",
         get_query() {
