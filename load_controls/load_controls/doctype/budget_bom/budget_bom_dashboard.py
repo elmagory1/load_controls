@@ -11,7 +11,7 @@ def get_data():
 		'transactions': [
 			{
 				'label': _('Linked Forms'),
-				'items': ["Quotation", "BOM", "Sales Order"]
+				'items': ["Quotation", "BOM", "Sales Order", "Material Request"]
 			}
 		]
 	}

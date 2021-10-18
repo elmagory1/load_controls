@@ -584,7 +584,8 @@ function get_template(template_names, raw_material_table, cur_frm){
                         uom: doc.items[x].uom,
                         qty: doc.items[x].qty,
                         warehouse: raw_material_warehouse,
-                        rate: rate.responseJSON.message[0]
+                        rate: rate.responseJSON.message[0],
+                        amount: rate.responseJSON.message[0] * doc.items[x].qty
                     })
                     cur_frm.refresh_field(raw_material_table)
                 }
