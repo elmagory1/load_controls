@@ -483,6 +483,10 @@ frappe.ui.form.on('Budget BOM Raw Material', {
         if(d.item_code){
             d.rate = get_rate(cur_frm, d).responseJSON.message[0]
             d.amount = d.rate
+            var fieldname = d.parentfield === "electrical_bom_raw_material" ? "refresh_electrical_available_stock" :
+                            d.parentfield === "mechanical_bom_raw_material" ? "refresh_mechanical_available_stock" :
+                                d.parentfield === "fg_sellable_bom_raw_material" ? "refresh_fg_sellable_available_stock" : ""
+            cur_frm.trigger(fieldname)
             cur_frm.refresh_field(d.parentfield)
         }
 
@@ -579,6 +583,7 @@ function get_template(template_names, raw_material_table, cur_frm){
                         item_name: doc.items[x].item_name,
                         uom: doc.items[x].uom,
                         qty: doc.items[x].qty,
+                        warehouse: raw_material_warehouse,
                         rate: rate.responseJSON.message[0]
                     })
                     cur_frm.refresh_field(raw_material_table)

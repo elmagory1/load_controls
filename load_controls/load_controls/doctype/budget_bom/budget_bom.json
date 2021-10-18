@@ -33,6 +33,7 @@
   "fg_sellable_from_template",
   "fg_sellable_item_template",
   "generate_fg_sellable_item_template",
+  "fgsellable_bom_detail_section",
   "fg_sellable_bom_details",
   "section_break_29",
   "total_operation_cost",
@@ -144,9 +145,9 @@
    "label": "Enclosure"
   },
   {
+   "bold": 1,
    "fieldname": "fg_sellable_bom_details",
    "fieldtype": "Table",
-   "label": "FG/Sellable BOM Detail",
    "options": "Budget BOM FG Details"
   },
   {
@@ -334,12 +335,17 @@
    "fieldname": "discount_percentage",
    "fieldtype": "Data",
    "label": "Discount Percentage"
+  },
+  {
+   "fieldname": "fgsellable_bom_detail_section",
+   "fieldtype": "Section Break",
+   "label": "FG/Sellable BOM Detail"
   }
  ],
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2021-10-18 09:57:57.892465",
+ "modified": "2021-10-18 14:02:28.448914",
  "modified_by": "Administrator",
  "module": "Load Controls",
  "name": "Budget BOM",
