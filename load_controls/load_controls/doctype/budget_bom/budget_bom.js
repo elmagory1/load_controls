@@ -305,6 +305,8 @@ frappe.ui.form.on('Budget BOM', {
     },
 	onload_post_render: function(frm) {
 	    if(cur_frm.is_new()){
+	        cur_frm.doc.status = "To Quotation"
+            cur_frm.refresh_field(status)
             if(cur_frm.doc.electrical_bom_details.length === 0){
                 cur_frm.add_child("electrical_bom_details", {
                     workstation: workstation,
