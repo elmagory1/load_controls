@@ -99,6 +99,9 @@ doc_events = {
 	},
 	"Material Request": {
 		"validate": "load_controls.doc_events.material_request.validate_mr",
+	},
+	"Purchase Order": {
+		"on_submit": "load_controls.doc_events.purchase_order.on_submit_po",
 	}
 }
 
@@ -202,6 +205,7 @@ fixtures = [
                     "Manufacturing Settings-enclosure_default_operation",
                     "Manufacturing Settings-default_workstation",
                     "Manufacturing Settings-default_raw_material_warehouse",
+                    "Purchase Order-approve_po_rate",
 				]
 			]
 		]
