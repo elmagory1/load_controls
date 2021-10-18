@@ -475,6 +475,7 @@ frappe.ui.form.on('Budget BOM Raw Material', {
          var d = locals[cdt][cdn]
         if(d.item_code){
             d.rate = get_rate(cur_frm, d).responseJSON.message[0]
+            d.amount = d.rate
             cur_frm.refresh_field(d.parentfield)
         }
 
