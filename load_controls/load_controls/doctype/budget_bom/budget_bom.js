@@ -8,6 +8,7 @@ var routing = ""
 var has_quotation = false
 var has_so = false
 var generating_quotation = false
+var check_bom = false
 var table_name = ""
 var net_hour_rate = 0
 var raw_material_warehouse = 0
@@ -140,6 +141,17 @@ frappe.ui.form.on('Budget BOM', {
                     has_so= r.message
                 }
             })
+        cur_frm.call({
+                doc: cur_frm.doc,
+                method: 'check_bom',
+                args: {},
+                freeze: true,
+                freeze_message: "Checking Sales Order...",
+                async:false,
+                callback: (r) => {
+                    check_bom= r.message
+                }
+            })
 
 	        frappe.db.get_single_value("Manufacturing Settings","default_workstation")
                 .then(d_workstation => {
@@ -267,7 +279,7 @@ frappe.ui.form.on('Budget BOM', {
                 }, "Action")
 
 
-        } else if(cur_frm.doc.docstatus && cur_frm.doc.status === "Rejected"){
+        } else if(cur_frm.doc.docstatus && !check_bom){
 
                 frm.add_custom_button(__("Create BOM"), () => {
                     cur_frm.call({

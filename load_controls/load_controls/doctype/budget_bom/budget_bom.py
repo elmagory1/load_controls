@@ -69,6 +69,14 @@ class BudgetBOM(Document):
         frappe.db.commit()
 
     @frappe.whitelist()
+    def check_bom(self):
+        bom = frappe.db.sql(""" 
+                            SELECT COUNT(*) as count
+                             FROM tabBOM
+                            WHERE budget_bom=%s and docstatus < 2""", self.name, as_dict=1)
+
+        return bom[0].count > 0
+    @frappe.whitelist()
     def create_bom(self):
         self.create_first_bom()
         self.create_second_bom()
