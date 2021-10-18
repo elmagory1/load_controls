@@ -74,45 +74,45 @@ frappe.ui.form.on('Budget BOM', {
 	    cur_frm.fields_dict["electrical_bom_raw_material"].grid.add_custom_button(__('Refresh Available Stock'),
 			function() {
 	        cur_frm.trigger("refresh_electrical_available_stock")
-        }).css('background-color','#00008B').css('color','white').css('margin-left','10px').css('margin-right','10px')
+        }).css('background-color','#00008B').css('color','white').css('margin-left','10px').css('margin-right','10px').css('font-weight','bold')
 
 	    cur_frm.fields_dict["electrical_bom_raw_material"].grid.add_custom_button(__('Generate Item Template'),
 			function() {
 	        table_name = "electrical_bom_raw_material"
 	        cur_frm.trigger("generate_item_template")
-        }).css('background-color','#CCCC00').css('margin-left','10px')
+        }).css('background-color','#CCCC00').css('margin-left','10px').css('font-weight','bold')
 
         cur_frm.fields_dict["electrical_bom_raw_material"].grid.add_custom_button(__('From Template'),
 			function() {
 	        table_name = "electrical_bom_raw_material"
 
 	        cur_frm.trigger("item_templates")
-        }).css('background-color','brown').css('color','white')
+        }).css('background-color','brown').css('color','white').css('font-weight','bold')
 
         //MECHANICAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAL
 	    cur_frm.fields_dict["mechanical_bom_raw_material"].grid.add_custom_button(__('Refresh Available Stock'),
 			function() {
             cur_frm.trigger("refresh_mechanical_available_stock")
-        }).css('background-color','#00008B').css('color','white').css('margin-left','10px').css('margin-right','10px')
+        }).css('background-color','#00008B').css('color','white').css('margin-left','10px').css('margin-right','10px').css('font-weight','bold')
 
 	    cur_frm.fields_dict["mechanical_bom_raw_material"].grid.add_custom_button(__('Generate Item Template'),
 			function() {
 	        table_name = "mechanical_bom_raw_material"
 	        cur_frm.trigger("generate_item_template")
-        }).css('background-color','#CCCC00').css('margin-left','10px')
+        }).css('background-color','#CCCC00').css('margin-left','10px').css('font-weight','bold')
 
         cur_frm.fields_dict["mechanical_bom_raw_material"].grid.add_custom_button(__('From Template'),
 			function() {
             table_name = "mechanical_bom_raw_material"
 	        cur_frm.trigger("item_templates")
-        }).css('background-color','brown').css('color','white')
+        }).css('background-color','brown').css('color','white').css('font-weight','bold')
 
         //ENCLOSUUUUUUUUUURE
 	    cur_frm.fields_dict["fg_sellable_bom_raw_material"].grid.add_custom_button(__('Refresh Available Stock'),
 			function() {
 	        	        cur_frm.trigger("refresh_fg_sellable_available_stock")
 
-        }).css('background-color','#00008B').css('color','white').css('margin-left','10px').css('margin-right','10px')
+        }).css('background-color','#00008B').css('color','white').css('margin-left','10px').css('margin-right','10px').css('font-weight','bold')
 
 
 	    if(!generating_quotation){
@@ -305,33 +305,40 @@ frappe.ui.form.on('Budget BOM', {
     },
 	onload_post_render: function(frm) {
 	    if(cur_frm.is_new()){
+            if(cur_frm.doc.electrical_bom_details.length === 0){
+                cur_frm.add_child("electrical_bom_details", {
+                    workstation: workstation,
+                    operation: electrical_operation,
+                    qty: 1,
+                    net_hour_rate: net_hour_rate
+                })
+            }
+            if(cur_frm.doc.mechanical_bom_details.length === 0){
+                cur_frm.add_child("mechanical_bom_details", {
+                    workstation:workstation,
+                    operation: mechanical_operation,
+                    qty: 1,
+                    net_hour_rate: net_hour_rate
+                })
+            }
+            if(cur_frm.doc.fg_sellable_bom_details.length === 0){
+                cur_frm.add_child("fg_sellable_bom_details", {
+                    workstation: workstation,
+                    routing:routing,
+                    operation:fg_sellable_operation,
+                    qty: 1,
+                    net_hour_rate: net_hour_rate
+                })
+            }
 
-            cur_frm.add_child("electrical_bom_details", {
-                workstation: workstation,
-                operation: electrical_operation,
-                qty: 1,
-                net_hour_rate: net_hour_rate
-            })
-            cur_frm.add_child("mechanical_bom_details", {
-                workstation:workstation,
-                operation: mechanical_operation,
-                qty: 1,
-                net_hour_rate: net_hour_rate
-            })
-            cur_frm.add_child("fg_sellable_bom_details", {
-                workstation: workstation,
-                routing:routing,
-                operation:fg_sellable_operation,
-                qty: 1,
-                net_hour_rate: net_hour_rate
-            })
+
             cur_frm.get_field("electrical_bom_details").grid.cannot_add_rows = true;
             cur_frm.get_field("mechanical_bom_details").grid.cannot_add_rows = true;
             cur_frm.get_field("fg_sellable_bom_details").grid.cannot_add_rows = true;
 
-            cur_frm.get_field("electrical_bom_details").grid.only_sortable();
-            cur_frm.get_field("mechanical_bom_details").grid.only_sortable();
-            cur_frm.get_field("fg_sellable_bom_details").grid.only_sortable();
+            // cur_frm.get_field("electrical_bom_details").grid.only_sortable();
+            // cur_frm.get_field("mechanical_bom_details").grid.only_sortable();
+            // cur_frm.get_field("fg_sellable_bom_details").grid.only_sortable();
 
             cur_frm.refresh_field("electrical_bom_details")
             cur_frm.refresh_field("mechanical_bom_details")
