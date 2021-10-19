@@ -151,7 +151,7 @@ class BudgetBOM(Document):
             items.append({
                 "item_code": i.item_code,
                 "item_name": i.item_name,
-                "rate": i.rate,
+                "rate": i.rate if i.rate else 0,
                 "qty": i.qty,
                 "uom": i.uom,
                 "amount": i.qty * i.rate,
