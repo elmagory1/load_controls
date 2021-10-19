@@ -130,7 +130,7 @@ class BudgetBOM(Document):
                 "with_operations": 1,
                 "budget_bom": self.name,
                 "rm_cost_as_per": self.rate_of_materials_based_on,
-                "items": self.get_raw_materials("mechanical_bom_details", "Third") + self.get_raw_materials("electrical_bom_details", "Third"),
+                "items": self.get_raw_materials("mechanical_bom_details", "Third") + self.get_raw_materials("electrical_bom_details", "Third") + self.get_raw_materials("fg_sellable_bom_raw_material"),
                 "operations": self.get_operations("mechanical_bom_details") + self.get_operations("electrical_bom_details")  + self.get_operations("fg_sellable_bom_details")
             }
             bom = frappe.get_doc(obj).insert()
