@@ -80,7 +80,7 @@ class BudgetBOM(Document):
     def create_bom(self):
         self.create_first_bom()
         self.create_second_bom()
-        # self.create_third_bom()
+        self.create_third_bom()
 
     @frappe.whitelist()
     def create_first_bom(self):
@@ -94,7 +94,7 @@ class BudgetBOM(Document):
                 "items": self.get_raw_materials("electrical_bom_raw_material")
             }
             bom = frappe.get_doc(obj).insert()
-            # bom.submit()
+            bom.submit()
 
     @frappe.whitelist()
     def create_second_bom(self):
@@ -108,21 +108,21 @@ class BudgetBOM(Document):
                 "items": self.get_raw_materials("mechanical_bom_raw_material")
             }
             bom = frappe.get_doc(obj).insert()
-            # bom.submit()
+            bom.submit()
 
-    # @frappe.whitelist()
-    # def create_third_bom(self):
-    # 	for i in self.fg_sellable_bom_details:
-    # 		obj = {
-    # 			"doctype": "BOM",
-    # 			"item": i.item_code,
-    # 			"quantity": i.qty,
-    # 			"budget_bom": self.name,
-    # 			"rm_cost_as_per": self.rate_of_materials_based_on,
-    # 			"items": self.get_raw_materials("fg_sellable_bom_raw_material") + elf.get_raw_materials("fg_sellable_bom_raw_material")
-    # 		}
-    # 		bom = frappe.get_doc(obj).insert()
-    # 		# bom.submit()
+    @frappe.whitelist()
+    def create_third_bom(self):
+    	for i in self.fg_sellable_bom_details:
+    		obj = {
+    			"doctype": "BOM",
+    			"item": i.item_code,
+    			"quantity": i.qty,
+    			"budget_bom": self.name,
+    			"rm_cost_as_per": self.rate_of_materials_based_on,
+    			"items": self.get_raw_materials("fg_sellable_bom_raw_material") + self.get_raw_materials("fg_sellable_bom_raw_material")
+    		}
+    		bom = frappe.get_doc(obj).insert()
+    		bom.submit()
 
     @frappe.whitelist()
     def get_raw_materials(self, raw_material):
