@@ -151,10 +151,10 @@ class BudgetBOM(Document):
             items.append({
                 "item_code": i.item_code,
                 "item_name": i.item_name,
-                "rate": i.rate if i.rate else 0,
+                "rate": i.rate if 'rate' in i.__dict__ else 0,
                 "qty": i.qty,
                 "uom": i.uom,
-                "amount": i.qty * i.rate if i.rate else 0,
+                "amount": i.qty * i.rate if 'rate' in i.__dict__ else 0,
             })
         return items
 
