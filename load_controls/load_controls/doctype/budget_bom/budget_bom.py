@@ -109,6 +109,7 @@ class BudgetBOM(Document):
                 "item": i.item_code,
                 "budget_bom": self.name,
                 "quantity": i.qty,
+                "with_operations": 1,
                 "rm_cost_as_per": self.rate_of_materials_based_on,
                 "items": self.get_raw_materials("mechanical_bom_raw_material"),
                 "operations": self.get_operations("mechanical_bom_details")
@@ -126,6 +127,7 @@ class BudgetBOM(Document):
                 "doctype": "BOM",
                 "item": i.item_code,
                 "quantity": i.qty,
+                "with_operations": 1,
                 "budget_bom": self.name,
                 "rm_cost_as_per": self.rate_of_materials_based_on,
                 "items": self.get_raw_materials("mechanical_bom_details", "Third") + self.get_raw_materials("electrical_bom_details", "Third"),
