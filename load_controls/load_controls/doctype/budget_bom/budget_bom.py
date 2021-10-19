@@ -154,7 +154,7 @@ class BudgetBOM(Document):
                 "rate": i.rate if i.rate else 0,
                 "qty": i.qty,
                 "uom": i.uom,
-                "amount": i.qty * i.rate,
+                "amount": i.qty * i.rate if i.rate else 0,
             })
         return items
 
