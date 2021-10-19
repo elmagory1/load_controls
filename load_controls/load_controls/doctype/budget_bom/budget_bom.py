@@ -79,8 +79,8 @@ class BudgetBOM(Document):
     @frappe.whitelist()
     def create_bom(self):
         self.create_first_bom()
-        self.create_second_bom()
-        self.create_third_bom()
+        # self.create_second_bom()
+        # self.create_third_bom()
 
     @frappe.whitelist()
     def create_first_bom(self):
@@ -89,9 +89,11 @@ class BudgetBOM(Document):
                 "doctype": "BOM",
                 "item": i.item_code,
                 "budget_bom":self.name,
+                "with_operations":1,
                 "quantity": i.qty,
                 "rm_cost_as_per": self.rate_of_materials_based_on,
-                "items": self.get_raw_materials("electrical_bom_raw_material")
+                "items": self.get_raw_materials("electrical_bom_raw_material"),
+                "operations": self.get_operations("electrical_bom_details")
             }
             bom = frappe.get_doc(obj).insert()
             bom.submit()
@@ -105,7 +107,8 @@ class BudgetBOM(Document):
                 "budget_bom": self.name,
                 "quantity": i.qty,
                 "rm_cost_as_per": self.rate_of_materials_based_on,
-                "items": self.get_raw_materials("mechanical_bom_raw_material")
+                "items": self.get_raw_materials("mechanical_bom_raw_material"),
+                "operations": self.get_operations("mechanical_bom_details")
             }
             bom = frappe.get_doc(obj).insert()
             bom.submit()
@@ -119,11 +122,28 @@ class BudgetBOM(Document):
                 "quantity": i.qty,
                 "budget_bom": self.name,
                 "rm_cost_as_per": self.rate_of_materials_based_on,
-                "items": self.get_raw_materials("fg_sellable_bom_raw_material") + self.get_raw_materials("fg_sellable_bom_raw_material")
+                "items": self.get_raw_materials("mechanical_bom_details") + self.get_raw_materials("mechanical_bom_details") + self.get_raw_materials("mechanical_bom_details"),
+                "operations": self.get_operations("mechanical_bom_details") + self.get_operations("electrical_bom_details")  + self.get_operations("electrical_bom_details")
             }
             bom = frappe.get_doc(obj).insert()
             bom.submit()
 
+    @frappe.whitelist()
+    def get_operations(self,raw_material):
+        operations = []
+        for i in self.__dict__[raw_material]:
+            operation_record= frappe.db.sql(""" SELECT * FROM `tabOperation` WHERE name=%s""", i.operation, as_dict=1)
+            operation_time = operation_record[0].total_operation_time if len(operation_record) > 0 else 0
+            description = operation_record[0].description if len(operation_record) > 0 else 0
+
+            operations.append({
+                "operation": i.operation,
+                "workstation": i.workstation,
+                "time_in_mins": operation_time,
+                "operating_cost": i.net_hour_rate,
+                "description": description,
+            })
+        return operations
     @frappe.whitelist()
     def get_raw_materials(self, raw_material):
         items = []
