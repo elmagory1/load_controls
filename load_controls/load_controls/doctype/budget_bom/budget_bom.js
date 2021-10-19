@@ -290,6 +290,10 @@ frappe.ui.form.on('Budget BOM', {
                         freeze_message: "Creating BOM...",
                         callback: (r) => {
                             cur_frm.reload_doc()
+                    frappe.show_alert({
+                            message:__('BOMs Created'),
+                            indicator:'green'
+                        }, 3);
                         }
                     })
                 })
