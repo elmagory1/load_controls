@@ -79,8 +79,7 @@ class BudgetBOM(Document):
     @frappe.whitelist()
     def create_bom(self):
         self.create_first_bom()
-        self.create_second_bom()
-        self.create_third_bom()
+
 
     @frappe.whitelist()
     def create_first_bom(self):
@@ -95,10 +94,13 @@ class BudgetBOM(Document):
                 "items": self.get_raw_materials("electrical_bom_raw_material"),
                 "operations": self.get_operations("electrical_bom_details")
             }
+            print("OBJEEEEEEEEEECT")
+            print(obj)
             bom = frappe.get_doc(obj).insert()
             bom.submit()
             self.first_bom = bom.name
 
+            self.create_second_bom()
     @frappe.whitelist()
     def create_second_bom(self):
         for i in self.mechanical_bom_details:
@@ -115,6 +117,8 @@ class BudgetBOM(Document):
             bom.submit()
 
             self.second_bom = bom.name
+            self.create_third_bom()
+
     @frappe.whitelist()
     def create_third_bom(self):
         for i in self.fg_sellable_bom_details:
@@ -124,7 +128,7 @@ class BudgetBOM(Document):
                 "quantity": i.qty,
                 "budget_bom": self.name,
                 "rm_cost_as_per": self.rate_of_materials_based_on,
-                "items": self.get_raw_materials("mechanical_bom_details", "Third") + self.get_raw_materials("electrical_bom_details", "Third") + self.get_raw_materials("fg_sellable_bom_details"),
+                "items": self.get_raw_materials("mechanical_bom_details", "Third") + self.get_raw_materials("electrical_bom_details", "Third"),
                 "operations": self.get_operations("mechanical_bom_details") + self.get_operations("electrical_bom_details")  + self.get_operations("fg_sellable_bom_details")
             }
             bom = frappe.get_doc(obj).insert()
@@ -166,6 +170,9 @@ class BudgetBOM(Document):
                 obj['bom_no'] = self.first_bom
 
             items.append(obj)
+
+        print("OBJEEEEEEECT")
+        print(items)
         return items
 
 @frappe.whitelist()
