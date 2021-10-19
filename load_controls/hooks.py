@@ -206,6 +206,7 @@ fixtures = [
                     "Manufacturing Settings-default_workstation",
                     "Manufacturing Settings-default_raw_material_warehouse",
                     "Purchase Order-approve_po_rate",
+                    "Workstation-operation_time",
 				]
 			]
 		]
