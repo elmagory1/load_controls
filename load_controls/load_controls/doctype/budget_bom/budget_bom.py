@@ -97,6 +97,7 @@ class BudgetBOM(Document):
             }
             bom = frappe.get_doc(obj).insert()
             bom.submit()
+            self.first_bom = bom.name
 
     @frappe.whitelist()
     def create_second_bom(self):
@@ -113,6 +114,7 @@ class BudgetBOM(Document):
             bom = frappe.get_doc(obj).insert()
             bom.submit()
 
+            self.second_bom = bom.name
     @frappe.whitelist()
     def create_third_bom(self):
         for i in self.fg_sellable_bom_details:
@@ -122,7 +124,7 @@ class BudgetBOM(Document):
                 "quantity": i.qty,
                 "budget_bom": self.name,
                 "rm_cost_as_per": self.rate_of_materials_based_on,
-                "items": self.get_raw_materials("mechanical_bom_details") + self.get_raw_materials("electrical_bom_details") + self.get_raw_materials("fg_sellable_bom_details"),
+                "items": self.get_raw_materials("mechanical_bom_details", "Third") + self.get_raw_materials("electrical_bom_details", "Third") + self.get_raw_materials("fg_sellable_bom_details"),
                 "operations": self.get_operations("mechanical_bom_details") + self.get_operations("electrical_bom_details")  + self.get_operations("fg_sellable_bom_details")
             }
             bom = frappe.get_doc(obj).insert()
@@ -130,6 +132,7 @@ class BudgetBOM(Document):
 
     @frappe.whitelist()
     def get_operations(self,raw_material):
+
         operations = []
         for i in self.__dict__[raw_material]:
             operation_record= frappe.db.sql(""" SELECT * FROM `tabOperation` WHERE name=%s""", i.operation, as_dict=1)
@@ -145,17 +148,24 @@ class BudgetBOM(Document):
             })
         return operations
     @frappe.whitelist()
-    def get_raw_materials(self, raw_material):
+    def get_raw_materials(self, raw_material, bom = None):
         items = []
         for i in self.__dict__[raw_material]:
-            items.append({
+            obj = {
                 "item_code": i.item_code,
                 "item_name": i.item_name,
                 "rate": i.rate if 'rate' in i.__dict__ else 0,
                 "qty": i.qty,
                 "uom": i.uom,
                 "amount": i.qty * i.rate if 'rate' in i.__dict__ else 0,
-            })
+            }
+            if bom == "Third" and raw_material == "mechanical_bom_details":
+                obj['bom_no'] = self.second_bom
+
+            elif bom == "Third" and raw_material == "electrical_bom_details":
+                obj['bom_no'] = self.first_bom
+
+            items.append(obj)
         return items
 
 @frappe.whitelist()
