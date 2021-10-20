@@ -253,7 +253,7 @@ frappe.ui.form.on('Budget BOM', {
 
 
         } else if(cur_frm.doc.docstatus && cur_frm.doc.status === "Updated Changes"){
-            if(frappe.user.has_role("Mechanical")) {
+            if(frappe.user.has_role("Sales User")) {
             frm.add_custom_button(__("Approve"), () => {
                     cur_frm.call({
                         doc: cur_frm.doc,
