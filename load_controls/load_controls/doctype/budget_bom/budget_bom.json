@@ -94,15 +94,13 @@
    "fieldtype": "Date",
    "in_list_view": 1,
    "label": "Posting Date",
-   "read_only": 1,
    "reqd": 1
   },
   {
    "allow_on_submit": 1,
    "fieldname": "expected_closing_date",
    "fieldtype": "Date",
-   "label": "Expected Closing Date",
-   "read_only": 1
+   "label": "Expected Closing Date"
   },
   {
    "allow_on_submit": 1,
@@ -110,8 +108,7 @@
    "fieldname": "rate_of_materials_based_on",
    "fieldtype": "Select",
    "label": "Rate of Materials Based On",
-   "options": "Last Purchase Rate\nValuation Rate\nPrice List",
-   "read_only": 1
+   "options": "Last Purchase Rate\nValuation Rate\nPrice List"
   },
   {
    "fieldname": "electrical_bom_section",
@@ -305,7 +302,8 @@
    "fieldname": "status",
    "fieldtype": "Select",
    "label": "Status",
-   "options": "To Quotation\nTo Design\nPending\nRejected\nTo Purchase Order\nQuotation In Progress\nUpdated Changes\nTo Material Request\nDeclined\nTo PO and SO\nTo PO\nTo SO"
+   "options": "To Quotation\nTo Design\nPending\nRejected\nTo Purchase Order\nQuotation In Progress\nUpdated Changes\nTo Material Request\nDeclined\nTo PO and SO\nTo PO\nTo SO",
+   "read_only": 1
   },
   {
    "default": "0",
@@ -339,8 +337,7 @@
    "fieldname": "price_list",
    "fieldtype": "Select",
    "label": "Price List",
-   "options": "Standard Buying\nStandard Selling",
-   "read_only": 1
+   "options": "Standard Buying\nStandard Selling"
   },
   {
    "allow_on_submit": 1,
@@ -388,7 +385,7 @@
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2021-10-20 15:49:19.447431",
+ "modified": "2021-10-20 16:39:54.631569",
  "modified_by": "Administrator",
  "module": "Load Controls",
  "name": "Budget BOM",
