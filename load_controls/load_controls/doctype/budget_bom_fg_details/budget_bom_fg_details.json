@@ -23,8 +23,7 @@
    "fieldtype": "Link",
    "in_list_view": 1,
    "label": "Item Code",
-   "options": "Item",
-   "read_only": 1
+   "options": "Item"
   },
   {
    "allow_on_submit": 1,
@@ -42,8 +41,7 @@
    "fieldname": "qty",
    "fieldtype": "Float",
    "in_list_view": 1,
-   "label": "Qty",
-   "read_only": 1
+   "label": "Qty"
   },
   {
    "fieldname": "column_break_4",
@@ -57,8 +55,7 @@
    "fieldtype": "Link",
    "in_list_view": 1,
    "label": "UOM",
-   "options": "UOM",
-   "read_only": 1
+   "options": "UOM"
   },
   {
    "allow_on_submit": 1,
@@ -66,8 +63,7 @@
    "fieldtype": "Link",
    "in_list_view": 1,
    "label": "Workstation",
-   "options": "Workstation",
-   "read_only": 1
+   "options": "Workstation"
   },
   {
    "allow_on_submit": 1,
@@ -75,8 +71,7 @@
    "fieldname": "routing",
    "fieldtype": "Link",
    "label": "Routing",
-   "options": "Routing",
-   "read_only": 1
+   "options": "Routing"
   },
   {
    "allow_on_submit": 1,
@@ -92,8 +87,7 @@
    "fieldtype": "Link",
    "in_list_view": 1,
    "label": "Operation",
-   "options": "Operation",
-   "read_only": 1
+   "options": "Operation"
   },
   {
    "allow_on_submit": 1,
@@ -102,14 +96,13 @@
    "fieldname": "operation_time_in_minutes",
    "fieldtype": "Float",
    "label": "Operation Time in Minutes",
-   "read_only": 1,
    "reqd": 1
   }
  ],
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2021-10-20 15:20:59.647003",
+ "modified": "2021-10-20 16:43:12.875557",
  "modified_by": "Administrator",
  "module": "Load Controls",
  "name": "Budget BOM FG Details",

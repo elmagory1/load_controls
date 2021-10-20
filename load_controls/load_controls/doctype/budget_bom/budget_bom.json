@@ -120,8 +120,7 @@
    "fieldname": "electrical_bom_details",
    "fieldtype": "Table",
    "label": "Electrical BOM Detail",
-   "options": "Budget BOM Details",
-   "read_only": 1
+   "options": "Budget BOM Details"
   },
   {
    "allow_on_submit": 1,
@@ -140,8 +139,7 @@
    "fieldname": "mechanical_bom_details",
    "fieldtype": "Table",
    "label": "Mechanical BOM Detail",
-   "options": "Budget BOM Details",
-   "read_only": 1
+   "options": "Budget BOM Details"
   },
   {
    "allow_on_submit": 1,
@@ -359,8 +357,7 @@
    "allow_on_submit": 1,
    "fieldname": "fgsellable_bom_detail_section",
    "fieldtype": "Section Break",
-   "label": "FG/Sellable BOM Detail",
-   "read_only": 1
+   "label": "FG/Sellable BOM Detail"
   },
   {
    "default": "0",
@@ -385,7 +382,7 @@
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2021-10-20 16:39:54.631569",
+ "modified": "2021-10-20 16:42:20.026483",
  "modified_by": "Administrator",
  "module": "Load Controls",
  "name": "Budget BOM",
