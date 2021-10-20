@@ -50,7 +50,10 @@
   "more_information_section",
   "rejection_note",
   "amended_from",
-  "quotation_amended"
+  "quotation_amended",
+  "quotation_cancelled",
+  "declined",
+  "old_data"
  ],
  "fields": [
   {
@@ -63,7 +66,8 @@
    "fieldname": "opportunity",
    "fieldtype": "Link",
    "label": "Opportunity",
-   "options": "Opportunity"
+   "options": "Opportunity",
+   "reqd": 1
   },
   {
    "fetch_from": "opportunity.party_name",
@@ -85,23 +89,29 @@
    "fieldtype": "Column Break"
   },
   {
+   "allow_on_submit": 1,
    "fieldname": "posting_date",
    "fieldtype": "Date",
    "in_list_view": 1,
    "label": "Posting Date",
+   "read_only": 1,
    "reqd": 1
   },
   {
+   "allow_on_submit": 1,
    "fieldname": "expected_closing_date",
    "fieldtype": "Date",
-   "label": "Expected Closing Date"
+   "label": "Expected Closing Date",
+   "read_only": 1
   },
   {
+   "allow_on_submit": 1,
    "default": "Price List",
    "fieldname": "rate_of_materials_based_on",
    "fieldtype": "Select",
    "label": "Rate of Materials Based On",
-   "options": "Last Purchase Rate\nValuation Rate\nPrice List"
+   "options": "Last Purchase Rate\nValuation Rate\nPrice List",
+   "read_only": 1
   },
   {
    "fieldname": "electrical_bom_section",
@@ -109,10 +119,12 @@
    "label": "Electrical BOM"
   },
   {
+   "allow_on_submit": 1,
    "fieldname": "electrical_bom_details",
    "fieldtype": "Table",
    "label": "Electrical BOM Detail",
-   "options": "Budget BOM Details"
+   "options": "Budget BOM Details",
+   "read_only": 1
   },
   {
    "allow_on_submit": 1,
@@ -127,10 +139,12 @@
    "label": "Mechanical BOM"
   },
   {
+   "allow_on_submit": 1,
    "fieldname": "mechanical_bom_details",
    "fieldtype": "Table",
    "label": "Mechanical BOM Detail",
-   "options": "Budget BOM Details"
+   "options": "Budget BOM Details",
+   "read_only": 1
   },
   {
    "allow_on_submit": 1,
@@ -238,6 +252,7 @@
    "fieldtype": "Section Break"
   },
   {
+   "allow_on_submit": 1,
    "default": "0",
    "fieldname": "total_operation_cost",
    "fieldtype": "Currency",
@@ -280,6 +295,7 @@
    "read_only": 1
   },
   {
+   "allow_on_submit": 1,
    "fieldname": "additional_operational_cost_section",
    "fieldtype": "Section Break",
    "label": "Additional Operational Cost"
@@ -289,7 +305,7 @@
    "fieldname": "status",
    "fieldtype": "Select",
    "label": "Status",
-   "options": "To Quotation\nTo Design\nPending\nRejected\nTo Purchase Order"
+   "options": "To Quotation\nTo Design\nPending\nRejected\nTo Purchase Order\nQuotation In Progress\nUpdated Changes\nTo Material Request\nDeclined\nTo PO and SO\nTo PO\nTo SO"
   },
   {
    "default": "0",
@@ -311,41 +327,68 @@
   },
   {
    "allow_on_submit": 1,
-   "depends_on": "eval: doc.status == \"Rejected\"",
+   "depends_on": "eval: doc.declined == 1",
    "fieldname": "rejection_note",
    "fieldtype": "Small Text",
    "label": "Rejection Note"
   },
   {
+   "allow_on_submit": 1,
    "default": "Standard Buying",
    "depends_on": "eval:doc.rate_of_materials_based_on == \"Price List\"",
    "fieldname": "price_list",
    "fieldtype": "Select",
    "label": "Price List",
-   "options": "Standard Buying\nStandard Selling"
+   "options": "Standard Buying\nStandard Selling",
+   "read_only": 1
   },
   {
+   "allow_on_submit": 1,
    "default": "0",
    "fieldname": "discount_amount",
    "fieldtype": "Currency",
-   "label": "Discount Amount"
+   "label": "Discount Amount",
+   "read_only": 1
   },
   {
+   "allow_on_submit": 1,
    "default": "0",
    "fieldname": "discount_percentage",
    "fieldtype": "Data",
-   "label": "Discount Percentage"
+   "label": "Discount Percentage",
+   "read_only": 1
   },
   {
+   "allow_on_submit": 1,
    "fieldname": "fgsellable_bom_detail_section",
    "fieldtype": "Section Break",
-   "label": "FG/Sellable BOM Detail"
+   "label": "FG/Sellable BOM Detail",
+   "read_only": 1
+  },
+  {
+   "default": "0",
+   "fieldname": "quotation_cancelled",
+   "fieldtype": "Check",
+   "label": "Quotation Cancelled"
+  },
+  {
+   "allow_on_submit": 1,
+   "fieldname": "old_data",
+   "fieldtype": "Long Text",
+   "label": "Old Data",
+   "read_only": 1
+  },
+  {
+   "default": "0",
+   "fieldname": "declined",
+   "fieldtype": "Check",
+   "label": "Declined"
   }
  ],
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2021-10-18 14:02:28.448914",
+ "modified": "2021-10-20 15:49:19.447431",
  "modified_by": "Administrator",
  "module": "Load Controls",
  "name": "Budget BOM",

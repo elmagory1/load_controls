@@ -8,6 +8,7 @@
   "item_code",
   "item_name",
   "qty",
+  "operation_time_in_minutes",
   "column_break_4",
   "uom",
   "workstation",
@@ -17,20 +18,25 @@
  ],
  "fields": [
   {
+   "allow_on_submit": 1,
    "fieldname": "item_code",
    "fieldtype": "Link",
    "in_list_view": 1,
    "label": "Item Code",
-   "options": "Item"
+   "options": "Item",
+   "read_only": 1
   },
   {
+   "allow_on_submit": 1,
    "fetch_from": "item_code.item_name",
    "fieldname": "item_name",
    "fieldtype": "Data",
    "in_list_view": 1,
-   "label": "Item Name"
+   "label": "Item Name",
+   "read_only": 1
   },
   {
+   "allow_on_submit": 1,
    "columns": 1,
    "default": "0",
    "fieldname": "qty",
@@ -44,29 +50,36 @@
    "fieldtype": "Column Break"
   },
   {
+   "allow_on_submit": 1,
    "columns": 1,
    "fetch_from": "item_code.stock_uom",
    "fieldname": "uom",
    "fieldtype": "Link",
    "in_list_view": 1,
    "label": "UOM",
-   "options": "UOM"
+   "options": "UOM",
+   "read_only": 1
   },
   {
+   "allow_on_submit": 1,
    "fieldname": "workstation",
    "fieldtype": "Link",
    "in_list_view": 1,
    "label": "Workstation",
-   "options": "Workstation"
+   "options": "Workstation",
+   "read_only": 1
   },
   {
+   "allow_on_submit": 1,
    "columns": 1,
    "fieldname": "routing",
    "fieldtype": "Link",
    "label": "Routing",
-   "options": "Routing"
+   "options": "Routing",
+   "read_only": 1
   },
   {
+   "allow_on_submit": 1,
    "fetch_from": "workstation.hour_rate",
    "fieldname": "net_hour_rate",
    "fieldtype": "Data",
@@ -74,17 +87,29 @@
    "read_only": 1
   },
   {
+   "allow_on_submit": 1,
    "fieldname": "operation",
    "fieldtype": "Link",
    "in_list_view": 1,
    "label": "Operation",
-   "options": "Operation"
+   "options": "Operation",
+   "read_only": 1
+  },
+  {
+   "allow_on_submit": 1,
+   "fetch_from": "workstation.operation_time",
+   "fetch_if_empty": 1,
+   "fieldname": "operation_time_in_minutes",
+   "fieldtype": "Float",
+   "label": "Operation Time in Minutes",
+   "read_only": 1,
+   "reqd": 1
   }
  ],
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2021-10-13 17:55:14.077917",
+ "modified": "2021-10-20 15:20:59.647003",
  "modified_by": "Administrator",
  "module": "Load Controls",
  "name": "Budget BOM FG Details",

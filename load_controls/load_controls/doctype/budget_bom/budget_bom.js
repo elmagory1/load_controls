@@ -11,6 +11,7 @@ var generating_quotation = false
 var check_bom = false
 var table_name = ""
 var net_hour_rate = 0
+var operation_time = 0
 var raw_material_warehouse = 0
 cur_frm.cscript.item_templates = function () {
     var d = new frappe.ui.form.MultiSelectDialog({
@@ -159,6 +160,7 @@ frappe.ui.form.on('Budget BOM', {
                     frappe.db.get_doc('Workstation', d_workstation)
                         .then(doc => {
                             net_hour_rate = doc.hour_rate
+                            operation_time = doc.operation_time
                         })
             })
             frappe.db.get_single_value("Manufacturing Settings","default_operation")
@@ -217,12 +219,13 @@ frappe.ui.form.on('Budget BOM', {
                         }
                     })
                 })
-                frm.add_custom_button(__("Approve"), () => {
+            if(frappe.user.has_role("Mechanical")){
+	                 frm.add_custom_button(__("Approve"), () => {
                     cur_frm.call({
                         doc: cur_frm.doc,
                         method: 'action_to_design',
                         args: {
-                            status: "Approve"
+                            status: "Approved"
                         },
                         freeze: true,
                         freeze_message: "Amending Quotation...",
@@ -231,12 +234,12 @@ frappe.ui.form.on('Budget BOM', {
                         }
                     })
                 }, "Action")
-            frm.add_custom_button(__("Update"), () => {
+            frm.add_custom_button(__("Update Changes"), () => {
                     cur_frm.call({
                         doc: cur_frm.doc,
                         method: 'action_to_design',
                         args: {
-                            status: "Update"
+                            status: "Updated Changes"
                         },
                         freeze: true,
                         freeze_message: "Amending Quotation...",
@@ -245,16 +248,18 @@ frappe.ui.form.on('Budget BOM', {
                         }
                     })
                 }, "Action")
+            }
 
 
-        } else if(cur_frm.doc.docstatus && cur_frm.doc.status === "Pending"){
 
-                frm.add_custom_button(__("Approve"), () => {
+        } else if(cur_frm.doc.docstatus && cur_frm.doc.status === "Updated Changes"){
+            if(frappe.user.has_role("Mechanical")) {
+            frm.add_custom_button(__("Approve"), () => {
                     cur_frm.call({
                         doc: cur_frm.doc,
                         method: 'action_to_design',
                         args: {
-                            status: "Approve"
+                            status: "To Material Request",
                         },
                         freeze: true,
                         freeze_message: "Amending Quotation...",
@@ -263,12 +268,12 @@ frappe.ui.form.on('Budget BOM', {
                         }
                     })
                 }, "Action")
-            frm.add_custom_button(__("Reject"), () => {
+            frm.add_custom_button(__("Decline"), () => {
                     cur_frm.call({
                         doc: cur_frm.doc,
                         method: 'action_to_design',
                         args: {
-                            status: "Reject"
+                            status: "To Material Request"
                         },
                         freeze: true,
                         freeze_message: "Amending Quotation...",
@@ -277,44 +282,70 @@ frappe.ui.form.on('Budget BOM', {
                         }
                     })
                 }, "Action")
+}
 
 
-        }  else if(cur_frm.doc.docstatus && cur_frm.doc.status === "To Purchase Order" && has_so){
+
+        }  else if(cur_frm.doc.docstatus && cur_frm.doc.status === "To Material Request" && has_so){
 
                 frm.add_custom_button(__("Material Request"), () => {
                     cur_frm.trigger("material_request")
                 })
-
-        }
-        if(cur_frm.doc.docstatus && !check_bom){
-
-                frm.add_custom_button(__("Create BOM"), () => {
-                    cur_frm.call({
-                        doc: cur_frm.doc,
-                        method: 'create_bom',
-                        args: {},
-                        freeze: true,
-                        freeze_message: "Creating BOM...",
-                        callback: (r) => {
-                            cur_frm.reload_doc()
-                    frappe.show_alert({
-                            message:__('BOMs Created'),
-                            indicator:'green'
-                        }, 3);
-                        }
+                if(!check_bom) {
+                    frm.add_custom_button(__("Create BOM"), () => {
+                        cur_frm.call({
+                            doc: cur_frm.doc,
+                            method: 'create_bom',
+                            args: {},
+                            freeze: true,
+                            freeze_message: "Creating BOM...",
+                            callback: (r) => {
+                                cur_frm.reload_doc()
+                                frappe.show_alert({
+                                    message: __('BOMs Created'),
+                                    indicator: 'green'
+                                }, 3);
+                            }
+                        })
                     })
-                })
+                }
+
+
 
         }
+
         if(cur_frm.doc.docstatus){
-            cur_frm.set_df_property("electrical_bom_raw_material", "read_only", !cur_frm.doc.quotation_amended)
-            cur_frm.set_df_property("mechanical_bom_raw_material", "read_only", !cur_frm.doc.quotation_amended)
-            cur_frm.set_df_property("fg_sellable_bom_raw_material", "read_only", !cur_frm.doc.quotation_amended)
-            var fields = ["item_code","item_name","qty","valuation_rate","rate","amount","available_qty", "discount", "uom", "batch", "warehouse"]
+            if(cur_frm.doc.quotation_amended){
+                cur_frm.set_df_property("electrical_bom_raw_material", "read_only", 0)
+                cur_frm.set_df_property("fg_sellable_raw_material", "read_only", 0)
+                cur_frm.set_df_property("mechanical_bom_raw_material", "read_only", 0)
+            }
+
+            if(cur_frm.doc.quotation_cancelled){
+                var fields_for_cancel=[
+                        "electrical_bom_raw_material",
+                        "electrical_bom_details",
+                        "mechanical_bom_raw_material",
+                        "mechanical_bom_details",
+                        "fg_sellable_bom_details",
+                        "fg_sellable_bom_raw_material",
+                        "posting_date",
+                        "expected_closing_date",
+                        "discount_percentage",
+                        "discount_amount",
+                        "rate_of_materials_based_on",
+                        "price_list",
+                ]
+                for(var ii=0;ii<fields_for_cancel.length;ii+=1){
+                    cur_frm.set_df_property(fields_for_cancel[ii], "read_only", 0)
+                }
+            }
+
+            var fields = ["item_code","item_name","qty","valuation_rate","rate","amount","available_qty", "discount_percentage", "discount_amount", "uom", "batch", "warehouse"]
             for(var x=0;x<fields.length;x+=1){
                 console.log(fields[x])
                 var field = frappe.meta.get_docfield("Budget BOM Raw Material", fields[x], cur_frm.doc.name);
-                field.read_only = !cur_frm.doc.quotation_amended
+                field.read_only = !cur_frm.doc.quotation_amended || !cur_frm.doc.quotation_cancelled
             }
         }
 
@@ -329,7 +360,8 @@ frappe.ui.form.on('Budget BOM', {
                     workstation: workstation,
                     operation: electrical_operation,
                     qty: 1,
-                    net_hour_rate: net_hour_rate
+                    net_hour_rate: net_hour_rate,
+                    operation_time_in_minutes: operation_time
                 })
             }
             if(cur_frm.doc.mechanical_bom_details.length === 0){
@@ -337,7 +369,8 @@ frappe.ui.form.on('Budget BOM', {
                     workstation:workstation,
                     operation: mechanical_operation,
                     qty: 1,
-                    net_hour_rate: net_hour_rate
+                    net_hour_rate: net_hour_rate,
+                    operation_time_in_minutes: operation_time
                 })
             }
             if(cur_frm.doc.fg_sellable_bom_details.length === 0){
@@ -346,7 +379,8 @@ frappe.ui.form.on('Budget BOM', {
                     routing:routing,
                     operation:fg_sellable_operation,
                     qty: 1,
-                    net_hour_rate: net_hour_rate
+                    net_hour_rate: net_hour_rate,
+                    operation_time_in_minutes: operation_time
                 })
             }
 
@@ -400,6 +434,7 @@ compute_total_operation_cost(cur_frm)
 			method: "load_controls.load_controls.doctype.budget_bom.budget_bom.make_mr",
 			frm: cur_frm
 		})
+
 	},
 });
 

@@ -8,6 +8,12 @@ from erpnext.stock.stock_ledger import get_previous_sle
 
 class BudgetBOM(Document):
     @frappe.whitelist()
+    def validate(self):
+        if self.opportunity:
+            frappe.db.sql(""" UPDATE `tabOpportunity` SET budget_bom=%s WHERE name=%s""", (self.name, self.opportunity))
+            frappe.db.commit()
+
+    @frappe.whitelist()
     def generate_quotation(self):
         obj = {
             "doctype": "Quotation",
@@ -62,10 +68,47 @@ class BudgetBOM(Document):
 
     @frappe.whitelist()
     def action_to_design(self, status):
-        updated_status = "To Purchase Order" if status == "Approve" else "Pending" if status == "Update" else "Rejected"
+        if status == "Updated Changes":
+            old_data = json.dumps(self.as_dict())
+            frappe.db.sql(""" UPDATE `tabBudget BOM` SET old_data=%s WHERE name=%s """,
+                        (old_data,self.name))
+            frappe.db.commit()
+
+        if status == "To Material Request":
+            old_data_fetch = json.loads(self.old_data)
+            fields = [
+                "posting_date",
+                "expected_closing_date",
+                "rate_of_materials_based_on",
+                "price_list",
+                "total_operation_cost",
+                "total_additional_operation_cost",
+                "discount_percentage",
+                "discount_amount",
+                "margin_",
+                "total_cost",
+                "quotation_amended",
+                "quotation_cancelled",
+            ]
+            obj = {}
+            for i in fields:
+                obj[i] = old_data_fetch[i]
+            frappe.db.set_value(self.doctype, self.name, obj)
+
+            frappe.db.set_value("Budget BOM Raw Material", self.name, obj)
+
+            tables = ['electrical_bom_details','mechanical_bom_details','fg_sellable_bom_details','electrical_bom_raw_material','mechanical_bom_raw_material','fg_sellable_bom_raw_material', "additional_operation_cost"]
+            for table in tables:
+                for row in old_data_fetch[table]:
+                    print("ROOOOOW")
+                    print(row['doctype'])
+                    doctype = row['doctype']
+
+                    del row['doctype']
+                    frappe.db.set_value(doctype, row['name'], row)
 
         frappe.db.sql(""" UPDATE `tabBudget BOM` SET status=%s, quotation_amended=%s WHERE name=%s """,
-                      (updated_status,updated_status == "Pending",self.name))
+                      (status,status == "Updated Changes",self.name))
         frappe.db.commit()
 
     @frappe.whitelist()

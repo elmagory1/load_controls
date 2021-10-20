@@ -61,6 +61,7 @@
    "label": "Rate"
   },
   {
+   "allow_on_submit": 1,
    "default": "0",
    "fieldname": "amount",
    "fieldtype": "Currency",
@@ -131,7 +132,7 @@
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2021-10-18 13:47:18.799952",
+ "modified": "2021-10-20 16:01:37.214491",
  "modified_by": "Administrator",
  "module": "Load Controls",
  "name": "Budget BOM Raw Material",

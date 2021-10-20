@@ -102,6 +102,22 @@ doc_events = {
 	},
 	"Purchase Order": {
 		"on_submit": "load_controls.doc_events.purchase_order.on_submit_po",
+	},
+	"Purchase Invoice": {
+		"on_submit": "load_controls.doc_events.purchase_receipt.on_submit_pr",
+	},
+	"Purchase Receipt": {
+		"on_submit": "load_controls.doc_events.purchase_receipt.on_submit_pr",
+	},
+	"Sales Order": {
+		"on_submit": "load_controls.doc_events.sales_order.on_submit_so",
+		"on_cancel": "load_controls.doc_events.sales_order.on_cancel_so",
+	},
+	"Delivery Note": {
+		"on_submit": "load_controls.doc_events.sales_order.on_submit_dn",
+	},
+	"Sales Invoice": {
+		"on_submit": "load_controls.doc_events.sales_order.on_submit_dn",
 	}
 }
 
@@ -207,6 +223,14 @@ fixtures = [
                     "Manufacturing Settings-default_raw_material_warehouse",
                     "Purchase Order-approve_po_rate",
                     "Workstation-operation_time",
+                    "Opportunity-budget_bom",
+                    "Purchase Order-budget_bom",
+                    "Purchase Invoice-budget_bom",
+                    "Purchase Receipt-budget_bom",
+                    "Sales Invoice-budget_bom_reference",
+                    "Sales Invoice-references",
+                    "Delivery Note-budget_bom_reference",
+                    "Delivery Note-references",
 				]
 			]
 		]

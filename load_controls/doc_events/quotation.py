@@ -4,7 +4,7 @@ import frappe
 def submit_q(doc, event):
     for i in doc.budget_bom_reference:
         if i.budget_bom:
-            frappe.db.sql(""" UPDATE `tabBudget BOM` SET status=%s WHERE name=%s  """,("To Design", i.budget_bom))
+            frappe.db.sql(""" UPDATE `tabBudget BOM` SET status=%s WHERE name=%s  """,("Quotation In Progress", i.budget_bom))
             frappe.db.commit()
 
     for ii in doc.budget_bom_opportunity:
@@ -16,7 +16,7 @@ def cancel_q(doc, event):
     for i in doc.budget_bom_reference:
 
         if i.budget_bom:
-            frappe.db.sql(""" UPDATE `tabBudget BOM` SET status=%s, quotation_amended=1 WHERE name=%s  """,("To Quotation", i.budget_bom))
+            frappe.db.sql(""" UPDATE `tabBudget BOM` SET status=%s, quotation_canceled=1 WHERE name=%s  """,("To Quotation", i.budget_bom))
             frappe.db.commit()
 
     for ii in doc.budget_bom_opportunity:
@@ -25,12 +25,7 @@ def cancel_q(doc, event):
 
 @frappe.whitelist()
 def get_opportunity(doctype,target,e,r,t,filter):
-    print("=====================================")
-    print(doctype)
-    print(target)
-    print(e)
-    print(r)
-    print(t)
+
     condition = ""
     if 'party_name' in filter and filter['party_name']:
         print(filter['party_name'])
