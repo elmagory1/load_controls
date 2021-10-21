@@ -527,7 +527,11 @@ frappe.ui.form.on('Budget BOM Raw Material', {
              d.amount = d.amount - d.discount_amount
             cur_frm.refresh_field(d.parentfield)
         }
+        if(d.amount > 0 && d.qty > 0){
+            d.discount_rate = d.amount / d.qty
+                        cur_frm.refresh_field(d.parentfield)
 
+        }
         compute_total_cost(cur_frm)
         compute_total_cost_expense(cur_frm)
 
@@ -547,7 +551,11 @@ frappe.ui.form.on('Budget BOM Raw Material', {
             cur_frm.refresh_field(d.parentfield)
         }
 
+ if(d.amount > 0 && d.qty > 0){
+            d.discount_rate = d.amount / d.qty
+                        cur_frm.refresh_field(d.parentfield)
 
+        }
         compute_total_cost(cur_frm)
         compute_total_cost_expense(cur_frm)
 
@@ -562,6 +570,11 @@ frappe.ui.form.on('Budget BOM Raw Material', {
                                 d.parentfield === "fg_sellable_bom_raw_material" ? "refresh_fg_sellable_available_stock" : ""
             if(fieldname){
                             cur_frm.trigger(fieldname)
+
+            }
+             if(d.amount > 0 && d.qty > 0){
+             d.discount_rate = d.amount / d.qty
+                        cur_frm.refresh_field(d.parentfield)
 
             }
             cur_frm.refresh_field(d.parentfield)
@@ -579,8 +592,14 @@ frappe.ui.form.on('Budget BOM Raw Material', {
             cur_frm.refresh_field(d.parentfield)
 
         }
+         if(d.amount > 0 && d.qty > 0){
+            d.discount_rate = d.amount / d.qty
+                        cur_frm.refresh_field(d.parentfield)
+
+        }
          compute_total_cost(cur_frm)
         compute_total_cost_expense(cur_frm)
+
 
     },
     discount_amount: function (frm, cdt, cdn) {
@@ -590,6 +609,11 @@ frappe.ui.form.on('Budget BOM Raw Material', {
         if(d.amount > 0){
             d.amount = d.amount - d.discount_amount
             cur_frm.refresh_field(d.parentfield)
+        }
+         if(d.amount > 0 && d.qty > 0){
+            d.discount_rate = d.amount / d.qty
+                        cur_frm.refresh_field(d.parentfield)
+
         }
         compute_total_cost(cur_frm)
         compute_total_cost_expense(cur_frm)

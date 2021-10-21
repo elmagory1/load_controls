@@ -136,6 +136,7 @@
    "fieldname": "discount_rate",
    "fieldtype": "Currency",
    "label": "Discount Rate",
+   "read_only": 1,
    "read_only_depends_on": "eval: doc.link_discount_amount"
   },
   {
@@ -156,7 +157,7 @@
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2021-10-21 12:14:21.566501",
+ "modified": "2021-10-21 12:51:40.722651",
  "modified_by": "Administrator",
  "module": "Load Controls",
  "name": "Budget BOM Raw Material",
