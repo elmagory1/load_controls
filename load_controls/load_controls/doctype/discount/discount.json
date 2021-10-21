@@ -18,8 +18,10 @@
   {
    "fieldname": "opportunity",
    "fieldtype": "Link",
+   "in_list_view": 1,
    "label": "Opportunity",
-   "options": "Opportunity"
+   "options": "Opportunity",
+   "reqd": 1
   },
   {
    "fieldname": "item_code",
@@ -44,17 +46,17 @@
    "read_only": 1
   },
   {
-   "default": "D-Opportunity-",
+   "default": "D-.{opportunity}.-",
    "fieldname": "naming_series",
    "fieldtype": "Select",
    "label": "Series",
-   "options": "D-Opportunity-",
+   "options": "D-.{opportunity}.-",
    "read_only": 1
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2021-10-21 11:57:35.355973",
+ "modified": "2021-10-21 12:57:58.622100",
  "modified_by": "Administrator",
  "module": "Load Controls",
  "name": "Discount",
