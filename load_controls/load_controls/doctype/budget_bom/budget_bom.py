@@ -57,10 +57,9 @@ class BudgetBOM(Document):
 
         return quotation[0].count > 0
 
-
     @frappe.whitelist()
     def amend_quotation(self):
-        quotation = frappe.db.sql(""" SELECT * FROM `tabQuotation` WHERE budget_bom=%s and docstatus=1""", self.name, as_dict=1)
+        quotation = frappe.db.sql(""" SELECT * FROM `tabQuotation` Q NNER JOIN `tabBudget BOM References` BBR ON BBR.parent = Q.name WHERE BBR.budget_bom=%s and Q.docstatus=1""", self.name, as_dict=1)
         q = frappe.get_doc("Quotation", quotation[0].name)
         q.cancel()
         frappe.db.sql(""" UPDATE `tabBudget BOM` SET status='To Quotation', quotation_amended=1 WHERE name=%s """, self.name)
@@ -100,10 +99,7 @@ class BudgetBOM(Document):
             tables = ['electrical_bom_details','mechanical_bom_details','fg_sellable_bom_details','electrical_bom_raw_material','mechanical_bom_raw_material','fg_sellable_bom_raw_material', "additional_operation_cost"]
             for table in tables:
                 for row in old_data_fetch[table]:
-                    print("ROOOOOW")
-                    print(row['doctype'])
                     doctype = row['doctype']
-
                     del row['doctype']
                     frappe.db.set_value(doctype, row['name'], row)
 
@@ -205,6 +201,7 @@ class BudgetBOM(Document):
                 "rate": i.rate if 'rate' in i.__dict__ else 0,
                 "qty": i.qty,
                 "uom": i.uom,
+                "operation_time_in_minutes": i.operation_time_in_minutes if 'operation_time_in_minutes' in i.__dict__ else 0,
                 "amount": i.qty * i.rate if 'rate' in i.__dict__ else 0,
             }
             if bom == "Third" and raw_material == "mechanical_bom_details":
@@ -260,7 +257,23 @@ def generate_item_templates(items, description):
 
 @frappe.whitelist()
 def make_mr(source_name, target_doc=None):
-    print("==================================================")
+    # print("==================================================")
+    # doc = get_mapped_doc("Budget BOM", source_name, {
+    #     "Budget BOM": {
+    #         "doctype": "Material Request",
+    #         "validation": {
+    #             "docstatus": ["=", 1]
+    #         }
+    #     },
+    #     "Budget BOM Raw Material": {
+    #         "doctype": "Material Request Item",
+    #     }
+    #
+    # }, target_doc)
+    #
+    # return doc
+    print(source_name)
+    print(target_doc)
     doc = get_mapped_doc("Budget BOM", source_name, {
         "Budget BOM": {
             "doctype": "Material Request",
@@ -272,8 +285,16 @@ def make_mr(source_name, target_doc=None):
             "doctype": "Material Request Item",
         }
 
-    }, target_doc)
-
+    }, ignore_permissions=True)
+    print("DOOOOOOOOOOOOOOOOOOOOOC")
+    print(str(frappe.db.get_value("Budget BOM", source_name, "expected_closing_date")))
+    doc.schedule_date = str(frappe.db.get_value("Budget BOM", source_name, "expected_closing_date"))
+    for i in doc.items:
+        i.schedule_date = str(frappe.db.get_value("Budget BOM", source_name, "expected_closing_date"))
+    doc.append("budget_bom_reference", {
+        "budget_bom": source_name
+    })
+    print(doc.as_dict())
     return doc
 
 @frappe.whitelist()

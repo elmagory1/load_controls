@@ -33,7 +33,8 @@ app_license = "MIT"
 # include js in doctype views
 doctype_js = {
 	"Purchase Order" : "public/js/purchase_order.js",
-	"Quotation" : "public/js/quotation.js"
+	"Quotation" : "public/js/quotation.js",
+	"Material Request" : "public/js/material_request.js",
 }
 # doctype_list_js = {"doctype" : "public/js/doctype_list.js"}
 # doctype_tree_js = {"doctype" : "public/js/doctype_tree.js"}
@@ -99,6 +100,7 @@ doc_events = {
 	},
 	"Material Request": {
 		"validate": "load_controls.doc_events.material_request.validate_mr",
+		"on_cancel": "load_controls.doc_events.material_request.cancel_mr",
 	},
 	"Purchase Order": {
 		"on_submit": "load_controls.doc_events.purchase_order.on_submit_po",
@@ -231,6 +233,28 @@ fixtures = [
                     "Sales Invoice-references",
                     "Delivery Note-budget_bom_reference",
                     "Delivery Note-references",
+                    "BOM Item-operation_time_in_minutes",
+                    "Material Request Item-budget_bom_raw_material",
+                    "Purchase Invoice-budget_bom_reference",
+                    "Purchase Invoice-reference",
+                    "Purchase Receipt-reference",
+                    "Purchase Receipt-budget_bom_reference",
+					"Purchase Order-reference",
+                    "Purchase Order-budget_bom_reference",
+					"Material Request-reference_bom",
+                    "Material Request-budget_bom_reference",
+				]
+			]
+		]
+	},
+	{
+		"doctype": "Property Setter",
+		"filters": [
+			[
+				"name",
+				"in",
+				[
+					"Purchase Order Item-schedule_date-in_list_view"
 				]
 			]
 		]

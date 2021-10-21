@@ -3,10 +3,10 @@ frappe.ui.form.on('Quotation', {
 
         cur_frm.add_custom_button(__('Opportunity with Budget BOM'),
 				function() {
-            var query_args = {
-                query:"load_controls.doc_events.quotation.get_opportunity",
-                filters: {}
-            }
+                    var query_args = {
+                        query:"load_controls.doc_events.quotation.get_opportunity",
+                        filters: {}
+                    }
 					 var d = new frappe.ui.form.MultiSelectDialog({
                             doctype: "Opportunity",
                             target: cur_frm,

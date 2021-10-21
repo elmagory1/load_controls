@@ -13,6 +13,8 @@ var table_name = ""
 var net_hour_rate = 0
 var operation_time = 0
 var raw_material_warehouse = 0
+var discount = ""
+var discount_amount = 0
 cur_frm.cscript.item_templates = function () {
     var d = new frappe.ui.form.MultiSelectDialog({
         doctype: "BOM Item Template",
@@ -184,13 +186,26 @@ frappe.ui.form.on('Budget BOM', {
                     raw_material_warehouse = warehouse
 
             })
-        frappe.db.get_single_value("Manufacturing Settings","enclosure_default_operation")
-                .then(d_operation => {
-                    fg_sellable_operation = d_operation
+            frappe.db.get_single_value("Manufacturing Settings","enclosure_default_operation")
+                    .then(d_operation => {
+                        fg_sellable_operation = d_operation
 
-            })
-                            console.log(" BUTTON")
+                })
+                        frappe.db.count('Discount', { opportunity: cur_frm.doc.opportunity})
+                            .then(count => {
+                               if(count > 0){
+                                    frappe.db.get_value('Discount', {opportunity: cur_frm.doc.opportunity},  ['name', 'discount_amount'])
+                                        .then(r => {
+                                            let values = r.message;
+                                            discount = values.name
+                                            discount_amount = values.discount_amount
+                                        })
 
+                                } else {
+                                   discount = ""
+                                    discount_amount = ""
+                                 }
+                            })
         if(cur_frm.doc.docstatus && cur_frm.doc.status === "To Quotation" && !has_quotation){
 	            frm.add_custom_button(__("Quotation"), () => {
                     cur_frm.call({
@@ -207,7 +222,8 @@ frappe.ui.form.on('Budget BOM', {
                     })
                 })
         } else if(cur_frm.doc.docstatus && cur_frm.doc.status === "To Design"){
-	            frm.add_custom_button(__("Amend Quotation"), () => {
+            if(frappe.user.has_role("Sales User")) {
+                frm.add_custom_button(__("Amend Quotation"), () => {
                     cur_frm.call({
                         doc: cur_frm.doc,
                         method: 'amend_quotation',
@@ -219,13 +235,14 @@ frappe.ui.form.on('Budget BOM', {
                         }
                     })
                 })
+            }
             if(frappe.user.has_role("Mechanical")){
 	                 frm.add_custom_button(__("Approve"), () => {
                     cur_frm.call({
                         doc: cur_frm.doc,
                         method: 'action_to_design',
                         args: {
-                            status: "Approved"
+                            status: "To Material Request"
                         },
                         freeze: true,
                         freeze_message: "Amending Quotation...",
@@ -282,7 +299,7 @@ frappe.ui.form.on('Budget BOM', {
                         }
                     })
                 }, "Action")
-}
+                }
 
 
 
@@ -291,6 +308,7 @@ frappe.ui.form.on('Budget BOM', {
                 frm.add_custom_button(__("Material Request"), () => {
                     cur_frm.trigger("material_request")
                 })
+
                 if(!check_bom) {
                     frm.add_custom_button(__("Create BOM"), () => {
                         cur_frm.call({
@@ -341,7 +359,9 @@ frappe.ui.form.on('Budget BOM', {
                 }
             }
 
-            var fields = ["item_code","item_name","qty","valuation_rate","rate","amount","available_qty", "discount_percentage", "discount_amount", "uom", "batch", "warehouse"]
+            var fields = ["item_code","item_name","qty","valuation_rate","rate","amount",
+                "available_qty", "discount_percentage", "discount_amount",
+                "uom", "batch", "warehouse"]
             for(var x=0;x<fields.length;x+=1){
                 console.log(fields[x])
                 var field = frappe.meta.get_docfield("Budget BOM Raw Material", fields[x], cur_frm.doc.name);
@@ -574,6 +594,28 @@ frappe.ui.form.on('Budget BOM Raw Material', {
         compute_total_cost(cur_frm)
         compute_total_cost_expense(cur_frm)
 
+    },
+    save_discount_amount: function (frm, cdt, cdn) {
+        var d = locals[cdt][cdn]
+        if(d.discount_rate > 0 && d.item_code){
+            frappe.db.insert({
+                doctype: 'Discount',
+                opportunity: cur_frm.doc.opportunity,
+                item_code: d.item_code,
+                item_name: d.item_name,
+                discount_amount: d.discount_rate,
+            }).then(doc => {
+                frappe.show_alert({
+                    message:__('Discount created'),
+                    indicator:'green'
+                }, 3);
+                d.link_discount_amount = doc.name
+                cur_frm.refresh_field(d.parentfield)
+            })
+        }
+
+
+
     }
 });
 frappe.ui.form.on('Additional Operational Cost', {
@@ -677,12 +719,16 @@ cur_frm.cscript.electrical_bom_raw_material_add = function (frm, cdt,cdn) {
     var d = locals[cdt][cdn]
     d.warehouse = raw_material_warehouse
     d.schedule_date = cur_frm.doc.posting_date
+    d.discount_rate =discount_amount
+    d.link_discount_amount = discount
     cur_frm.refresh_field(d.parentfield)
 }
 cur_frm.cscript.mechanical_bom_raw_material_add = function (frm, cdt,cdn) {
     var d = locals[cdt][cdn]
     d.warehouse = raw_material_warehouse
     d.schedule_date = cur_frm.doc.posting_date
+    d.discount_rate =discount_amount
+    d.link_discount_amount = discount
     cur_frm.refresh_field(d.parentfield)
 
 }
@@ -690,6 +736,8 @@ cur_frm.cscript.fg_sellable_bom_raw_material_add = function (frm, cdt,cdn) {
     var d = locals[cdt][cdn]
     d.warehouse = raw_material_warehouse
     d.schedule_date = cur_frm.doc.posting_date
+    d.discount_rate =discount_amount
+    d.link_discount_amount = discount
     cur_frm.refresh_field(d.parentfield)
 
 }
