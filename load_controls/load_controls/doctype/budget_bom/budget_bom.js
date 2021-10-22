@@ -589,8 +589,6 @@ frappe.ui.form.on('Budget BOM Raw Material', {
         if(d.item_code === discount_obj.item_code && cur_frm.doc.opportunity === discount_obj.opportunity){
             d.discount_rate = discount_obj.discount_amount
                       d.link_discount_amount = discount_obj.name
-            d.rate = discount_obj.discount_amount
-            d.amount = discount_obj.discount_amount
 
             cur_frm.refresh_field(d.parentfield)
 
