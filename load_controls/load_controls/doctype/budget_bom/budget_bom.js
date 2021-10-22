@@ -568,6 +568,8 @@ frappe.ui.form.on('Budget BOM Raw Material', {
                               d.link_discount_amount = values.name
                               d.discount_amount = values.discount_amount
                               d.discount_percentage = values.discount_percentage
+                              d.rate = values.discount_rate + values.discount_amount
+                              d.amount = values.discount_rate + values.discount_amount
 
                                 cur_frm.refresh_field(d.parentfield)
                         })
