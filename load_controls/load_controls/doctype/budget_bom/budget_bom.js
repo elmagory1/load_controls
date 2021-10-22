@@ -13,7 +13,6 @@ var table_name = ""
 var net_hour_rate = 0
 var operation_time = 0
 var raw_material_warehouse = 0
-var discount_obj = {}
 cur_frm.cscript.item_templates = function () {
     var d = new frappe.ui.form.MultiSelectDialog({
         doctype: "BOM Item Template",
@@ -72,21 +71,6 @@ cur_frm.cscript.generate_item_template = function () {
 
 }
 frappe.ui.form.on('Budget BOM', {
-    opportunity: function () {
-      frappe.db.count('Discount', { opportunity: cur_frm.doc.opportunity})
-                            .then(count => {
-                               if(count > 0){
-                                    frappe.db.get_value('Discount', {opportunity: cur_frm.doc.opportunity},  ['name', 'discount_amount', "item_code", "opportunity"])
-                                        .then(r => {
-                                            let values = r.message;
-                                            discount_obj = values
-                                        })
-
-                                } else {
-                                   discount_obj = {}
-                                 }
-                            })
-    },
 	refresh: function(frm) {
 	    //ELECTRICAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAL
 	    cur_frm.fields_dict["electrical_bom_raw_material"].grid.add_custom_button(__('Refresh Available Stock'),
@@ -205,19 +189,7 @@ frappe.ui.form.on('Budget BOM', {
                         fg_sellable_operation = d_operation
 
                 })
-frappe.db.count('Discount', { opportunity: cur_frm.doc.opportunity})
-                            .then(count => {
-                               if(count > 0){
-                                    frappe.db.get_value('Discount', {opportunity: cur_frm.doc.opportunity},  ['name', 'discount_amount', "item_code", "opportunity"])
-                                        .then(r => {
-                                            let values = r.message;
-                                            discount_obj = values
-                                        })
 
-                                } else {
-                                   discount_obj = {}
-                                 }
-                            })
         if(cur_frm.doc.docstatus && cur_frm.doc.status === "To Quotation" && !has_quotation){
 	            frm.add_custom_button(__("Quotation"), () => {
                     cur_frm.call({
@@ -586,14 +558,29 @@ frappe.ui.form.on('Budget BOM Raw Material', {
 
             }
 
-        if(d.item_code === discount_obj.item_code && cur_frm.doc.opportunity === discount_obj.opportunity){
-            d.discount_rate = discount_obj.discount_amount
-                      d.link_discount_amount = discount_obj.name
+            frappe.db.count('Discount', { opportunity: cur_frm.doc.opportunity, item_code: d.item_code})
+            .then(count => {
+               if(count > 0){
+                    frappe.db.get_value('Discount', {opportunity: cur_frm.doc.opportunity, item_code: d.item_code},  ['name', 'discount_amount', "item_code", "opportunity"])
+                        .then(r => {
+                            let values = r.message;
+                            d.discount_rate = values.discount_rate
+                              d.link_discount_amount = values.name
+                              d.discount_amount = values.discount_amount
+                              d.discount_percentage = values.discount_percentage
 
-            cur_frm.refresh_field(d.parentfield)
+                                cur_frm.refresh_field(d.parentfield)
+                        })
 
-        }
-            cur_frm.refresh_field(d.parentfield)
+                } else {
+                   d.discount_rate = 0
+                                              d.link_discount_amount = ""
+d.discount_amount = 0
+                              d.discount_percentage = 0
+
+                    cur_frm.refresh_field(d.parentfield)
+                }
+            })
         }
 
     },
@@ -645,7 +632,9 @@ frappe.ui.form.on('Budget BOM Raw Material', {
                 opportunity: cur_frm.doc.opportunity,
                 item_code: d.item_code,
                 item_name: d.item_name,
-                discount_amount: d.discount_rate,
+                discount_amount: d.discount_amount,
+                discount_rate: d.discount_rate,
+                discount_percentage: d.discount_percentage,
             }).then(doc => {
                 frappe.show_alert({
                     message:__('Discount created'),
