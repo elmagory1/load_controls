@@ -21,6 +21,7 @@ class BudgetBOM(Document):
             "transaction_date": self.posting_date,
             "valid_till": self.posting_date,
             "party_name": self.customer,
+            "additional_operating_cost": self.total_additional_operation_cost,
             "budget_bom_reference": [{
                 "budget_bom": self.name
             }],
@@ -74,6 +75,8 @@ class BudgetBOM(Document):
             frappe.db.commit()
 
         if status == "To Material Request":
+            if not self.old_data:
+                self.old_data = ""
             old_data_fetch = json.loads(self.old_data)
             fields = [
                 "posting_date",
@@ -283,6 +286,9 @@ def make_mr(source_name, target_doc=None):
         },
         "Budget BOM Raw Material": {
             "doctype": "Material Request Item",
+            "field_map":{
+                "name": "budget_bom_raw_material"
+            }
         }
 
     }, ignore_permissions=True)

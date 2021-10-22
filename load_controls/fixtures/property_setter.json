@@ -15,5 +15,39 @@
   "property_type": "Check",
   "row_name": null,
   "value": "0"
+ },
+ {
+  "default_value": null,
+  "doc_type": "Work Order",
+  "docstatus": 0,
+  "doctype": "Property Setter",
+  "doctype_or_field": "DocField",
+  "field_name": "additional_operating_cost",
+  "modified": "2021-10-22 11:57:01.220908",
+  "name": "Work Order-additional_operating_cost-fetch_from",
+  "parent": null,
+  "parentfield": null,
+  "parenttype": null,
+  "property": "fetch_from",
+  "property_type": "Small Text",
+  "row_name": null,
+  "value": "sales_order.additional_operating_cost"
+ },
+ {
+  "default_value": null,
+  "doc_type": "Work Order",
+  "docstatus": 0,
+  "doctype": "Property Setter",
+  "doctype_or_field": "DocField",
+  "field_name": "additional_operating_cost",
+  "modified": "2021-10-22 11:57:01.326942",
+  "name": "Work Order-additional_operating_cost-fetch_if_empty",
+  "parent": null,
+  "parentfield": null,
+  "parenttype": null,
+  "property": "fetch_if_empty",
+  "property_type": "Check",
+  "row_name": null,
+  "value": "1"
  }
 ]
