@@ -561,7 +561,7 @@ frappe.ui.form.on('Budget BOM Raw Material', {
             frappe.db.count('Discount', { opportunity: cur_frm.doc.opportunity, item_code: d.item_code})
             .then(count => {
                if(count > 0){
-                    frappe.db.get_value('Discount', {opportunity: cur_frm.doc.opportunity, item_code: d.item_code},  ['name', 'discount_amount', "item_code", "opportunity"])
+                    frappe.db.get_value('Discount', {opportunity: cur_frm.doc.opportunity, item_code: d.item_code},  ['name', 'discount_amount', 'discount_rate', 'discount_percentage', "item_code", "opportunity"])
                         .then(r => {
                             let values = r.message;
                             d.discount_rate = values.discount_rate
