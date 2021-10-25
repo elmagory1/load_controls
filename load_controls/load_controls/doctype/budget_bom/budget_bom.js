@@ -70,6 +70,7 @@ cur_frm.cscript.generate_item_template = function () {
     d.show();
 
 }
+
 frappe.ui.form.on('Budget BOM', {
 	refresh: function(frm) {
 	    cur_frm.set_query("opportunity", () => {
@@ -757,5 +758,51 @@ cur_frm.cscript.fg_sellable_bom_raw_material_add = function (frm, cdt,cdn) {
     d.warehouse = raw_material_warehouse
     d.schedule_date = cur_frm.doc.posting_date
     cur_frm.refresh_field(d.parentfield)
+
+}
+cur_frm.cscript.electrical_bom_raw_material_on_form_rendered = function (frm, cdt,cdn) {
+     var over_all_length1 = cur_frm.doc.electrical_bom_raw_material.length > 0 ? cur_frm.doc.electrical_bom_raw_material.length * 2 : 0
+    var over_all_length2 = cur_frm.doc.mechanical_bom_raw_material.length > 0 ? cur_frm.doc.mechanical_bom_raw_material.length *2 : 0
+    var over_all_length3 = cur_frm.doc.fg_sellable_bom_raw_material.length > 0 ? cur_frm.doc.fg_sellable_bom_raw_material.length * 2 : 0
+    var over_all_length = over_all_length1 + over_all_length2 + over_all_length3
+    console.log("OVER ALL LENGTH")
+    console.log(over_all_length)
+    for(var x=0;x<over_all_length;x+=1){
+        if(x % 2 > 0){
+            document.querySelectorAll("[data-fieldname='save_discount_amount']")[x].style.backgroundColor ="blue"
+           document.querySelectorAll("[data-fieldname='save_discount_amount']")[x].style.color ="white"
+           document.querySelectorAll("[data-fieldname='save_discount_amount']")[x].style.fontWeight ="bold"
+        }
+    }
+}
+cur_frm.cscript.mechanical_bom_raw_material_on_form_rendered = function (frm, cdt,cdn) {
+    var over_all_length1 = cur_frm.doc.electrical_bom_raw_material.length > 0 ? cur_frm.doc.electrical_bom_raw_material.length * 2 : 0
+    var over_all_length2 = cur_frm.doc.mechanical_bom_raw_material.length > 0 ? cur_frm.doc.mechanical_bom_raw_material.length *2 : 0
+    var over_all_length3 = cur_frm.doc.fg_sellable_bom_raw_material.length > 0 ? cur_frm.doc.fg_sellable_bom_raw_material.length * 2 : 0
+    var over_all_length = over_all_length1 + over_all_length2 + over_all_length3
+    console.log("OVER ALL LENGTH")
+    console.log(over_all_length)
+    for(var x=0;x<over_all_length;x+=1){
+        if(x % 2 > 0){
+            document.querySelectorAll("[data-fieldname='save_discount_amount']")[x].style.backgroundColor ="blue"
+           document.querySelectorAll("[data-fieldname='save_discount_amount']")[x].style.color ="white"
+           document.querySelectorAll("[data-fieldname='save_discount_amount']")[x].style.fontWeight ="bold"
+        }
+    }
+}
+cur_frm.cscript.fg_sellable_bom_raw_material_on_form_rendered = function (frm, cdt,cdn) {
+    var over_all_length1 = cur_frm.doc.electrical_bom_raw_material.length > 0 ? cur_frm.doc.electrical_bom_raw_material.length * 2 : 0
+    var over_all_length2 = cur_frm.doc.mechanical_bom_raw_material.length > 0 ? cur_frm.doc.mechanical_bom_raw_material.length *2 : 0
+    var over_all_length3 = cur_frm.doc.fg_sellable_bom_raw_material.length > 0 ? cur_frm.doc.fg_sellable_bom_raw_material.length * 2 : 0
+    var over_all_length = over_all_length1 + over_all_length2 + over_all_length3
+    console.log("OVER ALL LENGTH")
+    console.log(over_all_length)
+    for(var x=0;x<over_all_length;x+=1){
+        if(x % 2 > 0){
+            document.querySelectorAll("[data-fieldname='save_discount_amount']")[x].style.backgroundColor ="blue"
+           document.querySelectorAll("[data-fieldname='save_discount_amount']")[x].style.color ="white"
+           document.querySelectorAll("[data-fieldname='save_discount_amount']")[x].style.fontWeight ="bold"
+        }
+    }
 
 }
