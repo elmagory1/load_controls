@@ -29,8 +29,8 @@ frappe.ui.form.on("Budget BOM References", {
 })
 frappe.ui.form.on("Material Request", {
     refresh: function (frm, cdt, cdn) {
-
-        cur_frm.add_custom_button(__('Budget BOM'),
+    if(cur_frm.is_new()){
+         cur_frm.add_custom_button(__('Budget BOM'),
 				function() {
             var budget_boms = []
             if(cur_frm.doc.budget_bom_reference){
@@ -63,6 +63,8 @@ frappe.ui.form.on("Material Request", {
                             }
                         });
 				}, __("Get Items From"), "btn-default");
+    }
+
 
     }
 })
