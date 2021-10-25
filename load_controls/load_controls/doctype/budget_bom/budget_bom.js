@@ -589,8 +589,10 @@ frappe.ui.form.on('Budget BOM Raw Material', {
                 freeze_message: "Get Templates...",
                 async:false,
                 callback: (r) => {
-                    var values = r.message
-                        d.discount_rate = values.discount_rate
+                    console.log("ITEM CODEEEE TRIGGER")
+                    console.log(r.message)
+                        var values = r.message
+                            d.discount_rate = values.discount_rate
                           d.link_discount_amount = values.link_discount_amount
                           d.discount_amount = values.discount_amount
                           d.discount_percentage = values.discount_percentage
