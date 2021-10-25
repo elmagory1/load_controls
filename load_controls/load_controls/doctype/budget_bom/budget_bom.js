@@ -72,6 +72,13 @@ cur_frm.cscript.generate_item_template = function () {
 }
 frappe.ui.form.on('Budget BOM', {
 	refresh: function(frm) {
+	    cur_frm.set_query("opportunity", () => {
+	        return {
+	            filters:{
+	                status: 'Open'
+                }
+            }
+        })
 	    //ELECTRICAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAL
 	    cur_frm.fields_dict["electrical_bom_raw_material"].grid.add_custom_button(__('Refresh Available Stock'),
 			function() {
