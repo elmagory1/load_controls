@@ -359,7 +359,7 @@
    "allow_on_submit": 1,
    "fieldname": "fgsellable_bom_detail_section",
    "fieldtype": "Section Break",
-   "label": "FG/Sellable BOM Detail"
+   "label": "Finished Goods BOM Details"
   },
   {
    "default": "0",
@@ -384,7 +384,7 @@
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2021-10-25 15:01:02.648804",
+ "modified": "2021-10-25 16:31:15.775441",
  "modified_by": "Administrator",
  "module": "Load Controls",
  "name": "Budget BOM",
