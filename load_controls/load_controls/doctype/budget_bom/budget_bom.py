@@ -28,10 +28,10 @@ class BudgetBOM(Document):
                 if len(discount) > 0:
                     obj['discount_rate'] = discount[0].discount_rate
                     obj['link_discount_amount'] = discount[0].name
-                    obj['discount_amount'] =discount[0].discount_amount
+                    obj['discount_amount'] = discount[0].discount_amount
                     obj['discount_percentage'] = discount[0].discount_percentage
                     obj['rate'] = (discount[0].discount_rate * x.qty) + discount[0].discount_amount
-                    obj['amount'] = (discount[0].discount_rate * x.qty) + discount[0].discount_amount
+                    obj['amount'] = (discount[0].discount_rate * x.qty)
                 self.append(raw_material_table,obj)
     @frappe.whitelist()
     def get_discount(self, item,raw_material_table):
@@ -56,7 +56,8 @@ class BudgetBOM(Document):
             obj['discount_amount'] = discount[0].discount_amount
             obj['discount_percentage'] = discount[0].discount_percentage
             obj['rate'] = (discount[0].discount_rate * item['qty']) + discount[0].discount_amount
-            obj['amount'] = (discount[0].discount_rate * item['qty']) + discount[0].discount_amount
+            obj['amount'] = (discount[0].discount_rate * item['qty'])
+
         return obj
     @frappe.whitelist()
     def validate(self):
@@ -276,6 +277,7 @@ def set_available_qty(items):
     time = frappe.utils.now_datetime().time()
     date = frappe.utils.now_datetime().date()
     for d in data:
+
         previous_sle = get_previous_sle({
             "item_code": d['item_code'],
             "warehouse": d['warehouse'],
