@@ -101,6 +101,7 @@ doc_events = {
 	"Material Request": {
 		"validate": "load_controls.doc_events.material_request.validate_mr",
 		"on_cancel": "load_controls.doc_events.material_request.cancel_mr",
+		"on_trash": "load_controls.doc_events.material_request.on_trash",
 	},
 	"Purchase Order": {
 		"on_submit": "load_controls.doc_events.purchase_order.on_submit_po",

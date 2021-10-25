@@ -130,36 +130,36 @@ class BudgetBOM(Document):
             frappe.db.commit()
 
         if status == "To Material Request":
-            if not self.old_data:
+            if self.old_data:
                 self.old_data = ""
-            old_data_fetch = json.loads(self.old_data)
-            fields = [
-                "posting_date",
-                "expected_closing_date",
-                "rate_of_materials_based_on",
-                "price_list",
-                "total_operation_cost",
-                "total_additional_operation_cost",
-                "discount_percentage",
-                "discount_amount",
-                "margin_",
-                "total_cost",
-                "quotation_amended",
-                "quotation_cancelled",
-            ]
-            obj = {}
-            for i in fields:
-                obj[i] = old_data_fetch[i]
-            frappe.db.set_value(self.doctype, self.name, obj)
+                old_data_fetch = json.loads(self.old_data)
+                fields = [
+                    "posting_date",
+                    "expected_closing_date",
+                    "rate_of_materials_based_on",
+                    "price_list",
+                    "total_operation_cost",
+                    "total_additional_operation_cost",
+                    "discount_percentage",
+                    "discount_amount",
+                    "margin_",
+                    "total_cost",
+                    "quotation_amended",
+                    "quotation_cancelled",
+                ]
+                obj = {}
+                for i in fields:
+                    obj[i] = old_data_fetch[i]
+                frappe.db.set_value(self.doctype, self.name, obj)
 
-            frappe.db.set_value("Budget BOM Raw Material", self.name, obj)
+                frappe.db.set_value("Budget BOM Raw Material", self.name, obj)
 
-            tables = ['electrical_bom_details','mechanical_bom_details','fg_sellable_bom_details','electrical_bom_raw_material','mechanical_bom_raw_material','fg_sellable_bom_raw_material', "additional_operation_cost"]
-            for table in tables:
-                for row in old_data_fetch[table]:
-                    doctype = row['doctype']
-                    del row['doctype']
-                    frappe.db.set_value(doctype, row['name'], row)
+                tables = ['electrical_bom_details','mechanical_bom_details','fg_sellable_bom_details','electrical_bom_raw_material','mechanical_bom_raw_material','fg_sellable_bom_raw_material', "additional_operation_cost"]
+                for table in tables:
+                    for row in old_data_fetch[table]:
+                        doctype = row['doctype']
+                        del row['doctype']
+                        frappe.db.set_value(doctype, row['name'], row)
 
         frappe.db.sql(""" UPDATE `tabBudget BOM` SET status=%s, quotation_amended=%s WHERE name=%s """,
                       (status,status == "Updated Changes",self.name))
@@ -353,6 +353,7 @@ def make_mr(source_name, target_doc=None):
     doc.schedule_date = str(frappe.db.get_value("Budget BOM", source_name, "expected_closing_date"))
     for i in doc.items:
         i.schedule_date = str(frappe.db.get_value("Budget BOM", source_name, "expected_closing_date"))
+
     doc.append("budget_bom_reference", {
         "budget_bom": source_name
     })

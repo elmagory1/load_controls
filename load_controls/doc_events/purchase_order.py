@@ -36,4 +36,4 @@ def check_items(doc):
         if i.rate > i.budget_bom_rate:
             return True
 
-    return "Approved"
+    return False

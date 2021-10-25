@@ -100,7 +100,8 @@
    "allow_on_submit": 1,
    "fieldname": "expected_closing_date",
    "fieldtype": "Date",
-   "label": "Expected Closing Date"
+   "label": "Expected Closing Date",
+   "reqd": 1
   },
   {
    "allow_on_submit": 1,
@@ -384,7 +385,7 @@
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2021-10-25 16:31:15.775441",
+ "modified": "2021-10-25 17:05:51.710202",
  "modified_by": "Administrator",
  "module": "Load Controls",
  "name": "Budget BOM",
