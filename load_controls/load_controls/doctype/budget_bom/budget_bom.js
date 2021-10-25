@@ -555,8 +555,6 @@ frappe.ui.form.on('Budget BOM Raw Material', {
     item_code: function (frm, cdt, cdn) {
          var d = locals[cdt][cdn]
         if(d.item_code){
-            d.rate = get_rate(cur_frm, d).responseJSON.message[0]
-            d.amount = d.rate
             var fieldname = d.parentfield === "electrical_bom_raw_material" ? "refresh_electrical_available_stock" :
                             d.parentfield === "mechanical_bom_raw_material" ? "refresh_mechanical_available_stock" :
                                 d.parentfield === "fg_sellable_bom_raw_material" ? "refresh_fg_sellable_available_stock" : ""
@@ -564,32 +562,28 @@ frappe.ui.form.on('Budget BOM Raw Material', {
                             cur_frm.trigger(fieldname)
 
             }
-
-            frappe.db.count('Discount', { opportunity: cur_frm.doc.opportunity, item_code: d.item_code})
-            .then(count => {
-               if(count > 0){
-                    frappe.db.get_value('Discount', {opportunity: cur_frm.doc.opportunity, item_code: d.item_code},  ['name', 'discount_amount', 'discount_rate', 'discount_percentage', "item_code", "opportunity"])
-                        .then(r => {
-                            let values = r.message;
-                            d.discount_rate = values.discount_rate
-                              d.link_discount_amount = values.name
-                              d.discount_amount = values.discount_amount
-                              d.discount_percentage = values.discount_percentage
-                              d.rate = values.discount_rate + values.discount_amount
-                              d.amount = values.discount_rate + values.discount_amount
-
-                                cur_frm.refresh_field(d.parentfield)
-                        })
-
-                } else {
-                   d.discount_rate = 0
-                      d.link_discount_amount = ""
-                    d.discount_amount = 0
-                      d.discount_percentage = 0
-
-                    cur_frm.refresh_field(d.parentfield)
-                }
+             cur_frm.call({
+                doc: cur_frm.doc,
+                method: 'get_discount',
+                args: {
+                    item: d,
+                    raw_material_table: fieldname
+                },
+                freeze: true,
+                freeze_message: "Get Templates...",
+                async:false,
+                callback: (r) => {
+                    var values = r.message
+                        d.discount_rate = values.discount_rate
+                          d.link_discount_amount = values.link_discount_amount
+                          d.discount_amount = values.discount_amount
+                          d.discount_percentage = values.discount_percentage
+                          d.rate = values.rate
+                          d.amount = values.amount
+                            cur_frm.refresh_field(d.parentfield)
+                 }
             })
+
         }
 
     },
@@ -677,7 +671,7 @@ frappe.ui.form.on('Budget BOM Details', {
 });
 function compute_total_cost_expense(cur_frm) {
     var total_cost = (cur_frm.doc.total_operation_cost + cur_frm.doc.total_additional_operation_cost + cur_frm.doc.total_raw_material_cost) - cur_frm.doc.discount_amount
-   cur_frm.doc.total_cost = ( total_cost * (parseFloat(cur_frm.doc.margin_ ) / 100)) + total_cost
+   cur_frm.doc.total_cost = ( total_cost * (parseFloat(cur_frm.doc.margin_ ? cur_frm.doc.margin_ : 0) / 100)) + total_cost
     cur_frm.refresh_field("total_cost")
 }
 function compute_total_cost(cur_frm) {

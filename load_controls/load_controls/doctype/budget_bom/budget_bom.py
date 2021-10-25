@@ -33,7 +33,31 @@ class BudgetBOM(Document):
                     obj['rate'] = (discount[0].discount_rate * x.qty) + discount[0].discount_amount
                     obj['amount'] = (discount[0].discount_rate * x.qty) + discount[0].discount_amount
                 self.append(raw_material_table,obj)
+    @frappe.whitelist()
+    def get_discount(self, item,raw_material_table):
+        raw_material_warehouse = frappe.db.get_single_value('Manufacturing Settings', 'default_raw_material_warehouse')
 
+        rate = get_rate(item['item_code'], "", self.rate_of_materials_based_on if self.rate_of_materials_based_on else "",
+                        self.price_list if self.price_list else "")
+        obj = {
+            'item_code': item['item_code'],
+            'item_name': item['item_name'],
+            'uom': item['uom'],
+            'qty': item['qty'],
+            'warehouse': raw_material_warehouse,
+            'rate': rate[0],
+            'amount': rate[0] * item['qty']
+        }
+        discount = frappe.db.sql(""" SELECT * FROm `tabDiscount` WHERE opportunity=%s and item_code=%s """,
+                                 (self.opportunity, item['item_code']), as_dict=1)
+        if len(discount) > 0:
+            obj['discount_rate'] = discount[0].discount_rate
+            obj['link_discount_amount'] = discount[0].name
+            obj['discount_amount'] = discount[0].discount_amount
+            obj['discount_percentage'] = discount[0].discount_percentage
+            obj['rate'] = (discount[0].discount_rate * item['qty']) + discount[0].discount_amount
+            obj['amount'] = (discount[0].discount_rate * item['qty']) + discount[0].discount_amount
+        return obj
     @frappe.whitelist()
     def validate(self):
         if self.opportunity:
