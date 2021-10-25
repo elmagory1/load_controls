@@ -322,45 +322,59 @@ frappe.ui.form.on('Budget BOM', {
                 }
 
         }
+         if(cur_frm.doc.docstatus && frappe.user.has_role("Sales User") && !(cur_frm.doc.status === "Updated Changes")) {
 
-        if(cur_frm.doc.docstatus){
-            if(cur_frm.doc.quotation_amended){
-                cur_frm.set_df_property("electrical_bom_raw_material", "read_only", 0)
-                cur_frm.set_df_property("fg_sellable_raw_material", "read_only", 0)
-                cur_frm.set_df_property("mechanical_bom_raw_material", "read_only", 0)
-            }
+             cur_frm.set_df_property("electrical_bom_raw_material", "read_only", (!cur_frm.doc.quotation_cancelled && !cur_frm.doc.quotation_amended))
+             cur_frm.set_df_property("fg_sellable_raw_material", "read_only", (!cur_frm.doc.quotation_cancelled && !cur_frm.doc.quotation_amended))
+             cur_frm.set_df_property("mechanical_bom_raw_material", "read_only",  (!cur_frm.doc.quotation_cancelled && !cur_frm.doc.quotation_amended))
+             cur_frm.set_df_property("additional_operation_cost", "read_only",  (!cur_frm.doc.quotation_cancelled && !cur_frm.doc.quotation_amended))
 
-            if(cur_frm.doc.quotation_cancelled){
-                var fields_for_cancel=[
-                        "electrical_bom_raw_material",
-                        "electrical_bom_details",
-                        "mechanical_bom_raw_material",
-                        "mechanical_bom_details",
-                        "fg_sellable_bom_details",
-                        "fg_sellable_bom_raw_material",
-                        "posting_date",
-                        "expected_closing_date",
-                        "discount_percentage",
-                        "discount_amount",
-                        "rate_of_materials_based_on",
-                        "price_list",
-                ]
-                for(var ii=0;ii<fields_for_cancel.length;ii+=1){
-                    cur_frm.set_df_property(fields_for_cancel[ii], "read_only", 0)
-                }
-            }
+             var fields_for_cancel1 = [
+                 "electrical_bom_raw_material",
+                 "electrical_bom_details",
+                 "mechanical_bom_raw_material",
+                 "mechanical_bom_details",
+                 "fg_sellable_bom_details",
+                 "fg_sellable_bom_raw_material",
+                 "additional_operation_cost",
+                 "posting_date",
+                 "expected_closing_date",
+                 "discount_percentage",
+                 "discount_amount",
+                 "rate_of_materials_based_on",
+                 "price_list",
+             ]
 
-            var fields = ["item_code","item_name","qty","valuation_rate","rate","amount",
-                "available_qty", "discount_percentage", "discount_amount",
-                "uom", "batch", "warehouse"]
-            for(var x=0;x<fields.length;x+=1){
-                console.log(fields[x])
-                var field = frappe.meta.get_docfield("Budget BOM Raw Material", fields[x], cur_frm.doc.name);
-                field.read_only = !cur_frm.doc.quotation_amended || !cur_frm.doc.quotation_cancelled
-            }
-        }
+             for (var ii = 0; ii < fields_for_cancel1.length; ii += 1) {
+                 cur_frm.set_df_property(fields_for_cancel1[ii], "read_only",(!cur_frm.doc.quotation_cancelled && !cur_frm.doc.quotation_amended))
+             }
+         } else if(cur_frm.doc.docstatus && frappe.user.has_role("Mechanical") && cur_frm.doc.status === "Updated Changes") {
 
+             cur_frm.set_df_property("electrical_bom_raw_material", "read_only", (!cur_frm.doc.quotation_cancelled && !cur_frm.doc.quotation_amended))
+             cur_frm.set_df_property("fg_sellable_raw_material", "read_only", (!cur_frm.doc.quotation_cancelled && !cur_frm.doc.quotation_amended))
+             cur_frm.set_df_property("mechanical_bom_raw_material", "read_only",  (!cur_frm.doc.quotation_cancelled && !cur_frm.doc.quotation_amended))
+             cur_frm.set_df_property("additional_operation_cost", "read_only",  (!cur_frm.doc.quotation_cancelled && !cur_frm.doc.quotation_amended))
 
+             var fields_for_cancel = [
+                 "electrical_bom_raw_material",
+                 "electrical_bom_details",
+                 "mechanical_bom_raw_material",
+                 "mechanical_bom_details",
+                 "fg_sellable_bom_details",
+                 "fg_sellable_bom_raw_material",
+                 "additional_operation_cost",
+                 "posting_date",
+                 "expected_closing_date",
+                 "discount_percentage",
+                 "discount_amount",
+                 "rate_of_materials_based_on",
+                 "price_list",
+             ]
+
+             for (var ii = 0; ii < fields_for_cancel.length; ii += 1) {
+                 cur_frm.set_df_property(fields_for_cancel[ii], "read_only",(!cur_frm.doc.quotation_cancelled && !cur_frm.doc.quotation_amended))
+             }
+         }
     },
 	onload_post_render: function(frm) {
 	    if(cur_frm.is_new()){
@@ -408,9 +422,10 @@ frappe.ui.form.on('Budget BOM', {
             cur_frm.refresh_field("mechanical_bom_details")
             cur_frm.refresh_field("fg_sellable_bom_details")
 
+
         }
 
-compute_total_operation_cost(cur_frm)
+            compute_total_operation_cost(cur_frm)
             compute_total_cost_expense(cur_frm)
 	},
     electrical_item_template: function(frm) {
@@ -581,6 +596,7 @@ frappe.ui.form.on('Budget BOM Raw Material', {
                           d.discount_percentage = values.discount_percentage
                           d.rate = values.rate
                           d.amount = values.amount
+                          d.discount_rate = values.amount
                             cur_frm.refresh_field(d.parentfield)
                  }
             })
@@ -760,6 +776,39 @@ cur_frm.cscript.fg_sellable_bom_raw_material_add = function (frm, cdt,cdn) {
     cur_frm.refresh_field(d.parentfield)
 
 }
+cur_frm.cscript.electrical_bom_details_on_form_rendered = function (frm, cdt,cdn) {
+   if(cur_frm.get_field("electrical_bom_details").grid.df.read_only){
+        for(var i=0;i<cur_frm.doc.electrical_bom_details.length;i+=1){
+            for(var x=0;x<frappe.meta.get_fieldnames("Budget BOM Details").length;x+=1) {
+                cur_frm.get_field("electrical_bom_details").grid.grid_rows[i].toggle_editable(frappe.meta.get_fieldnames("Budget BOM Raw Material")[x], false)
+            }
+
+        }
+    }
+
+}
+cur_frm.cscript.mechanical_bom_details_on_form_rendered = function (frm, cdt,cdn) {
+   if(cur_frm.get_field("mechanical_bom_details").grid.df.read_only){
+        for(var i=0;i<cur_frm.doc.mechanical_bom_details.length;i+=1){
+            for(var x=0;x<frappe.meta.get_fieldnames("Budget BOM Details").length;x+=1) {
+                cur_frm.get_field("mechanical_bom_details").grid.grid_rows[i].toggle_editable(frappe.meta.get_fieldnames("Budget BOM Raw Material")[x], false)
+            }
+
+        }
+    }
+
+}
+cur_frm.cscript.fg_sellable_bom_details_on_form_rendered = function (frm, cdt,cdn) {
+   if(cur_frm.get_field("fg_sellable_bom_details").grid.df.read_only){
+        for(var i=0;i<cur_frm.doc.fg_sellable_bom_details.length;i+=1){
+            for(var x=0;x<frappe.meta.get_fieldnames("Budget BOM FG Details").length;x+=1) {
+                cur_frm.get_field("fg_sellable_bom_details").grid.grid_rows[i].toggle_editable(frappe.meta.get_fieldnames("Budget BOM Raw Material")[x], false)
+            }
+
+        }
+    }
+
+}
 cur_frm.cscript.electrical_bom_raw_material_on_form_rendered = function (frm, cdt,cdn) {
 
     for(var x=0;x<document.querySelectorAll("[data-fieldname='save_discount_amount']").length;x+=1){
@@ -767,6 +816,14 @@ cur_frm.cscript.electrical_bom_raw_material_on_form_rendered = function (frm, cd
             document.querySelectorAll("[data-fieldname='save_discount_amount']")[x].style.backgroundColor ="blue"
            document.querySelectorAll("[data-fieldname='save_discount_amount']")[x].style.color ="white"
            document.querySelectorAll("[data-fieldname='save_discount_amount']")[x].style.fontWeight ="bold"
+        }
+    }
+     if(cur_frm.get_field("electrical_bom_raw_material").grid.df.read_only){
+        for(var i=0;i<cur_frm.doc.electrical_bom_raw_material.length;i+=1){
+            for(var x=0;x<frappe.meta.get_fieldnames("Budget BOM Raw Material").length;x+=1) {
+                cur_frm.get_field("electrical_bom_raw_material").grid.grid_rows[i].toggle_editable(frappe.meta.get_fieldnames("Budget BOM Raw Material")[x], false)
+            }
+
         }
     }
 }
@@ -778,6 +835,14 @@ cur_frm.cscript.mechanical_bom_raw_material_on_form_rendered = function (frm, cd
            document.querySelectorAll("[data-fieldname='save_discount_amount']")[x].style.fontWeight ="bold"
         }
     }
+     if(cur_frm.get_field("mechanical_bom_raw_material").grid.df.read_only){
+        for(var i=0;i<cur_frm.doc.mechanical_bom_raw_material.length;i+=1){
+            for(var x=0;x<frappe.meta.get_fieldnames("Budget BOM Raw Material").length;x+=1) {
+                cur_frm.get_field("mechanical_bom_raw_material").grid.grid_rows[i].toggle_editable(frappe.meta.get_fieldnames("Budget BOM Raw Material")[x], false)
+            }
+
+        }
+    }
 }
 cur_frm.cscript.fg_sellable_bom_raw_material_on_form_rendered = function (frm, cdt,cdn) {
     for(var x=0;x<document.querySelectorAll("[data-fieldname='save_discount_amount']").length;x+=1){
@@ -787,4 +852,24 @@ cur_frm.cscript.fg_sellable_bom_raw_material_on_form_rendered = function (frm, c
            document.querySelectorAll("[data-fieldname='save_discount_amount']")[x].style.fontWeight ="bold"
         }
     }
+    if(cur_frm.get_field("fg_sellable_bom_raw_material").grid.df.read_only){
+        for(var i=0;i<cur_frm.doc.fg_sellable_bom_raw_material.length;i+=1){
+            for(var x=0;x<frappe.meta.get_fieldnames("Budget BOM Raw Material").length;x+=1) {
+                cur_frm.get_field("fg_sellable_bom_raw_material").grid.grid_rows[i].toggle_editable(frappe.meta.get_fieldnames("Budget BOM Raw Material")[x], false)
+            }
+
+        }
+    }
+}
+cur_frm.cscript.additional_operation_cost_on_form_rendered = function (frm, cdt,cdn) {
+
+if(cur_frm.get_field("additional_operation_cost").grid.df.read_only){
+    for(var i=0;i<cur_frm.doc.additional_operation_cost.length;i+=1){
+           cur_frm.get_field("additional_operation_cost").grid.grid_rows[i].toggle_editable("cost_type",false)
+           cur_frm.get_field("additional_operation_cost").grid.grid_rows[i].toggle_editable("description",false)
+           cur_frm.get_field("additional_operation_cost").grid.grid_rows[i].toggle_editable("amount",false)
+
+    }
+}
+
 }
