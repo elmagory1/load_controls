@@ -22,7 +22,8 @@ class BudgetBOM(Document):
                     'qty': x.qty,
                     'warehouse': raw_material_warehouse,
                     'rate': rate[0],
-                    'amount': rate[0] * x.qty
+                    'amount': rate[0] * x.qty,
+                    'discount_rate': 0
                 }
                 discount = frappe.db.sql(""" SELECT * FROm `tabDiscount` WHERE opportunity=%s and item_code=%s """,(self.opportunity, x.item_code),as_dict=1)
                 if len(discount) > 0:
@@ -46,7 +47,9 @@ class BudgetBOM(Document):
             'qty': item['qty'],
             'warehouse': raw_material_warehouse,
             'rate': rate[0],
-            'amount': rate[0] * item['qty']
+            'amount': rate[0] * item['qty'],
+            'discount_rate': 0
+
         }
         discount = frappe.db.sql(""" SELECT * FROm `tabDiscount` WHERE opportunity=%s and item_code=%s """,
                                  (self.opportunity, item['item_code']), as_dict=1)
