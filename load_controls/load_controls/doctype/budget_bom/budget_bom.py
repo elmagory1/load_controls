@@ -131,7 +131,6 @@ class BudgetBOM(Document):
 
         if status == "To Material Request":
             if self.old_data:
-                self.old_data = ""
                 old_data_fetch = json.loads(self.old_data)
                 fields = [
                     "posting_date",

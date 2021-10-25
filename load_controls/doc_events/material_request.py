@@ -22,3 +22,21 @@ def on_trash(doc, method):
         if i.budget_bom:
             frappe.db.sql(""" UPDATE `tabBudget BOM` SET status=%s WHERE name=%s""", ('To Material Request', i.budget_bom))
             frappe.db.commit()
+
+@frappe.whitelist()
+
+@frappe.whitelist()
+def get_budget_bom(doctype,target,e,r,t,filter):
+    print("FILTEEEEEEEEEEEEEEEER")
+    print(filter)
+    print(tuple(filter['data']))
+    condition = ""
+    if len(filter['data']) == 1:
+        condition += " and name!='{0}'".format(filter['data'][0])
+
+    if len(filter['data']) > 1:
+        condition += " and name not in {0}".format(tuple(filter['data']))
+
+    query = """ SELECT * FROM `tabBudget BOM` WHERE status='To Material Request' and docstatus=1 {0}""".format(condition)
+    opportunities = frappe.db.sql(query,as_dict=1)
+    return opportunities
