@@ -576,9 +576,9 @@ frappe.ui.form.on('Budget BOM Raw Material', {
 
                 } else {
                    d.discount_rate = 0
-                                              d.link_discount_amount = ""
-d.discount_amount = 0
-                              d.discount_percentage = 0
+                      d.link_discount_amount = ""
+                    d.discount_amount = 0
+                      d.discount_percentage = 0
 
                     cur_frm.refresh_field(d.parentfield)
                 }
@@ -704,26 +704,18 @@ function compute_total_operation_cost(cur_frm) {
     cur_frm.refresh_field("total_operation_cost")
 }
 function get_template(template_names, raw_material_table, cur_frm){
-    for(var x=0;x<template_names.length;x+=1){
-        console.log(template_names[x])
-         frappe.db.get_doc("BOM Item Template", template_names[x])
-            .then(doc => {
-                for(var x=0;x<doc.items.length;x+=1){
-                    var rate = get_rate(cur_frm, doc.items[x])
-                    cur_frm.add_child(raw_material_table, {
-                        item_code: doc.items[x].item_code,
-                        item_name: doc.items[x].item_name,
-                        uom: doc.items[x].uom,
-                        qty: doc.items[x].qty,
-                        warehouse: raw_material_warehouse,
-                        rate: rate.responseJSON.message[0],
-                        amount: rate.responseJSON.message[0] * doc.items[x].qty
-                    })
-                    cur_frm.refresh_field(raw_material_table)
-                }
-
-        })
-    }
+     cur_frm.call({
+        doc: cur_frm.doc,
+        method: 'get_templates',
+        args: {
+            templates: template_names,
+            raw_material_table: raw_material_table
+        },
+        freeze: true,
+        freeze_message: "Get Templates...",
+        async:false,
+        callback: (r) => {}
+    })
 }
 
 function get_rate(cur_frm, d) {
@@ -739,8 +731,6 @@ function get_rate(cur_frm, d) {
             },
             async: false,
             callback: function (r) {
-                console.log("RAAAAAAAAAAAAAAATE")
-                console.log(r.message[0])
                 return r.message[0]
             }
         })

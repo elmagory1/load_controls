@@ -8,6 +8,33 @@ from erpnext.stock.stock_ledger import get_previous_sle
 
 class BudgetBOM(Document):
     @frappe.whitelist()
+    def get_templates(self, templates, raw_material_table):
+        raw_material_warehouse = frappe.db.get_single_value('Manufacturing Settings', 'default_raw_material_warehouse')
+        for i in templates:
+            template = frappe.get_doc("BOM Item Template", i)
+
+            for x in template.items:
+                rate = get_rate(x.item_code, "",self.rate_of_materials_based_on if self.rate_of_materials_based_on else "", self.price_list if self.price_list else "")
+                obj = {
+                    'item_code': x.item_code,
+                    'item_name': x.item_name,
+                    'uom': x.uom,
+                    'qty': x.qty,
+                    'warehouse': raw_material_warehouse,
+                    'rate': rate[0],
+                    'amount': rate[0] * x.qty
+                }
+                discount = frappe.db.sql(""" SELECT * FROm `tabDiscount` WHERE opportunity=%s and item_code=%s """,(self.opportunity, x.item_code),as_dict=1)
+                if len(discount) > 0:
+                    obj['discount_rate'] = discount[0].discount_rate
+                    obj['link_discount_amount'] = discount[0].name
+                    obj['discount_amount'] =discount[0].discount_amount
+                    obj['discount_percentage'] = discount[0].discount_percentage
+                    obj['rate'] = (discount[0].discount_rate * x.qty) + discount[0].discount_amount
+                    obj['amount'] = (discount[0].discount_rate * x.qty) + discount[0].discount_amount
+                self.append(raw_material_table,obj)
+
+    @frappe.whitelist()
     def validate(self):
         if self.opportunity:
             frappe.db.sql(""" UPDATE `tabOpportunity` SET budget_bom=%s WHERE name=%s""", (self.name, self.opportunity))
