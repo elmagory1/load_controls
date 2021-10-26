@@ -5,7 +5,7 @@ def on_submit_pr(doc, method):
     doctype = "Purchase Invoice" if doc.doctype == 'Purchase Receipt' else 'Purchase Receipt'
     for i in doc.budget_bom_reference:
         po = frappe.db.sql(""" SELECT COUNT(*) as count FROM `tabPurchase Order` Where budget_bom=%s and docstatus=1 """, i.budget_bom, as_dict=1)
-        pi_query = """ SELECT COUNT(*) as count FROM `tab{0}` DD INNER JOIN  `tabBudget BOM References` BBR ON BBR.parent = DD.name and BBR.buget_bom = '{1}' and DD.docstatus=1""".format(doctype, i.budget_bom)
+        pi_query = """ SELECT COUNT(*) as count FROM `tab{0}` DD INNER JOIN  `tabBudget BOM References` BBR ON BBR.parent = DD.name and BBR.budget_bom = '{1}' and DD.docstatus=1""".format(doctype, i.budget_bom)
 
         pi = frappe.db.sql(pi_query, as_dict=1)
         if po[0].count > 0 and pi[0].count > 0:
