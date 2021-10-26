@@ -317,7 +317,9 @@
    "default": "0",
    "fieldname": "quotation_amended",
    "fieldtype": "Check",
-   "label": "Quotation Amended"
+   "hidden": 1,
+   "label": "Quotation Amended",
+   "read_only": 1
   },
   {
    "fieldname": "more_information_section",
@@ -345,16 +347,14 @@
    "default": "0",
    "fieldname": "discount_amount",
    "fieldtype": "Currency",
-   "label": "Discount Amount",
-   "read_only": 1
+   "label": "Discount Amount"
   },
   {
    "allow_on_submit": 1,
    "default": "0",
    "fieldname": "discount_percentage",
    "fieldtype": "Data",
-   "label": "Discount Percentage",
-   "read_only": 1
+   "label": "Discount Percentage"
   },
   {
    "allow_on_submit": 1,
@@ -366,7 +366,8 @@
    "default": "0",
    "fieldname": "quotation_cancelled",
    "fieldtype": "Check",
-   "label": "Quotation Cancelled"
+   "label": "Quotation Cancelled",
+   "read_only": 1
   },
   {
    "allow_on_submit": 1,
@@ -379,13 +380,14 @@
    "default": "0",
    "fieldname": "declined",
    "fieldtype": "Check",
-   "label": "Declined"
+   "label": "Declined",
+   "read_only": 1
   }
  ],
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2021-10-25 17:05:51.710202",
+ "modified": "2021-10-26 10:35:31.544192",
  "modified_by": "Administrator",
  "module": "Load Controls",
  "name": "Budget BOM",

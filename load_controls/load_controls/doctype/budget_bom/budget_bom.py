@@ -80,6 +80,9 @@ class BudgetBOM(Document):
             "budget_bom_reference": [{
                 "budget_bom": self.name
             }],
+            "budget_bom_opportunity": [{
+                "opportunity": self.opportunity
+            }],
             "items": [{
                 "item_code": self.fg_sellable_bom_details[0].item_code,
                 "item_name": self.fg_sellable_bom_details[0].item_name,
@@ -358,6 +361,7 @@ def make_mr(source_name, target_doc=None):
     })
     print(doc.as_dict())
     return doc
+
 
 @frappe.whitelist()
 def get_rate(item_code, warehouse, based_on,price_list):

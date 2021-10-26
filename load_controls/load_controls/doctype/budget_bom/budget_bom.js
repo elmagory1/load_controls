@@ -214,20 +214,20 @@ frappe.ui.form.on('Budget BOM', {
                     })
                 })
         } else if(cur_frm.doc.docstatus && cur_frm.doc.status === "To Design"){
-            if(frappe.user.has_role("Sales User")) {
-                frm.add_custom_button(__("Amend Quotation"), () => {
-                    cur_frm.call({
-                        doc: cur_frm.doc,
-                        method: 'amend_quotation',
-                        args: {},
-                        freeze: true,
-                        freeze_message: "Amending Quotation...",
-                        callback: (r) => {
-                            cur_frm.reload_doc()
-                        }
-                    })
-                })
-            }
+            // if(frappe.user.has_role("Sales User")) {
+            //     frm.add_custom_button(__("Amend Quotation"), () => {
+            //         cur_frm.call({
+            //             doc: cur_frm.doc,
+            //             method: 'amend_quotation',
+            //             args: {},
+            //             freeze: true,
+            //             freeze_message: "Amending Quotation...",
+            //             callback: (r) => {
+            //                 cur_frm.reload_doc()
+            //             }
+            //         })
+            //     })
+            // }
             if(frappe.user.has_role("Mechanical")){
 	                 frm.add_custom_button(__("Approve"), () => {
                     cur_frm.call({
@@ -422,11 +422,11 @@ frappe.ui.form.on('Budget BOM', {
             cur_frm.refresh_field("mechanical_bom_details")
             cur_frm.refresh_field("fg_sellable_bom_details")
 
-
-        }
-
             compute_total_operation_cost(cur_frm)
             compute_total_cost_expense(cur_frm)
+        }
+
+
 	},
     electrical_item_template: function(frm) {
         get_template(cur_frm.doc.electrical_item_template, "electrical_bom_raw_material")
@@ -604,7 +604,8 @@ frappe.ui.form.on('Budget BOM Raw Material', {
                             cur_frm.refresh_field(d.parentfield)
                  }
             })
-
+        compute_total_cost(cur_frm)
+        compute_total_cost_expense(cur_frm)
         }
 
     },
@@ -736,7 +737,10 @@ function get_template(template_names, raw_material_table, cur_frm){
         freeze: true,
         freeze_message: "Get Templates...",
         async:false,
-        callback: (r) => {}
+        callback: (r) => {
+             compute_total_cost(cur_frm)
+                compute_total_cost_expense(cur_frm)
+         }
     })
 }
 
