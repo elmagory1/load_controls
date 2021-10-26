@@ -1,4 +1,4 @@
-import frappe
+import frappe,json
 
 @frappe.whitelist()
 def submit_q(doc, event):
@@ -35,3 +35,14 @@ def get_opportunity(doctype,target,e,r,t,filter):
     query = """ SELECT O.name, O.party_name FROM `tabOpportunity` as O INNER JOIN `tabBudget BOM` as BB ON BB.opportunity = O.name  WHERE O.status='Open' and BB.docstatus = 1 {0} GROUP BY O.name """.format(condition)
     opportunities = frappe.db.sql(query,as_dict=1)
     return opportunities
+
+@frappe.whitelist()
+def get_updated_costs(budget_boms):
+    data = json.loads(budget_boms)
+    items = []
+    for i in data:
+        print("BUDGET BOOOOOOOOOOOOOOOOOOOOOM")
+        print(i['budget_bom'])
+        bb = frappe.db.sql(""" SELECT BBFD.item_code, BB.total_cost FROM `tabBudget BOM` BB INNER JOIN `tabBudget BOM FG Details` BBFD ON BBFD.parent=BB.name WHERE BB.name=%s """, i['budget_bom'], as_dict=1)
+        items.append(bb)
+    return items
