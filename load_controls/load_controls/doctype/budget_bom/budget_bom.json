@@ -302,7 +302,7 @@
    "fieldname": "status",
    "fieldtype": "Select",
    "label": "Status",
-   "options": "To Quotation\nTo Design\nPending\nRejected\nTo Purchase Order\nQuotation In Progress\nUpdated Changes\nTo Material Request\nDeclined\nTo PO and SO\nTo PO\nTo SO",
+   "options": "To Quotation\nTo Design\nPending\nRejected\nTo Purchase Order\nQuotation In Progress\nUpdated Changes\nTo Material Request\nDeclined\nTo PO and SO\nTo Purchase Invoice\nTo SO\nTo DN and PO\nTo DN and PR\nTo SI and PR\nTo SI and PI\nTo SI\nTo PI",
    "read_only": 1
   },
   {
@@ -387,7 +387,7 @@
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2021-10-26 10:35:31.544192",
+ "modified": "2021-10-27 11:25:32.009677",
  "modified_by": "Administrator",
  "module": "Load Controls",
  "name": "Budget BOM",

@@ -100,28 +100,33 @@ doc_events = {
 		"on_cancel": "load_controls.doc_events.quotation.cancel_q",
 	},
 	"Material Request": {
+		"on_submit": "load_controls.doc_events.utils.on_submit_record",
+		"on_cancel": "load_controls.doc_events.utils.on_cancel_record",
 		"validate": "load_controls.doc_events.material_request.validate_mr",
-		"on_cancel": "load_controls.doc_events.material_request.cancel_mr",
-		"on_trash": "load_controls.doc_events.material_request.on_trash",
 	},
 	"Purchase Order": {
-		"on_submit": "load_controls.doc_events.purchase_order.on_submit_po",
+		"on_submit": "load_controls.doc_events.utils.on_submit_record",
+		"on_cancel": "load_controls.doc_events.utils.on_cancel_record",
 	},
 	"Purchase Invoice": {
-		"on_submit": "load_controls.doc_events.purchase_receipt.on_submit_pr",
+		"on_submit": "load_controls.doc_events.utils.on_submit_record",
+		"on_cancel": "load_controls.doc_events.utils.on_cancel_record",
 	},
 	"Purchase Receipt": {
-		"on_submit": "load_controls.doc_events.purchase_receipt.on_submit_pr",
+		"on_submit": "load_controls.doc_events.utils.on_submit_record",
+		"on_cancel": "load_controls.doc_events.utils.on_cancel_record",
 	},
 	"Sales Order": {
 		"on_submit": "load_controls.doc_events.sales_order.on_submit_so",
 		"on_cancel": "load_controls.doc_events.sales_order.on_cancel_so",
 	},
 	"Delivery Note": {
-		"on_submit": "load_controls.doc_events.sales_order.on_submit_dn",
+		"on_submit": "load_controls.doc_events.utils.on_submit_record",
+		"on_cancel": "load_controls.doc_events.utils.on_cancel_record",
 	},
 	"Sales Invoice": {
-		"on_submit": "load_controls.doc_events.sales_order.on_submit_dn",
+		"on_submit": "load_controls.doc_events.utils.on_submit_record",
+		"on_cancel": "load_controls.doc_events.utils.on_cancel_record",
 	}
 }
 
