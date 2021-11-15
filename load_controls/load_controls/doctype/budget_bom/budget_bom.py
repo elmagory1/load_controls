@@ -14,10 +14,11 @@ class BudgetBOM(Document):
             template = frappe.get_doc("BOM Item Template", i)
 
             for x in template.items:
+                item_master = frappe.get_doc("Item", x.item_code)
                 rate = get_rate(x.item_code, "",self.rate_of_materials_based_on if self.rate_of_materials_based_on else "", self.price_list if self.price_list else "")
                 obj = {
                     'item_code': x.item_code,
-                    'item_name': x.item_name,
+                    'item_name': item_master.item_name,
                     'uom': x.uom,
                     'qty': x.qty,
                     'warehouse': raw_material_warehouse,
@@ -37,12 +38,13 @@ class BudgetBOM(Document):
     @frappe.whitelist()
     def get_discount(self, item,raw_material_table):
         raw_material_warehouse = frappe.db.get_single_value('Manufacturing Settings', 'default_raw_material_warehouse')
+        item_master = frappe.get_doc("Item", item['item_code'])
 
         rate = get_rate(item['item_code'], "", self.rate_of_materials_based_on if self.rate_of_materials_based_on else "",
                         self.price_list if self.price_list else "")
         obj = {
             'item_code': item['item_code'],
-            'item_name': item['item_name'],
+            'item_name': item_master.item_name,
             'uom': item['uom'],
             'qty': item['qty'],
             'warehouse': raw_material_warehouse,
