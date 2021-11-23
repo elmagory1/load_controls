@@ -8,6 +8,26 @@ from erpnext.stock.stock_ledger import get_previous_sle
 
 class BudgetBOM(Document):
     @frappe.whitelist()
+    def update_discounts(self):
+        fields = ['electrical_bom_raw_material', 'mechanical_bom_raw_material', 'fg_sellable_bom_raw_material']
+        for i in fields:
+            for ii in self.__dict__[i]:
+                obj = self.update_discount(ii.__dict__)
+
+    @frappe.whitelist()
+    def update_discount(self, item):
+        discount = frappe.db.sql(""" SELECT * FROm `tabDiscount` WHERE opportunity=%s and item_code=%s and item_group=%s """,
+                                 (self.opportunity, item['item_code'], item['item_group']), as_dict=1)
+
+        if len(discount) > 0:
+            item['discount_rate'] = discount[0].discount_rate
+            item['link_discount_amount'] = discount[0].name
+            item['discount_amount'] = discount[0].discount_amount
+            item['discount_percentage'] = discount[0].discount_percentage
+            item['rate'] = (discount[0].discount_rate * item['qty']) + discount[0].discount_amount
+            item['amount'] = (discount[0].discount_rate * item['qty'])
+
+    @frappe.whitelist()
     def get_templates(self, templates, raw_material_table):
         raw_material_warehouse = frappe.db.get_single_value('Manufacturing Settings', 'default_raw_material_warehouse')
         for i in templates:
@@ -26,7 +46,7 @@ class BudgetBOM(Document):
                     'amount': rate[0] * x.qty,
                     'discount_rate': 0
                 }
-                discount = frappe.db.sql(""" SELECT * FROm `tabDiscount` WHERE opportunity=%s and item_code=%s """,(self.opportunity, x.item_code),as_dict=1)
+                discount = frappe.db.sql(""" SELECT * FROm `tabDiscount` WHERE opportunity=%s and item_code=%s and item_group=%s """,(self.opportunity, x.item_code, x.item_group),as_dict=1)
                 if len(discount) > 0:
                     obj['discount_rate'] = discount[0].discount_rate
                     obj['link_discount_amount'] = discount[0].name
@@ -53,8 +73,8 @@ class BudgetBOM(Document):
             'discount_rate': 0
 
         }
-        discount = frappe.db.sql(""" SELECT * FROm `tabDiscount` WHERE opportunity=%s and item_code=%s """,
-                                 (self.opportunity, item['item_code']), as_dict=1)
+        discount = frappe.db.sql(""" SELECT * FROm `tabDiscount` WHERE opportunity=%s and item_code=%s and item_group=%s""",
+                                 (self.opportunity, item['item_code'], item['item_group']), as_dict=1)
         if len(discount) > 0:
             obj['discount_rate'] = discount[0].discount_rate
             obj['link_discount_amount'] = discount[0].name

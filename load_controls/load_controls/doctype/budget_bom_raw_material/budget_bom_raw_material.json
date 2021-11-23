@@ -7,6 +7,7 @@
  "field_order": [
   "item_code",
   "item_name",
+  "item_group",
   "description",
   "qty",
   "rate",
@@ -152,12 +153,19 @@
    "label": "Link Discount Amount",
    "options": "Discount",
    "read_only": 1
+  },
+  {
+   "fetch_from": "item_code.item_group",
+   "fieldname": "item_group",
+   "fieldtype": "Link",
+   "label": "Item Group",
+   "options": "Item Group"
   }
  ],
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2021-10-25 16:35:53.910081",
+ "modified": "2021-11-24 06:39:34.390004",
  "modified_by": "Administrator",
  "module": "Load Controls",
  "name": "Budget BOM Raw Material",

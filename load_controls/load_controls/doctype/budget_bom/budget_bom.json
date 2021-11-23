@@ -16,6 +16,7 @@
   "expected_closing_date",
   "rate_of_materials_based_on",
   "price_list",
+  "update_discount",
   "electrical_bom_section",
   "electrical_bom_details",
   "electrical_from_template",
@@ -382,12 +383,17 @@
    "fieldtype": "Check",
    "label": "Declined",
    "read_only": 1
+  },
+  {
+   "fieldname": "update_discount",
+   "fieldtype": "Button",
+   "label": "Update Discount"
   }
  ],
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2021-10-27 11:25:32.009677",
+ "modified": "2021-11-24 06:21:17.619702",
  "modified_by": "Administrator",
  "module": "Load Controls",
  "name": "Budget BOM",

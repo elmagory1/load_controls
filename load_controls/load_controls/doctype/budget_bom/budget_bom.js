@@ -73,6 +73,10 @@ cur_frm.cscript.generate_item_template = function () {
 
 frappe.ui.form.on('Budget BOM', {
 	refresh: function(frm) {
+	    document.querySelectorAll("[data-fieldname='update_discount']")[1].style.backgroundColor ="blue"
+       document.querySelectorAll("[data-fieldname='update_discount']")[1].style.color ="white"
+       document.querySelectorAll("[data-fieldname='update_discount']")[1].style.fontWeight ="bold"
+
 	    cur_frm.set_query("opportunity", () => {
 	        return {
 	            filters:{
@@ -376,6 +380,7 @@ frappe.ui.form.on('Budget BOM', {
              }
          }
     },
+
 	onload_post_render: function(frm) {
 	    if(cur_frm.is_new()){
 	        cur_frm.doc.status = "To Quotation"
@@ -657,6 +662,7 @@ frappe.ui.form.on('Budget BOM Raw Material', {
                 opportunity: cur_frm.doc.opportunity,
                 item_code: d.item_code,
                 item_name: d.item_name,
+                item_group: d.item_group,
                 discount_amount: d.discount_amount,
                 discount_rate: d.discount_rate,
                 discount_percentage: d.discount_percentage,
@@ -669,10 +675,37 @@ frappe.ui.form.on('Budget BOM Raw Material', {
                 cur_frm.refresh_field(d.parentfield)
             })
         }
+    },
+    update_discount: function (frm, cdt, cdn) {
+        var d = locals[cdt][cdn]
+        if(d.item_group){
+            cur_frm.call({
+                doc: cur_frm.doc,
+                method: 'update_discount',
+                args: {
+                    item: d
+                },
+                freeze: true,
+                freeze_message: "Get Templates...",
+                async:false,
+                callback: (r) => {
+                    console.log("ITEM CODEEEE TRIGGER")
+                    console.log(r.message.discount_rate)
+                        var values = r.message
+                            console.log(values.discount_rate)
 
+                            d.discount_rate = values.discount_rate > 0 ? values.discount_rate : values.amount
+                          d.link_discount_amount = values.link_discount_amount
+                          d.discount_amount = values.discount_amount
+                          d.discount_percentage = values.discount_percentage
+                          d.rate = values.rate
+                          d.amount = values.amount
+                            cur_frm.refresh_field(d.parentfield)
 
-
-    }
+                 }
+            })
+        }
+    },
 });
 frappe.ui.form.on('Additional Operational Cost', {
     amount: function(frm, cdt, cdn) {

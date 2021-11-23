@@ -10,6 +10,7 @@
   "naming_series",
   "opportunity",
   "item_code",
+  "item_group",
   "column_break_4",
   "discount_rate",
   "discount_amount",
@@ -65,11 +66,17 @@
    "fieldname": "discount_percentage",
    "fieldtype": "Data",
    "label": "Discount Percentage"
+  },
+  {
+   "fieldname": "item_group",
+   "fieldtype": "Link",
+   "label": "Item Group",
+   "options": "Item Group"
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2021-10-22 12:43:53.944941",
+ "modified": "2021-11-24 06:30:53.597149",
  "modified_by": "Administrator",
  "module": "Load Controls",
  "name": "Discount",
