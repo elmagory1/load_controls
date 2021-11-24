@@ -533,12 +533,17 @@ frappe.ui.form.on('Budget BOM Raw Material', {
         if(d.amount > 0 && d.discount_percentage > 0){
             d.discount_amount = (d.discount_percentage / 100) * d.amount
             d.amount = d.amount - d.discount_amount
+            if(d.parentfield === 'fg_sellable_bom_raw_material'){
+             d.amount = (d.amount - d.discount_amount) * d.kg * d.per_kg
+            }
             cur_frm.refresh_field(d.parentfield)
         } else if (d.amount > 0 && d.discount_amount > 0){
              d.amount = d.amount - d.discount_amount
+            if(d.parentfield === 'fg_sellable_bom_raw_material'){
+             d.amount = (d.amount - d.discount_amount) * d.kg * d.per_kg
+            }
             cur_frm.refresh_field(d.parentfield)
         }
-
 
          if(d.amount > 0 && d.qty > 0){
              d.discount_rate = d.amount / d.qty
@@ -558,13 +563,19 @@ frappe.ui.form.on('Budget BOM Raw Material', {
         if(d.amount > 0 && d.discount_percentage > 0){
             d.discount_amount = (d.discount_percentage / 100) * d.amount
             d.amount = d.amount - d.discount_amount
+            if(d.parentfield === 'fg_sellable_bom_raw_material'){
+             d.amount = (d.amount - d.discount_amount) * d.kg * d.per_kg
+            }
             cur_frm.refresh_field(d.parentfield)
         } else if (d.amount > 0 && d.discount_amount > 0){
              d.amount = d.amount - d.discount_amount
+            if(d.parentfield === 'fg_sellable_bom_raw_material'){
+             d.amount = (d.amount - d.discount_amount) * d.kg * d.per_kg
+            }
             cur_frm.refresh_field(d.parentfield)
         }
 
-         if(d.amount > 0 && d.qty > 0){
+           if(d.amount > 0 && d.qty > 0){
              d.discount_rate = d.amount / d.qty
             cur_frm.refresh_field(d.parentfield)
 
@@ -622,11 +633,15 @@ frappe.ui.form.on('Budget BOM Raw Material', {
         if(d.amount > 0 && d.discount_percentage > 0){
             d.discount_amount = (d.discount_percentage / 100) * d.amount
             d.amount = d.amount - d.discount_amount
+            if(d.parentfield === 'fg_sellable_bom_raw_material'){
+             d.amount = (d.amount - d.discount_amount) * d.kg * d.per_kg
+            }
             cur_frm.refresh_field(d.parentfield)
 
         }
 
-        if(d.amount > 0 && d.qty > 0){
+
+           if(d.amount > 0 && d.qty > 0){
              d.discount_rate = d.amount / d.qty
             cur_frm.refresh_field(d.parentfield)
 
@@ -642,10 +657,14 @@ frappe.ui.form.on('Budget BOM Raw Material', {
         cur_frm.refresh_field(d.parentfield)
         if(d.amount > 0){
             d.amount = d.amount - d.discount_amount
+            if(d.parentfield === 'fg_sellable_bom_raw_material'){
+             d.amount = (d.amount - d.discount_amount) * d.kg * d.per_kg
+            }
             cur_frm.refresh_field(d.parentfield)
         }
 
-       if(d.amount > 0 && d.qty > 0){
+
+          if(d.amount > 0 && d.qty > 0){
              d.discount_rate = d.amount / d.qty
             cur_frm.refresh_field(d.parentfield)
 
@@ -706,6 +725,30 @@ frappe.ui.form.on('Budget BOM Raw Material', {
             })
         }
     },
+    kg: function (frm, cdt, cdn) {
+        var d = locals[cdt][cdn]
+        d.amount = ((d.qty * d.rate) - d.discount_amount) * d.kg * d.per_kg
+        cur_frm.refresh_field(d.parentfield)
+          if(d.amount > 0 && d.qty > 0){
+             d.discount_rate = d.amount / d.qty
+            cur_frm.refresh_field(d.parentfield)
+
+        }
+        compute_total_cost(cur_frm)
+        compute_total_cost_expense(cur_frm)
+    },
+    per_kg: function (frm, cdt, cdn) {
+        var d = locals[cdt][cdn]
+        d.amount = ((d.qty * d.rate) - d.discount_amount) * d.kg * d.per_kg
+        cur_frm.refresh_field(d.parentfield)
+          if(d.amount > 0 && d.qty > 0){
+             d.discount_rate = d.amount / d.qty
+            cur_frm.refresh_field(d.parentfield)
+
+        }
+        compute_total_cost(cur_frm)
+        compute_total_cost_expense(cur_frm)
+    }
 });
 frappe.ui.form.on('Additional Operational Cost', {
     amount: function(frm, cdt, cdn) {
