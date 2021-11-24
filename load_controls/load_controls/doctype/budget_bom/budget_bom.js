@@ -533,18 +533,16 @@ frappe.ui.form.on('Budget BOM Raw Material', {
         if(d.amount > 0 && d.discount_percentage > 0){
             d.discount_amount = (d.discount_percentage / 100) * d.amount
             d.amount = d.amount - d.discount_amount
-            if(d.parentfield === 'fg_sellable_bom_raw_material'){
-             d.amount = (d.amount - d.discount_amount) * d.kg * d.per_kg
-            }
+
             cur_frm.refresh_field(d.parentfield)
         } else if (d.amount > 0 && d.discount_amount > 0){
              d.amount = d.amount - d.discount_amount
-            if(d.parentfield === 'fg_sellable_bom_raw_material'){
-             d.amount = (d.amount - d.discount_amount) * d.kg * d.per_kg
-            }
+
             cur_frm.refresh_field(d.parentfield)
         }
-
+ if(d.parentfield === 'fg_sellable_bom_raw_material'){
+             d.amount = ((d.qty * d.rate) - d.discount_amount) * d.kg * d.per_kg
+            }
          if(d.amount > 0 && d.qty > 0){
              d.discount_rate = d.amount / d.qty
             cur_frm.refresh_field(d.parentfield)
@@ -563,18 +561,16 @@ frappe.ui.form.on('Budget BOM Raw Material', {
         if(d.amount > 0 && d.discount_percentage > 0){
             d.discount_amount = (d.discount_percentage / 100) * d.amount
             d.amount = d.amount - d.discount_amount
-            if(d.parentfield === 'fg_sellable_bom_raw_material'){
-             d.amount = (d.amount - d.discount_amount) * d.kg * d.per_kg
-            }
+
             cur_frm.refresh_field(d.parentfield)
         } else if (d.amount > 0 && d.discount_amount > 0){
              d.amount = d.amount - d.discount_amount
-            if(d.parentfield === 'fg_sellable_bom_raw_material'){
-             d.amount = (d.amount - d.discount_amount) * d.kg * d.per_kg
-            }
+
             cur_frm.refresh_field(d.parentfield)
         }
-
+            if(d.parentfield === 'fg_sellable_bom_raw_material'){
+             d.amount = ((d.qty * d.rate) - d.discount_amount) * d.kg * d.per_kg
+            }
            if(d.amount > 0 && d.qty > 0){
              d.discount_rate = d.amount / d.qty
             cur_frm.refresh_field(d.parentfield)
@@ -613,8 +609,8 @@ frappe.ui.form.on('Budget BOM Raw Material', {
 
                             d.discount_rate = values.discount_rate > 0 ? values.discount_rate : values.amount
                           d.link_discount_amount = values.link_discount_amount
-                          d.discount_amount = values.discount_amount
-                          d.discount_percentage = values.discount_percentage
+                          d.discount_amount = values.discount_amount ? values.discount_amount : 0
+                          d.discount_percentage = values.discount_percentage ? values.discount_percentage : 0
                           d.rate = values.rate
                           d.amount = values.amount
                             cur_frm.refresh_field(d.parentfield)
@@ -633,14 +629,14 @@ frappe.ui.form.on('Budget BOM Raw Material', {
         if(d.amount > 0 && d.discount_percentage > 0){
             d.discount_amount = (d.discount_percentage / 100) * d.amount
             d.amount = d.amount - d.discount_amount
-            if(d.parentfield === 'fg_sellable_bom_raw_material'){
-             d.amount = (d.amount - d.discount_amount) * d.kg * d.per_kg
-            }
+
             cur_frm.refresh_field(d.parentfield)
 
         }
 
-
+ if(d.parentfield === 'fg_sellable_bom_raw_material'){
+             d.amount = ((d.qty * d.rate) - d.discount_amount) * d.kg * d.per_kg
+            }
            if(d.amount > 0 && d.qty > 0){
              d.discount_rate = d.amount / d.qty
             cur_frm.refresh_field(d.parentfield)
@@ -776,16 +772,21 @@ function compute_total_cost_expense(cur_frm) {
 function compute_total_cost(cur_frm) {
     var fieldnames = ['electrical_bom_raw_material','mechanical_bom_raw_material','fg_sellable_bom_raw_material']
     var total = 0
+    var enclosure_subtotal = 0
     for(var i=0;i<fieldnames.length;i+=1){
         if(cur_frm.doc[fieldnames[i]]){
             for(var ii=0;ii<cur_frm.doc[fieldnames[i]].length;ii+=1){
                 total += cur_frm.doc[fieldnames[i]][ii].amount
+                if(fieldnames[i] === 'fg_sellable_bom_raw_material'){
+                    enclosure_subtotal += cur_frm.doc[fieldnames[i]][ii].amount
+                }
             }
         }
 
     }
     cur_frm.doc.total_raw_material_cost = total
-    cur_frm.refresh_field("total_raw_material_cost")
+    cur_frm.doc.enclosure_subtotal = enclosure_subtotal
+    cur_frm.refresh_fields(["total_raw_material_cost", "enclosure_subtotal"])
 }
 function compute_total_operation_cost(cur_frm) {
     var fieldnames = ['electrical_bom_details','mechanical_bom_details','fg_sellable_bom_details']

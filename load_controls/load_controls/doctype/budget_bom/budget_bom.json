@@ -31,6 +31,10 @@
   "mechanical_bom_raw_material",
   "fgsellable_bom_section",
   "fg_sellable_bom_raw_material",
+  "section_break_26",
+  "column_break_27",
+  "column_break_28",
+  "enclosure_subtotal",
   "fg_sellable_from_template",
   "fg_sellable_item_template",
   "generate_fg_sellable_item_template",
@@ -388,12 +392,31 @@
    "fieldname": "update_discount",
    "fieldtype": "Button",
    "label": "Update Discount"
+  },
+  {
+   "default": "0",
+   "fieldname": "enclosure_subtotal",
+   "fieldtype": "Currency",
+   "label": "Enclosure Subtotal",
+   "read_only": 1
+  },
+  {
+   "fieldname": "section_break_26",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "column_break_27",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "column_break_28",
+   "fieldtype": "Column Break"
   }
  ],
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2021-11-24 06:21:17.619702",
+ "modified": "2021-11-24 23:32:19.862332",
  "modified_by": "Administrator",
  "module": "Load Controls",
  "name": "Budget BOM",
