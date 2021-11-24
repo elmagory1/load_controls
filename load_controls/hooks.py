@@ -252,6 +252,9 @@ fixtures = [
                     "Purchase Order-budget_bom_reference",
 					"Material Request-reference_bom",
                     "Material Request-budget_bom_reference",
+
+                    "Manufacturing Settings-allow_budget_bom_total_raw_material_cost",
+                    "Manufacturing Settings-allow_amount_budget_bom_without_approval",
 				]
 			]
 		]
