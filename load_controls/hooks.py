@@ -234,7 +234,6 @@ fixtures = [
                     "Manufacturing Settings-default_raw_material_warehouse",
                     "Purchase Order-approve_po_rate",
                     "Workstation-operation_time",
-                    "Opportunity-budget_bom",
                     "Purchase Order-budget_bom",
                     "Purchase Invoice-budget_bom",
                     "Purchase Receipt-budget_bom",
