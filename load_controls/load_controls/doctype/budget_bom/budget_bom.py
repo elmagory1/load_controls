@@ -46,7 +46,7 @@ class BudgetBOM(Document):
                     'amount': rate[0] * x.qty,
                     'discount_rate': 0
                 }
-                discount = frappe.db.sql(""" SELECT * FROm `tabDiscount` WHERE opportunity=%s and item_code=%s and item_group=%s """,(self.opportunity, x.item_code, x.item_group),as_dict=1)
+                discount = frappe.db.sql(""" SELECT * FROm `tabDiscount` WHERE opportunity=%s and item_code=%s and item_group=%s """,(self.opportunity, x.item_code, item_master.item_group),as_dict=1)
                 if len(discount) > 0:
                     obj['discount_rate'] = discount[0].discount_rate
                     obj['link_discount_amount'] = discount[0].name
@@ -74,7 +74,7 @@ class BudgetBOM(Document):
 
         }
         discount = frappe.db.sql(""" SELECT * FROm `tabDiscount` WHERE opportunity=%s and item_code=%s and item_group=%s""",
-                                 (self.opportunity, item['item_code'], item['item_group']), as_dict=1)
+                                 (self.opportunity, item['item_code'], item_master.item_group), as_dict=1)
         if len(discount) > 0:
             obj['discount_rate'] = discount[0].discount_rate
             obj['link_discount_amount'] = discount[0].name
