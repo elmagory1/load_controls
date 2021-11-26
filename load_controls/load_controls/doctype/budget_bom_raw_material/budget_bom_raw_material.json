@@ -176,13 +176,14 @@
    "depends_on": "eval: doc.parentfield == 'fg_sellable_bom_raw_material'",
    "fieldname": "per_kg",
    "fieldtype": "Float",
+   "hidden": 1,
    "label": "Per KG"
   }
  ],
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2021-11-24 23:06:29.175752",
+ "modified": "2021-11-26 10:58:03.294164",
  "modified_by": "Administrator",
  "module": "Load Controls",
  "name": "Budget BOM Raw Material",
