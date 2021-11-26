@@ -318,9 +318,10 @@ def set_available_qty(items):
 def get_template_items(items):
     items_ = []
     for i in items:
+        item_master = frappe.get_doc("Item", i['item_code'])
         items_.append({
             "item_code": i['item_code'],
-            "item_name": i['item_name'],
+            "item_name": item_master.item_name,
             "batch": i['batch'] if 'batch' in i and i['batch'] else "",
             "qty": i['qty'],
             "uom": i['uom'] if 'uom' in i and i['uom'] else "",

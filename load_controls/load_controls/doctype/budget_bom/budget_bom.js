@@ -606,7 +606,7 @@ frappe.ui.form.on('Budget BOM Raw Material', {
                     console.log(r.message.discount_rate)
                         var values = r.message
                                 console.log(values.discount_rate)
-d.item_name = values.item_name
+                            d.item_name = values.item_name
                             d.discount_rate = values.discount_rate > 0 ? values.discount_rate : values.amount
                           d.link_discount_amount = values.link_discount_amount
                           d.discount_amount = values.discount_amount ? values.discount_amount : 0
@@ -764,7 +764,7 @@ frappe.ui.form.on('Budget BOM Details', {
 	}
 });
 function compute_total_cost_expense(cur_frm) {
-    var total_raw_material_cost = cur_frm.doc.margin_ > 0 ? cur_frm.doc.total_raw_material_cost * parseFloat(cur_frm.doc.margin_ ? cur_frm.doc.margin_ : 0) / 100 : cur_frm.doc.total_raw_material_cost
+    var total_raw_material_cost = cur_frm.doc.margin_ > 0 ? (cur_frm.doc.total_raw_material_cost * parseFloat(cur_frm.doc.margin_ ? cur_frm.doc.margin_ : 0) / 100) + cur_frm.doc.total_raw_material_cost : cur_frm.doc.total_raw_material_cost
     var total_cost = cur_frm.doc.total_operation_cost + total_raw_material_cost
     cur_frm.doc.total_cost =  total_cost
     cur_frm.refresh_field("total_cost")
