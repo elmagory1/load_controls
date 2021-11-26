@@ -379,6 +379,9 @@ frappe.ui.form.on('Budget BOM', {
                  cur_frm.set_df_property(fields_for_cancel[ii], "read_only",(!cur_frm.doc.quotation_cancelled && !cur_frm.doc.quotation_amended))
              }
          }
+          var label_change = frappe.meta.get_docfield("Budget BOM Details","rate", cur_frm.doc.name);
+            label_change.label = 'Child Qty'
+            cur_frm.refresh_field("activity_details")
     },
 
 	onload_post_render: function(frm) {
@@ -541,7 +544,7 @@ frappe.ui.form.on('Budget BOM Raw Material', {
             cur_frm.refresh_field(d.parentfield)
         }
  if(d.parentfield === 'fg_sellable_bom_raw_material'){
-             d.amount = ((d.qty * d.rate) - d.discount_amount) * d.kg * d.per_kg
+             d.amount = ((d.qty * d.rate) - d.discount_amount) * d.kg
             }
          if(d.amount > 0 && d.qty > 0){
              d.discount_rate = d.amount / d.qty
@@ -569,7 +572,7 @@ frappe.ui.form.on('Budget BOM Raw Material', {
             cur_frm.refresh_field(d.parentfield)
         }
             if(d.parentfield === 'fg_sellable_bom_raw_material'){
-             d.amount = ((d.qty * d.rate) - d.discount_amount) * d.kg * d.per_kg
+             d.amount = ((d.qty * d.rate) - d.discount_amount) * d.kg
             }
            if(d.amount > 0 && d.qty > 0){
              d.discount_rate = d.amount / d.qty
@@ -635,7 +638,7 @@ frappe.ui.form.on('Budget BOM Raw Material', {
         }
 
  if(d.parentfield === 'fg_sellable_bom_raw_material'){
-             d.amount = ((d.qty * d.rate) - d.discount_amount) * d.kg * d.per_kg
+             d.amount = ((d.qty * d.rate) - d.discount_amount) * d.kg
             }
            if(d.amount > 0 && d.qty > 0){
              d.discount_rate = d.amount / d.qty
@@ -654,7 +657,7 @@ frappe.ui.form.on('Budget BOM Raw Material', {
         if(d.amount > 0){
             d.amount = d.amount - d.discount_amount
             if(d.parentfield === 'fg_sellable_bom_raw_material'){
-             d.amount = (d.amount - d.discount_amount) * d.kg * d.per_kg
+             d.amount = (d.amount - d.discount_amount) * d.kg
             }
             cur_frm.refresh_field(d.parentfield)
         }
@@ -723,7 +726,7 @@ frappe.ui.form.on('Budget BOM Raw Material', {
     },
     kg: function (frm, cdt, cdn) {
         var d = locals[cdt][cdn]
-        d.amount = ((d.qty * d.rate) - d.discount_amount) * d.kg * d.per_kg
+        d.amount = ((d.qty * d.rate) - d.discount_amount) * d.kg
         cur_frm.refresh_field(d.parentfield)
           if(d.amount > 0 && d.qty > 0){
              d.discount_rate = d.amount / d.qty
@@ -735,7 +738,7 @@ frappe.ui.form.on('Budget BOM Raw Material', {
     },
     per_kg: function (frm, cdt, cdn) {
         var d = locals[cdt][cdn]
-        d.amount = ((d.qty * d.rate) - d.discount_amount) * d.kg * d.per_kg
+        d.amount = ((d.qty * d.rate) - d.discount_amount) * d.kg
         cur_frm.refresh_field(d.parentfield)
           if(d.amount > 0 && d.qty > 0){
              d.discount_rate = d.amount / d.qty
