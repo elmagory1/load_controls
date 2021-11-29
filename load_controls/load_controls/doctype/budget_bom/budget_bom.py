@@ -7,6 +7,14 @@ from frappe.model.mapper import get_mapped_doc
 from erpnext.stock.stock_ledger import get_previous_sle
 
 class BudgetBOM(Document):
+    def on_update_after_submit(self):
+        allow_tmr = frappe.db.get_single_value('Manufacturing Settings', 'allow_budget_bom_total_raw_material_cost')
+        if self.status == 'Updated Changes' and self.total_raw_material_cost >= allow_tmr:
+            frappe.db.sql(""" UPDATE `tabBudget BOM` SET status='To Material Request' WHERE name=%s """,
+                          self.name)
+            frappe.db.commit()
+            self.reload()
+
     @frappe.whitelist()
     def update_discounts(self):
         fields = ['electrical_bom_raw_material', 'mechanical_bom_raw_material', 'fg_sellable_bom_raw_material']

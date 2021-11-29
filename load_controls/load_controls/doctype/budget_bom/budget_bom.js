@@ -13,6 +13,7 @@ var table_name = ""
 var net_hour_rate = 0
 var operation_time = 0
 var raw_material_warehouse = 0
+var allow_bb = 0
 cur_frm.cscript.item_templates = function () {
     var d = new frappe.ui.form.MultiSelectDialog({
         doctype: "BOM Item Template",
@@ -72,8 +73,12 @@ cur_frm.cscript.generate_item_template = function () {
 }
 
 frappe.ui.form.on('Budget BOM', {
+    save_or_submit: function () {
+        console.log("test")
+    },
 	refresh: function(frm) {
-	    document.querySelectorAll("[data-fieldname='update_discount']")[1].style.backgroundColor ="blue"
+
+    document.querySelectorAll("[data-fieldname='update_discount']")[1].style.backgroundColor ="blue"
        document.querySelectorAll("[data-fieldname='update_discount']")[1].style.color ="white"
        document.querySelectorAll("[data-fieldname='update_discount']")[1].style.fontWeight ="bold"
 
@@ -165,7 +170,10 @@ frappe.ui.form.on('Budget BOM', {
                     check_bom= r.message
                 }
             })
-
+            frappe.db.get_single_value("Manufacturing Settings","allow_budget_bom_total_raw_material_cost")
+                .then(allow => {
+                            allow_bb = allow
+            })
 	        frappe.db.get_single_value("Manufacturing Settings","default_workstation")
                 .then(d_workstation => {
                     workstation = d_workstation
@@ -217,7 +225,7 @@ frappe.ui.form.on('Budget BOM', {
                         }
                     })
                 })
-        } else if(cur_frm.doc.docstatus && cur_frm.doc.status === "To Design"){
+        } else if(cur_frm.doc.docstatus && cur_frm.doc.status === "To Design" ){
             // if(frappe.user.has_role("Sales User")) {
             //     frm.add_custom_button(__("Amend Quotation"), () => {
             //         cur_frm.call({
@@ -233,7 +241,7 @@ frappe.ui.form.on('Budget BOM', {
             //     })
             // }
             if(frappe.user.has_role("Mechanical")){
-	                 frm.add_custom_button(__("Approve"), () => {
+	                 frm.add_custom_button(__("Submit"), () => {
                     cur_frm.call({
                         doc: cur_frm.doc,
                         method: 'action_to_design',
@@ -265,7 +273,7 @@ frappe.ui.form.on('Budget BOM', {
 
 
 
-        } else if(cur_frm.doc.docstatus && cur_frm.doc.status === "Updated Changes"){
+        } else if(cur_frm.doc.docstatus && cur_frm.doc.status === "Updated Changes" && cur_frm.doc.total_raw_material_cost < allow_bb){
             if(frappe.user.has_role("Sales User")) {
             frm.add_custom_button(__("Approve"), () => {
                     cur_frm.call({
