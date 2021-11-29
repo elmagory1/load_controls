@@ -77,7 +77,10 @@ frappe.ui.form.on('Budget BOM', {
         console.log("test")
     },
 	refresh: function(frm) {
-
+    if(cur_frm.is_new()) {
+            cur_frm.doc.status = "To Quotation"
+            cur_frm.refresh_field("status")
+        }
     document.querySelectorAll("[data-fieldname='update_discount']")[1].style.backgroundColor ="blue"
        document.querySelectorAll("[data-fieldname='update_discount']")[1].style.color ="white"
        document.querySelectorAll("[data-fieldname='update_discount']")[1].style.fontWeight ="bold"
@@ -343,10 +346,7 @@ frappe.ui.form.on('Budget BOM', {
 
              var fields_for_cancel1 = [
                  "electrical_bom_raw_material",
-                 "electrical_bom_details",
                  "mechanical_bom_raw_material",
-                 "mechanical_bom_details",
-                 "fg_sellable_bom_details",
                  "fg_sellable_bom_raw_material",
                  "additional_operation_cost",
                  "posting_date",
