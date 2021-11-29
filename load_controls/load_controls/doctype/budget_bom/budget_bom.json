@@ -126,14 +126,16 @@
    "fieldname": "electrical_bom_details",
    "fieldtype": "Table",
    "label": "Electrical BOM Detail",
-   "options": "Budget BOM Details"
+   "options": "Budget BOM Details",
+   "read_only": 1
   },
   {
    "allow_on_submit": 1,
    "fieldname": "electrical_bom_raw_material",
    "fieldtype": "Table",
    "label": "Electrical Raw Material",
-   "options": "Budget BOM Raw Material"
+   "options": "Budget BOM Raw Material",
+   "read_only": 1
   },
   {
    "fieldname": "mechanical_bom_section",
@@ -145,7 +147,8 @@
    "fieldname": "mechanical_bom_details",
    "fieldtype": "Table",
    "label": "Mechanical BOM Detail",
-   "options": "Budget BOM Details"
+   "options": "Budget BOM Details",
+   "read_only": 1
   },
   {
    "allow_on_submit": 1,
@@ -169,7 +172,7 @@
    "allow_on_submit": 1,
    "fieldname": "fg_sellable_bom_raw_material",
    "fieldtype": "Table",
-   "label": "Enclosure",
+   "label": "Enclosure`",
    "options": "Budget BOM Raw Material"
   },
   {
@@ -394,6 +397,7 @@
    "label": "Update Discount"
   },
   {
+   "allow_on_submit": 1,
    "default": "0",
    "fieldname": "enclosure_subtotal",
    "fieldtype": "Currency",
@@ -416,7 +420,7 @@
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2021-11-24 23:32:19.862332",
+ "modified": "2021-11-29 19:10:17.098892",
  "modified_by": "Administrator",
  "module": "Load Controls",
  "name": "Budget BOM",

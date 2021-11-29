@@ -338,7 +338,6 @@ frappe.ui.form.on('Budget BOM', {
 
         }
          if(cur_frm.doc.docstatus && frappe.user.has_role("Sales User") && !(cur_frm.doc.status === "Updated Changes")) {
-
              cur_frm.set_df_property("electrical_bom_raw_material", "read_only", (!cur_frm.doc.quotation_cancelled && !cur_frm.doc.quotation_amended))
              cur_frm.set_df_property("fg_sellable_raw_material", "read_only", (!cur_frm.doc.quotation_cancelled && !cur_frm.doc.quotation_amended))
              cur_frm.set_df_property("mechanical_bom_raw_material", "read_only",  (!cur_frm.doc.quotation_cancelled && !cur_frm.doc.quotation_amended))
@@ -388,8 +387,11 @@ frappe.ui.form.on('Budget BOM', {
              }
          }
           var label_change = frappe.meta.get_docfield("Budget BOM Details","rate", cur_frm.doc.name);
+        if(label_change){
             label_change.label = 'Child Qty'
             cur_frm.refresh_field("activity_details")
+        }
+
     },
 
 	onload_post_render: function(frm) {
@@ -833,6 +835,7 @@ function get_template(template_names, raw_material_table, cur_frm){
         freeze_message: "Get Templates...",
         async:false,
         callback: (r) => {
+            cur_frm.dirty()
              compute_total_cost(cur_frm)
                 compute_total_cost_expense(cur_frm)
          }
