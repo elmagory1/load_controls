@@ -41,6 +41,8 @@ def generate_budget_bom(selections, name):
     opportunity = frappe.get_doc("Opportunity", name)
     workstation = frappe.db.get_single_value('Manufacturing Settings', 'default_workstation')
     operation = frappe.db.get_single_value('Manufacturing Settings', 'enclosure_default_operation')
+    e_operation = frappe.db.get_single_value('Manufacturing Settings', 'default_operation')
+    m_operation = frappe.db.get_single_value('Manufacturing Settings', 'mechanical_bom_default_operation')
     doc = get_mapped_doc("Opportunity", name, {
         "Opportunity": {
             "doctype": "Budget BOM",
@@ -66,5 +68,14 @@ def generate_budget_bom(selections, name):
                 "operation_time_in_minutes": 1,
 
             })
+
+    for xx in ['electrical_bom_details', 'mechanical_bom_details']:
+        doc.append(xx, {
+            "qty": 1,
+            "workstation": workstation,
+            "operation": e_operation if xx == 'electrical_bom_details' else m_operation if xx == 'mechanical_bom_details' else "",
+            "operation_time_in_minutes": 1,
+
+        })
     activity_planner = doc.insert()
     return activity_planner.name
