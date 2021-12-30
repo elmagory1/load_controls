@@ -73,10 +73,45 @@ cur_frm.cscript.generate_item_template = function () {
 }
 
 frappe.ui.form.on('Budget BOM', {
+    material_overhead: function () {
+      compute_total_operation_cost(cur_frm)
+        compute_total_cost(cur_frm)
+    },
+    operation_overhead: function () {
+      compute_total_operation_cost(cur_frm)
+        compute_total_cost(cur_frm)
+    },
+    material_margin: function () {
+      compute_total_operation_cost(cur_frm)
+        compute_total_cost(cur_frm)
+    },
+    operation_margin: function () {
+      compute_total_operation_cost(cur_frm)
+        compute_total_cost(cur_frm)
+    },
     save_or_submit: function () {
         console.log("test")
     },
 	refresh: function(frm) {
+        if(cur_frm.is_new()) {
+	        console.log(cur_frm.doc.posting_date)
+            var date = new Date(cur_frm.doc.posting_date);
+            date.setDate(date.getDate() + 30);
+            console.log(date)
+            console.log(date.getFullYear())
+            console.log(date.getMonth()+1 + "-" + date.getDate() + "-" + date.getFullYear())
+            var new_date = new Date(date.getMonth()+1 + "-" + date.getDate() + "-" + date.getFullYear())
+            console.log(new_date)
+            console.log(new_date.getMonth()+1)
+            console.log(new_date.getDate())
+            console.log(new_date.getFullYear())
+
+            cur_frm.doc.expected_closing_date = date.getFullYear() + "-" + date.getMonth() + 1 + "-" + date.getDate()
+            // cur_frm.doc.expected_closing_date = "2021-12-31"
+            cur_frm.doc.status = "Pending"
+            cur_frm.refresh_fields(["status","expected_closing_date"])
+
+        }
     if(cur_frm.is_new()) {
             cur_frm.doc.status = "To Quotation"
             cur_frm.refresh_field("status")
@@ -386,7 +421,7 @@ frappe.ui.form.on('Budget BOM', {
                  cur_frm.set_df_property(fields_for_cancel[ii], "read_only",(!cur_frm.doc.quotation_cancelled && !cur_frm.doc.quotation_amended))
              }
          }
-          var label_change = frappe.meta.get_docfield("Budget BOM Details","rate", cur_frm.doc.name);
+      var label_change = frappe.meta.get_docfield("Budget BOM Details","rate", cur_frm.doc.name);
         if(label_change){
             label_change.label = 'Child Qty'
             cur_frm.refresh_field("activity_details")
@@ -441,7 +476,7 @@ frappe.ui.form.on('Budget BOM', {
             cur_frm.refresh_field("fg_sellable_bom_details")
 
             compute_total_operation_cost(cur_frm)
-            compute_total_cost_expense(cur_frm)
+             compute_total_cost(cur_frm)
         }
 
 
@@ -456,23 +491,6 @@ frappe.ui.form.on('Budget BOM', {
         get_template(cur_frm.doc.fg_sellable_item_template, "fg_sellable_bom_raw_material")
 	},
 
-     total_operation_cost: function(frm) {
-        compute_total_cost_expense(cur_frm)
-	},
-    total_additional_operation_cost: function(frm) {
-        compute_total_cost_expense(cur_frm)
-	},
-    discount_amount: function(frm) {
-        compute_total_cost_expense(cur_frm)
-	},
-    discount_percentage: function(frm) {
-	    cur_frm.doc.discount_amount = (cur_frm.doc.discount_percentage / 100) * cur_frm.doc.total_raw_material_cost
-        cur_frm.refresh_field("discount_amount")
-        compute_total_cost_expense(cur_frm)
-	},
-    margin_: function(frm) {
-        compute_total_cost_expense(cur_frm)
-	},
     material_request: function(frm) {
        frappe.model.open_mapped_doc({
 			method: "load_controls.load_controls.doctype.budget_bom.budget_bom.make_mr",
@@ -562,7 +580,6 @@ frappe.ui.form.on('Budget BOM Raw Material', {
 
         }
         compute_total_cost(cur_frm)
-        compute_total_cost_expense(cur_frm)
 
 	},
     rate: function(frm, cdt, cdn) {
@@ -590,7 +607,6 @@ frappe.ui.form.on('Budget BOM Raw Material', {
 
         }
         compute_total_cost(cur_frm)
-        compute_total_cost_expense(cur_frm)
 
 	},
     item_code: function (frm, cdt, cdn) {
@@ -630,7 +646,6 @@ frappe.ui.form.on('Budget BOM Raw Material', {
                  }
             })
         compute_total_cost(cur_frm)
-        compute_total_cost_expense(cur_frm)
         }
 
     },
@@ -656,7 +671,6 @@ frappe.ui.form.on('Budget BOM Raw Material', {
 
         }
          compute_total_cost(cur_frm)
-        compute_total_cost_expense(cur_frm)
 
 
     },
@@ -679,36 +693,55 @@ frappe.ui.form.on('Budget BOM Raw Material', {
 
         }
         compute_total_cost(cur_frm)
-        compute_total_cost_expense(cur_frm)
 
     },
     unlink_discount: function (frm, cdt, cdn) {
         var d = locals[cdt][cdn]
-        d.link_discount_amount = ""
-                        cur_frm.refresh_field(d.parentfield)
-
-    },
-    save_discount_amount: function (frm, cdt, cdn) {
-        var d = locals[cdt][cdn]
-        if(d.discount_rate > 0 && d.item_code){
-            frappe.db.insert({
-                doctype: 'Discount',
-                opportunity: cur_frm.doc.opportunity,
-                item_code: d.item_code,
-                item_name: d.item_name,
-                item_group: d.item_group,
-                discount_amount: d.discount_amount,
-                discount_rate: d.discount_rate,
-                discount_percentage: d.discount_percentage,
-            }).then(doc => {
-                frappe.show_alert({
-                    message:__('Discount created'),
-                    indicator:'green'
-                }, 3);
-                d.link_discount_amount = doc.name
-                cur_frm.refresh_field(d.parentfield)
+        if(cur_frm.doc.docstatus){
+            frappe.call({
+                method: "ringlus.ringlus.doctype.budget_bom.budget_bom.unlink",
+                args: {
+                    name: d.name
+                },
+                async: false,
+                callback: function (r) {
+                    cur_frm.reload_doc()
+                }
             })
+        } else{
+            d.link_discount_amount = ""
+            cur_frm.refresh_field(d.parentfield)
         }
+    },
+   save_discount_amount: function (frm, cdt, cdn) {
+        var d = locals[cdt][cdn]
+        if(d.discount_percentage > 0 && d.item_code){
+             cur_frm.call({
+                doc: cur_frm.doc,
+                method: 'add_or_save_discount',
+                args: {
+                    opportunity: cur_frm.doc.opportunity,
+                    item_group: d.item_group,
+                    discount_percentage: d.discount_percentage,
+                    remarks: d.remarks ? d.remarks : '',
+                },
+                freeze: true,
+                freeze_message: "Discount...",
+                async:false,
+                callback: (r) => {
+                        frappe.show_alert({
+                            message:__('Discount created or updated'),
+                            indicator:'green'
+                        }, 3);
+                        d.link_discount_amount = r.message
+                        cur_frm.refresh_field(d.parentfield)
+                }
+            })
+
+        }
+
+
+
     },
     update_discount: function (frm, cdt, cdn) {
         var d = locals[cdt][cdn]
@@ -750,7 +783,6 @@ frappe.ui.form.on('Budget BOM Raw Material', {
 
         }
         compute_total_cost(cur_frm)
-        compute_total_cost_expense(cur_frm)
     },
     per_kg: function (frm, cdt, cdn) {
         var d = locals[cdt][cdn]
@@ -762,7 +794,6 @@ frappe.ui.form.on('Budget BOM Raw Material', {
 
         }
         compute_total_cost(cur_frm)
-        compute_total_cost_expense(cur_frm)
     }
 });
 frappe.ui.form.on('Additional Operational Cost', {
@@ -773,21 +804,24 @@ frappe.ui.form.on('Additional Operational Cost', {
         }
         cur_frm.doc.total_additional_operation_cost = total
         cur_frm.refresh_field("total_additional_operation_cost")
-         compute_total_cost_expense(cur_frm)
-	}
+        compute_total_cost(cur_frm)
+	},
+    additional_operation_cost_remove: function () {
+         var total=0
+       for(var ii=0;ii<cur_frm.doc.additional_operation_cost.length;ii+=1){
+            total += cur_frm.doc.additional_operation_cost[ii].amount
+        }
+        cur_frm.doc.total_additional_operation_cost = total
+        cur_frm.refresh_field("total_additional_operation_cost")
+        compute_total_cost(cur_frm)
+    }
 });
 frappe.ui.form.on('Budget BOM Details', {
     workstation: function(frm, cdt, cdn) {
        compute_total_operation_cost(cur_frm)
-        compute_total_cost_expense(cur_frm)
+        compute_total_cost(cur_frm)
 	}
 });
-function compute_total_cost_expense(cur_frm) {
-    var total_raw_material_cost = cur_frm.doc.margin_ > 0 ? (cur_frm.doc.total_raw_material_cost * parseFloat(cur_frm.doc.margin_ ? cur_frm.doc.margin_ : 0) / 100) + cur_frm.doc.total_raw_material_cost : cur_frm.doc.total_raw_material_cost
-    var total_cost = cur_frm.doc.total_operation_cost + total_raw_material_cost
-    cur_frm.doc.total_cost =  total_cost
-    cur_frm.refresh_field("total_cost")
-}
 function compute_total_cost(cur_frm) {
     var fieldnames = ['electrical_bom_raw_material','mechanical_bom_raw_material','fg_sellable_bom_raw_material']
     var total = 0
@@ -801,11 +835,36 @@ function compute_total_cost(cur_frm) {
                 }
             }
         }
-
     }
     cur_frm.doc.total_raw_material_cost = total
     cur_frm.doc.enclosure_subtotal = enclosure_subtotal
     cur_frm.refresh_fields(["total_raw_material_cost", "enclosure_subtotal"])
+    compute_other_figures(cur_frm)
+}
+function compute_other_figures(cur_frm) {
+    var item_row = cur_frm.doc
+    item_row.material_overhead_amount = cur_frm.doc.total_raw_material_cost * (cur_frm.doc.material_overhead / 100)
+    item_row.material_cost = item_row.total_raw_material_cost + (item_row.total_raw_material_cost * (item_row.material_overhead / 100 ))
+
+    item_row.operation_overhead_amount = item_row.estimated_bom_operation_cost * (item_row.operation_overhead / 100 )
+    item_row.operation_cost = item_row.estimated_bom_operation_cost + (item_row.estimated_bom_operation_cost * (item_row.operation_overhead / 100 ))
+
+    item_row.material_margin_amount = (item_row.material_cost / (1 - (item_row.material_margin / 100 ))) - item_row.material_cost
+    item_row.total_margin_cost = item_row.material_cost + item_row.material_margin_amount
+
+
+    item_row.operation_margin_amount = (item_row.operation_cost / (1 - (item_row.operation_margin/ 100 ))) - item_row.operation_cost
+    item_row.total_operation_cost = item_row.operation_cost + item_row.operation_margin_amount
+
+    item_row.total_cost = item_row.total_margin_cost + item_row.total_operation_cost + item_row.total_additional_operation_cost
+    cur_frm.refresh_fields([
+        "material_overhead_amount", "material_cost",
+        "operation_overhead_amount", "operation_cost",
+        "material_margin_amount", "total_margin_cost",
+        "operation_margin_amount", "total_operation_cost",
+        "total_cost"
+    ])
+
 }
 function compute_total_operation_cost(cur_frm) {
     var fieldnames = ['electrical_bom_details','mechanical_bom_details','fg_sellable_bom_details']
@@ -820,7 +879,7 @@ function compute_total_operation_cost(cur_frm) {
     }
     console.log("TOTAL HOUR RATE")
     console.log(total_hour_rate)
-    cur_frm.doc.total_operation_cost = total_hour_rate
+    cur_frm.doc.estimated_bom_operation_cost = total_hour_rate
     cur_frm.refresh_field("total_operation_cost")
 }
 function get_template(template_names, raw_material_table, cur_frm){
@@ -837,7 +896,6 @@ function get_template(template_names, raw_material_table, cur_frm){
         callback: (r) => {
             cur_frm.dirty()
              compute_total_cost(cur_frm)
-                compute_total_cost_expense(cur_frm)
          }
     })
 }

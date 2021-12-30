@@ -54,15 +54,45 @@ class BudgetBOM(Document):
                     'amount': rate[0] * x.qty,
                     'discount_rate': 0
                 }
-                discount = frappe.db.sql(""" SELECT * FROm `tabDiscount` WHERE opportunity=%s and item_code=%s and item_group=%s """,(self.opportunity, x.item_code, item_master.item_group),as_dict=1)
+                discount = frappe.db.sql(""" 
+                                                      SELECT D.name, DD.item_group, DD.discount_percentage, DD.remarks FROM `tabDiscount` D INNER JOIN `tabDiscount Details` DD ON DD.parent = D.name WHERE D.opportunity=%s and DD.item_group=%s """,
+                                         (self.opportunity, item_master.item_group), as_dict=1)
                 if len(discount) > 0:
-                    obj['discount_rate'] = discount[0].discount_rate
-                    obj['link_discount_amount'] = discount[0].name
-                    obj['discount_amount'] = discount[0].discount_amount
                     obj['discount_percentage'] = discount[0].discount_percentage
-                    obj['rate'] = (discount[0].discount_rate * x.qty) + discount[0].discount_amount
-                    obj['amount'] = (discount[0].discount_rate * x.qty)
+                    obj['discount_amount'] = (discount[0].discount_percentage / 100) * rate[0] * x.qty
+                    obj['amount'] = (rate[0] * (x.conversion_factor * x.qty)) - obj['discount_amount']
+                    obj['discount_rate'] = obj['amount'] / x.qty
+                    obj['remarks'] = discount[0].remarks
+                    obj['link_discount_amount'] = discount[0].name
+                    obj['rate'] = (obj['discount_rate'] * x.qty) + obj['discount_amount']
+
                 self.append(raw_material_table,obj)
+
+    @frappe.whitelist()
+    def add_or_save_discount(self, opportunity, item_group, discount_percentage, remarks):
+        disc = frappe.db.sql(""" SELECT COUNT(*) as count, name FROM `tabDiscount` WHERE opportunity=%s """,
+                             opportunity, as_dict=1)
+        if disc[0].count > 0:
+            discount = frappe.get_doc("Discount", disc[0].name)
+            discount.append("discount_details", {
+                "item_group": item_group,
+                "discount_percentage": discount_percentage
+            })
+            discount.save()
+            return disc[0].name
+        else:
+            obj = {
+                "doctype": "Discount",
+                "opportunity": opportunity,
+                "discount_details": [{
+                    "item_group": item_group,
+                    "discount_percentage": discount_percentage,
+                    "remarks": remarks
+                }]
+            }
+            d = frappe.get_doc(obj).insert()
+            return d.name
+
     @frappe.whitelist()
     def get_discount(self, item,raw_material_table):
         raw_material_warehouse = frappe.db.get_single_value('Manufacturing Settings', 'default_raw_material_warehouse')
@@ -73,6 +103,7 @@ class BudgetBOM(Document):
         obj = {
             'item_code': item['item_code'],
             'item_name': item_master.item_name,
+            'item_group': item_master.item_group,
             'uom': item['uom'],
             'qty': item['qty'],
             'warehouse': raw_material_warehouse,
@@ -81,15 +112,18 @@ class BudgetBOM(Document):
             'discount_rate': 0
 
         }
-        discount = frappe.db.sql(""" SELECT * FROm `tabDiscount` WHERE opportunity=%s and item_code=%s and item_group=%s""",
-                                 (self.opportunity, item['item_code'], item_master.item_group), as_dict=1)
+        discount = frappe.db.sql(""" 
+                                           SELECT D.name, DD.item_group, DD.discount_percentage, DD.remarks FROM `tabDiscount` D INNER JOIN `tabDiscount Details` DD ON DD.parent = D.name WHERE D.opportunity=%s and DD.item_group=%s """,
+                                 (self.opportunity, item_master.item_group), as_dict=1)
+
         if len(discount) > 0:
-            obj['discount_rate'] = discount[0].discount_rate
-            obj['link_discount_amount'] = discount[0].name
-            obj['discount_amount'] = discount[0].discount_amount
             obj['discount_percentage'] = discount[0].discount_percentage
-            obj['rate'] = (discount[0].discount_rate * item['qty']) + discount[0].discount_amount
-            obj['amount'] = (discount[0].discount_rate * item['qty'])
+            obj['discount_amount'] = (discount[0].discount_percentage / 100) * rate[0] * item['qty']
+            obj['amount'] = (rate[0] * item['qty']) - obj['discount_amount']
+            obj['discount_rate'] = obj['amount'] / item['qty']
+            obj['remarks'] = discount[0].remarks
+            obj['link_discount_amount'] = discount[0].name
+            obj['rate'] = (obj['discount_rate'] * item['qty']) + obj['discount_amount']
 
         return obj
     @frappe.whitelist()
@@ -433,3 +467,8 @@ def get_rate(item_code, warehouse, based_on,price_list):
         rate = item_record[0].last_purchase_rate if len(item_record) > 0 else 0
 
     return rate, balance
+
+@frappe.whitelist()
+def unlink(name):
+    frappe.db.sql(""" UPDATE `tabBudget BOM Raw Material` SET link_discount_amount='', unlinked=1 WHERE name=%s""", name)
+    frappe.db.commit()

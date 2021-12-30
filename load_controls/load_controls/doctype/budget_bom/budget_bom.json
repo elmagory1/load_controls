@@ -41,15 +41,25 @@
   "fgsellable_bom_detail_section",
   "fg_sellable_bom_details",
   "section_break_29",
-  "total_operation_cost",
-  "discount_percentage",
-  "discount_amount",
-  "column_break_32",
-  "total_additional_operation_cost",
-  "margin_",
-  "column_break_35",
   "total_raw_material_cost",
+  "material_overhead",
+  "material_overhead_amount",
+  "material_cost",
+  "column_break_32",
+  "estimated_bom_operation_cost",
+  "operation_overhead",
+  "operation_overhead_amount",
+  "operation_cost",
+  "margin_section",
+  "material_margin",
+  "material_margin_amount",
+  "total_margin_cost",
   "total_cost",
+  "column_break_50",
+  "operation_margin",
+  "operation_margin_amount",
+  "total_operation_cost",
+  "total_additional_operation_cost",
   "additional_operational_cost_section",
   "additional_operation_cost",
   "more_information_section",
@@ -95,6 +105,7 @@
   },
   {
    "allow_on_submit": 1,
+   "default": "Today",
    "fieldname": "posting_date",
    "fieldtype": "Date",
    "in_list_view": 1,
@@ -126,16 +137,14 @@
    "fieldname": "electrical_bom_details",
    "fieldtype": "Table",
    "label": "Electrical BOM Detail",
-   "options": "Budget BOM Details",
-   "read_only": 1
+   "options": "Budget BOM Details"
   },
   {
    "allow_on_submit": 1,
    "fieldname": "electrical_bom_raw_material",
    "fieldtype": "Table",
    "label": "Electrical Raw Material",
-   "options": "Budget BOM Raw Material",
-   "read_only": 1
+   "options": "Budget BOM Raw Material"
   },
   {
    "fieldname": "mechanical_bom_section",
@@ -147,8 +156,7 @@
    "fieldname": "mechanical_bom_details",
    "fieldtype": "Table",
    "label": "Mechanical BOM Detail",
-   "options": "Budget BOM Details",
-   "read_only": 1
+   "options": "Budget BOM Details"
   },
   {
    "allow_on_submit": 1,
@@ -253,10 +261,10 @@
   },
   {
    "fieldname": "section_break_29",
-   "fieldtype": "Section Break"
+   "fieldtype": "Section Break",
+   "label": "Overhead"
   },
   {
-   "allow_on_submit": 1,
    "default": "0",
    "fieldname": "total_operation_cost",
    "fieldtype": "Currency",
@@ -274,25 +282,14 @@
    "options": "Additional Operational Cost"
   },
   {
-   "default": "0",
-   "fieldname": "margin_",
-   "fieldtype": "Data",
-   "label": "Margin %"
-  },
-  {
-   "fieldname": "column_break_35",
-   "fieldtype": "Column Break"
-  },
-  {
    "allow_on_submit": 1,
    "default": "0",
    "fieldname": "total_raw_material_cost",
    "fieldtype": "Currency",
-   "label": "Total Raw Material Cost",
+   "label": "Estimated BOM Material Cost",
    "read_only": 1
   },
   {
-   "allow_on_submit": 1,
    "default": "0",
    "fieldname": "total_cost",
    "fieldtype": "Currency",
@@ -352,20 +349,6 @@
   },
   {
    "allow_on_submit": 1,
-   "default": "0",
-   "fieldname": "discount_amount",
-   "fieldtype": "Currency",
-   "label": "Discount Amount"
-  },
-  {
-   "allow_on_submit": 1,
-   "default": "0",
-   "fieldname": "discount_percentage",
-   "fieldtype": "Data",
-   "label": "Discount Percentage"
-  },
-  {
-   "allow_on_submit": 1,
    "fieldname": "fgsellable_bom_detail_section",
    "fieldtype": "Section Break",
    "label": "Finished Goods BOM Details"
@@ -415,12 +398,102 @@
   {
    "fieldname": "column_break_28",
    "fieldtype": "Column Break"
+  },
+  {
+   "default": "0",
+   "fieldname": "material_overhead",
+   "fieldtype": "Float",
+   "label": "Material Overhead %"
+  },
+  {
+   "default": "0",
+   "fieldname": "material_cost",
+   "fieldtype": "Currency",
+   "label": "Material Cost",
+   "read_only": 1
+  },
+  {
+   "allow_on_submit": 1,
+   "default": "0",
+   "fieldname": "estimated_bom_operation_cost",
+   "fieldtype": "Currency",
+   "label": "Estimated BOM Operation Cost",
+   "read_only": 1
+  },
+  {
+   "default": "0",
+   "fieldname": "operation_overhead",
+   "fieldtype": "Float",
+   "label": "Operation Overhead %"
+  },
+  {
+   "default": "0",
+   "fieldname": "operation_overhead_amount",
+   "fieldtype": "Currency",
+   "label": "Operation Overhead Amount",
+   "read_only": 1
+  },
+  {
+   "default": "0",
+   "fieldname": "operation_cost",
+   "fieldtype": "Currency",
+   "label": "Operation Cost",
+   "read_only": 1
+  },
+  {
+   "fieldname": "margin_section",
+   "fieldtype": "Section Break",
+   "label": "Margin"
+  },
+  {
+   "default": "0",
+   "fieldname": "material_margin",
+   "fieldtype": "Float",
+   "label": "Material Margin %"
+  },
+  {
+   "default": "0",
+   "fieldname": "material_margin_amount",
+   "fieldtype": "Currency",
+   "label": "Material Margin Amount",
+   "read_only": 1
+  },
+  {
+   "fieldname": "column_break_50",
+   "fieldtype": "Column Break"
+  },
+  {
+   "default": "0",
+   "fieldname": "operation_margin",
+   "fieldtype": "Float",
+   "label": "Operation Margin %"
+  },
+  {
+   "default": "0",
+   "fieldname": "operation_margin_amount",
+   "fieldtype": "Currency",
+   "label": "Operation Margin Amount",
+   "read_only": 1
+  },
+  {
+   "default": "0",
+   "fieldname": "material_overhead_amount",
+   "fieldtype": "Currency",
+   "label": "Material Overhead Amount",
+   "read_only": 1
+  },
+  {
+   "default": "0",
+   "fieldname": "total_margin_cost",
+   "fieldtype": "Currency",
+   "label": "Total Margin Cost",
+   "read_only": 1
   }
  ],
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2021-11-29 19:10:17.098892",
+ "modified": "2021-12-30 11:16:03.566845",
  "modified_by": "Administrator",
  "module": "Load Controls",
  "name": "Budget BOM",
