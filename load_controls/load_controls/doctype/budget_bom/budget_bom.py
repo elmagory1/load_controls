@@ -416,6 +416,12 @@ def make_mr(source_name, target_doc=None):
             "field_map":{
                 "name": "budget_bom_raw_material"
             }
+        },
+        "Budget BOM Enclosure Raw Material": {
+            "doctype": "Material Request Item",
+            "field_map": {
+                "name": "budget_bom_raw_material"
+            }
         }
 
     }, ignore_permissions=True)
@@ -474,4 +480,5 @@ def get_rate(item_code, warehouse, based_on,price_list):
 @frappe.whitelist()
 def unlink(name):
     frappe.db.sql(""" UPDATE `tabBudget BOM Raw Material` SET link_discount_amount='', unlinked=1 WHERE name=%s""", name)
+    frappe.db.sql(""" UPDATE `tabBudget BOM Enclosure Raw Material` SET link_discount_amount='', unlinked=1 WHERE name=%s""", name)
     frappe.db.commit()
