@@ -13,8 +13,7 @@
   "kg",
   "per_kg",
   "rate",
-  "discount_percentage",
-  "discount_amount",
+  "discount_rate",
   "amount",
   "column_break_7",
   "schedule_date",
@@ -23,7 +22,8 @@
   "uom",
   "warehouse",
   "batch",
-  "discount_rate",
+  "discount_percentage",
+  "discount_amount",
   "save_discount_amount",
   "link_discount_amount",
   "unlink_discount"
@@ -121,7 +121,7 @@
    "default": "0",
    "fieldname": "discount_amount",
    "fieldtype": "Currency",
-   "label": "Discount Amount"
+   "label": "Discount on Rate"
   },
   {
    "fetch_from": "item_code.description",
@@ -141,7 +141,7 @@
    "default": "0",
    "fieldname": "discount_rate",
    "fieldtype": "Currency",
-   "label": "Discount Rate",
+   "label": "Discounted Rate",
    "read_only": 1
   },
   {
@@ -190,7 +190,7 @@
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2021-11-26 11:34:37.231716",
+ "modified": "2021-12-31 10:03:03.299540",
  "modified_by": "Administrator",
  "module": "Load Controls",
  "name": "Budget BOM Raw Material",
