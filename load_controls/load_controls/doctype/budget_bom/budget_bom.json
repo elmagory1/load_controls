@@ -181,7 +181,7 @@
    "fieldname": "fg_sellable_bom_raw_material",
    "fieldtype": "Table",
    "label": "Enclosure`",
-   "options": "Budget BOM Raw Material"
+   "options": "Budget BOM Enclosure Raw Material"
   },
   {
    "fieldname": "amended_from",
@@ -265,6 +265,7 @@
    "label": "Overhead"
   },
   {
+   "allow_on_submit": 1,
    "default": "0",
    "fieldname": "total_operation_cost",
    "fieldtype": "Currency",
@@ -290,6 +291,7 @@
    "read_only": 1
   },
   {
+   "allow_on_submit": 1,
    "default": "0",
    "fieldname": "total_cost",
    "fieldtype": "Currency",
@@ -400,12 +402,14 @@
    "fieldtype": "Column Break"
   },
   {
+   "allow_on_submit": 1,
    "default": "0",
    "fieldname": "material_overhead",
    "fieldtype": "Float",
    "label": "Material Overhead %"
   },
   {
+   "allow_on_submit": 1,
    "default": "0",
    "fieldname": "material_cost",
    "fieldtype": "Currency",
@@ -421,12 +425,14 @@
    "read_only": 1
   },
   {
+   "allow_on_submit": 1,
    "default": "0",
    "fieldname": "operation_overhead",
    "fieldtype": "Float",
    "label": "Operation Overhead %"
   },
   {
+   "allow_on_submit": 1,
    "default": "0",
    "fieldname": "operation_overhead_amount",
    "fieldtype": "Currency",
@@ -434,6 +440,7 @@
    "read_only": 1
   },
   {
+   "allow_on_submit": 1,
    "default": "0",
    "fieldname": "operation_cost",
    "fieldtype": "Currency",
@@ -446,12 +453,14 @@
    "label": "Margin"
   },
   {
+   "allow_on_submit": 1,
    "default": "0",
    "fieldname": "material_margin",
    "fieldtype": "Float",
    "label": "Material Margin %"
   },
   {
+   "allow_on_submit": 1,
    "default": "0",
    "fieldname": "material_margin_amount",
    "fieldtype": "Currency",
@@ -463,12 +472,14 @@
    "fieldtype": "Column Break"
   },
   {
+   "allow_on_submit": 1,
    "default": "0",
    "fieldname": "operation_margin",
    "fieldtype": "Float",
    "label": "Operation Margin %"
   },
   {
+   "allow_on_submit": 1,
    "default": "0",
    "fieldname": "operation_margin_amount",
    "fieldtype": "Currency",
@@ -476,6 +487,7 @@
    "read_only": 1
   },
   {
+   "allow_on_submit": 1,
    "default": "0",
    "fieldname": "material_overhead_amount",
    "fieldtype": "Currency",
@@ -483,6 +495,7 @@
    "read_only": 1
   },
   {
+   "allow_on_submit": 1,
    "default": "0",
    "fieldname": "total_margin_cost",
    "fieldtype": "Currency",
@@ -493,7 +506,7 @@
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2021-12-30 11:16:03.566845",
+ "modified": "2021-12-31 11:44:40.015478",
  "modified_by": "Administrator",
  "module": "Load Controls",
  "name": "Budget BOM",
