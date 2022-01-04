@@ -81,9 +81,9 @@ function get_rate_from_raw_material(item_code, parentfield, rate) {
     var field = parentfield === 'mechanical_bom_additiondeletion' ? "mechanical_bom_raw_material" : "electrical_bom_raw_material"
     if(cur_frm.doc[field]){
        for(var x=0;x < cur_frm.doc[field].length;x+=1){
-        if(cur_frm.doc[field][x].item_code === item_code){
-            return cur_frm.doc[field][x].discount_rate
-        }
+            if(cur_frm.doc[field][x].item_code === item_code){
+                return cur_frm.doc[field][x].discount_rate
+            }
         }
     }
 
@@ -1136,9 +1136,23 @@ function compute_total_cost(cur_frm) {
     for(var i=0;i<fieldnames.length;i+=1){
         if(cur_frm.doc[fieldnames[i]]){
             for(var ii=0;ii<cur_frm.doc[fieldnames[i]].length;ii+=1){
-                total += cur_frm.doc[fieldnames[i]][ii].amount
+                if(fieldnames[i] !== 'mechanical_bom_additiondeletion' && fieldnames[i] !== 'electrical_bom_additiondeletion') {
+                    total += cur_frm.doc[fieldnames[i]][ii].amount
+                }
                 if(fieldnames[i] === 'fg_sellable_bom_raw_material'){
                     enclosure_subtotal += cur_frm.doc[fieldnames[i]][ii].amount
+                } else if(fieldnames[i] === 'mechanical_bom_additiondeletion'){
+                    if(cur_frm.doc[fieldnames[i]][ii].type === "Addition"){
+                        total += cur_frm.doc[fieldnames[i]][ii].amount
+                    } else {
+                        total -= cur_frm.doc[fieldnames[i]][ii].amount
+                    }
+                } else if(fieldnames[i] === 'electrical_bom_additiondeletion'){
+                    if(cur_frm.doc[fieldnames[i]][ii].type === "Addition"){
+                        total += cur_frm.doc[fieldnames[i]][ii].amount
+                    } else {
+                        total -= cur_frm.doc[fieldnames[i]][ii].amount
+                    }
                 }
             }
         }
