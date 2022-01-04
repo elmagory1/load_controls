@@ -110,6 +110,26 @@ frappe.ui.form.on('Budget BOM Raw Material Modifier', {
             cur_frm.refresh_field(d.parentfield)
             compute_total_cost(cur_frm)
         }
+    },
+    electrical_bom_additiondeletion_remove: function (frm,cdt,cdn) {
+        var d = locals[cdt][cdn]
+        if(d.item_code){
+            var rate = get_rate_from_raw_material(d.item_code, d.parentfield, d.discount_rate)
+            d.discount_rate = rate
+            d.amount = rate * d.qty
+            cur_frm.refresh_field(d.parentfield)
+            compute_total_cost(cur_frm)
+        }
+    },
+    mechanical_bom_additiondeletion_remove: function (frm,cdt,cdn) {
+        var d = locals[cdt][cdn]
+        if(d.item_code){
+            var rate = get_rate_from_raw_material(d.item_code, d.parentfield, d.discount_rate)
+            d.discount_rate = rate
+            d.amount = rate * d.qty
+            cur_frm.refresh_field(d.parentfield)
+            compute_total_cost(cur_frm)
+        }
     }
 })
 frappe.ui.form.on('Budget BOM', {
