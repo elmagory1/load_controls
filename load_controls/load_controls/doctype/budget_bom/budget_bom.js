@@ -167,26 +167,26 @@ frappe.ui.form.on('Budget BOM', {
                 }
             }
         })
-        // cur_frm.set_query("item_code","mechanical_bom_additiondeletion", () => {
-        //    var names = Array.from(cur_frm.doc.mechanical_bom_raw_material, x => "item_code" in x ? x.item_code:"")
-        //    var names2 = Array.from(cur_frm.doc.mechanical_bom_additiondeletion, x => "item_code" in x ? x.item_code:"")
-	     //    return {
-	     //        filters:[
-	     //            ["name", "in",names],
-        //             ["name", "not in", names2]
-        //         ]
-        //     }
-        // })
-        // cur_frm.set_query("item_code","electrical_bom_additiondeletion", () => {
-        //    var names = Array.from(cur_frm.doc.mechanical_bom_raw_material, x => "item_code" in x ? x.item_code:"")
-        //    var names2 = Array.from(cur_frm.doc.mechanical_bom_additiondeletion, x => "item_code" in x ? x.item_code:"")
-	     //    return {
-	     //        filters:[
-	     //            ["name", "in",names],
-        //             ["name", "not in", names2]
-        //         ]
-        //     }
-        // })
+        cur_frm.set_query("item_code","mechanical_bom_additiondeletion", () => {
+           var names = Array.from(cur_frm.doc.mechanical_bom_raw_material, x => "item_code" in x ? x.item_code:"")
+           var names2 = Array.from(cur_frm.doc.mechanical_bom_additiondeletion, x => "item_code" in x ? x.item_code:"")
+	        return {
+	            filters:[
+	                ["name", "in",names],
+                    ["name", "not in", names2]
+                ]
+            }
+        })
+        cur_frm.set_query("item_code","electrical_bom_additiondeletion", () => {
+           var names = Array.from(cur_frm.doc.electrical_bom_raw_material, x => "item_code" in x ? x.item_code:"")
+           var names2 = Array.from(cur_frm.doc.electrical_bom_additiondeletion, x => "item_code" in x ? x.item_code:"")
+	        return {
+	            filters:[
+	                ["name", "in",names],
+                    ["name", "not in", names2]
+                ]
+            }
+        })
 	    //ELECTRICAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAL
 	    cur_frm.fields_dict["electrical_bom_raw_material"].grid.add_custom_button(__('Refresh Available Stock'),
 			function() {
