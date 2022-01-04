@@ -77,7 +77,41 @@ cur_frm.cscript.generate_item_template = function () {
     d.show();
 
 }
+function get_rate_from_raw_material(item_code, parentfield, rate) {
+    var field = parentfield === 'mechanical_bom_additiondeletion' ? "mechanical_bom_raw_material" : "electrical_bom_raw_material"
+    if(cur_frm.doc[field]){
+       for(var x=0;x < cur_frm.doc[field].length;x+=1){
+        if(cur_frm.doc[field][x].item_code === item_code){
+            return cur_frm.doc[field][x].discount_rate
+        }
+        }
+    }
 
+    return rate
+}
+frappe.ui.form.on('Budget BOM Raw Material Modifier', {
+    item_code: function (frm,cdt,cdn) {
+        var d = locals[cdt][cdn]
+        if(d.item_code){
+            var rate = get_rate_from_raw_material(d.item_code, d.parentfield, d.discount_rate)
+            d.discount_rate = rate
+            d.amount = rate * d.qty
+            cur_frm.refresh_field(d.parentfield)
+                        compute_total_cost(cur_frm)
+
+        }
+    },
+    qty: function (frm,cdt,cdn) {
+        var d = locals[cdt][cdn]
+        if(d.item_code){
+            var rate = get_rate_from_raw_material(d.item_code, d.parentfield, d.discount_rate)
+            d.discount_rate = rate
+            d.amount = rate * d.qty
+            cur_frm.refresh_field(d.parentfield)
+            compute_total_cost(cur_frm)
+        }
+    }
+})
 frappe.ui.form.on('Budget BOM', {
     material_overhead: function () {
       compute_total_operation_cost(cur_frm)
@@ -133,6 +167,26 @@ frappe.ui.form.on('Budget BOM', {
                 }
             }
         })
+        // cur_frm.set_query("item_code","mechanical_bom_additiondeletion", () => {
+        //    var names = Array.from(cur_frm.doc.mechanical_bom_raw_material, x => "item_code" in x ? x.item_code:"")
+        //    var names2 = Array.from(cur_frm.doc.mechanical_bom_additiondeletion, x => "item_code" in x ? x.item_code:"")
+	     //    return {
+	     //        filters:[
+	     //            ["name", "in",names],
+        //             ["name", "not in", names2]
+        //         ]
+        //     }
+        // })
+        // cur_frm.set_query("item_code","electrical_bom_additiondeletion", () => {
+        //    var names = Array.from(cur_frm.doc.mechanical_bom_raw_material, x => "item_code" in x ? x.item_code:"")
+        //    var names2 = Array.from(cur_frm.doc.mechanical_bom_additiondeletion, x => "item_code" in x ? x.item_code:"")
+	     //    return {
+	     //        filters:[
+	     //            ["name", "in",names],
+        //             ["name", "not in", names2]
+        //         ]
+        //     }
+        // })
 	    //ELECTRICAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAL
 	    cur_frm.fields_dict["electrical_bom_raw_material"].grid.add_custom_button(__('Refresh Available Stock'),
 			function() {
@@ -1076,7 +1130,7 @@ frappe.ui.form.on('Budget BOM Details', {
 	}
 });
 function compute_total_cost(cur_frm) {
-    var fieldnames = ['electrical_bom_raw_material','mechanical_bom_raw_material','fg_sellable_bom_raw_material']
+    var fieldnames = ['electrical_bom_raw_material','mechanical_bom_raw_material','fg_sellable_bom_raw_material', 'mechanical_bom_additiondeletion','electrical_bom_additiondeletion']
     var total = 0
     var enclosure_subtotal = 0
     for(var i=0;i<fieldnames.length;i+=1){

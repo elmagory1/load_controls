@@ -23,12 +23,14 @@
   "electrical_item_template",
   "generate_electrical_item_template",
   "electrical_bom_raw_material",
+  "electrical_bom_additiondeletion",
   "mechanical_bom_section",
   "mechanical_bom_details",
   "mechanical_from_template",
   "mechanical_item_template",
   "generate_mechanical_item_template",
   "mechanical_bom_raw_material",
+  "mechanical_bom_additiondeletion",
   "fgsellable_bom_section",
   "fg_sellable_bom_raw_material",
   "section_break_26",
@@ -501,12 +503,24 @@
    "fieldtype": "Currency",
    "label": "Total Margin Cost",
    "read_only": 1
+  },
+  {
+   "fieldname": "electrical_bom_additiondeletion",
+   "fieldtype": "Table",
+   "label": "Electrical BOM Addition/Deletion",
+   "options": "Budget BOM Raw Material Modifier"
+  },
+  {
+   "fieldname": "mechanical_bom_additiondeletion",
+   "fieldtype": "Table",
+   "label": "Mechanical BOM Addition/Deletion",
+   "options": "Budget BOM Raw Material Modifier"
   }
  ],
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2021-12-31 11:44:40.015478",
+ "modified": "2022-01-04 11:22:24.338996",
  "modified_by": "Administrator",
  "module": "Load Controls",
  "name": "Budget BOM",
