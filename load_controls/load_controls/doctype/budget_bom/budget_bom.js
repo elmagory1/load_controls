@@ -90,6 +90,9 @@ function get_rate_from_raw_material(item_code, parentfield, rate) {
     return rate
 }
 frappe.ui.form.on('Budget BOM Raw Material Modifier', {
+     type: function(frm, cdt, cdn) {
+        compute_total_cost(cur_frm)
+	},
     item_code: function (frm,cdt,cdn) {
         var d = locals[cdt][cdn]
         if(d.item_code){
@@ -187,23 +190,39 @@ frappe.ui.form.on('Budget BOM', {
                 }
             }
         })
-        // cur_frm.set_query("item_code","mechanical_bom_additiondeletion", () => {
-        //    var names = Array.from(cur_frm.doc.mechanical_bom_raw_material, x => "item_code" in x ? x.item_code:"")
-        //    var names2 = Array.from(cur_frm.doc.mechanical_bom_additiondeletion, x => "item_code" in x ? x.item_code:"")
-	     //    return {
-	     //        filters:[
-	     //            ["name", "in",names],
-        //         ]
-        //     }
-        // })
-        // cur_frm.set_query("item_code","electrical_bom_additiondeletion", () => {
-        //    var names = Array.from(cur_frm.doc.electrical_bom_raw_material, x => "item_code" in x ? x.item_code:"")
-	     //    return {
-	     //        filters:[
-	     //            ["name", "in",names],
-        //         ]
-        //     }
-        // })
+        cur_frm.set_query("item_code","mechanical_bom_additiondeletion", (frm, cdt, cdn) => {
+            var d = locals[cdt][cdn]
+
+            if(d.type === 'Deletion'){
+                 var names = Array.from(cur_frm.doc.mechanical_bom_raw_material, x => "item_code" in x ? x.item_code:"")
+
+
+                return {
+                    filters:[
+                        ["name", "in",names],
+                    ]
+                }
+            } else {
+                return {}
+        }
+        })
+        cur_frm.set_query("item_code","electrical_bom_additiondeletion", (frm, cdt, cdn) => {
+            console.log("======================")
+            console.log(d)
+            var d = locals[cdt][cdn]
+            if(d.type === 'Deletion'){
+                 var names = Array.from(cur_frm.doc.electrical_bom_raw_material, x => "item_code" in x ? x.item_code:"")
+
+
+                return {
+                    filters:[
+                        ["name", "in",names],
+                    ]
+                }
+            } else {
+                return {}
+        }
+        })
 	    //ELECTRICAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAL
 	    cur_frm.fields_dict["electrical_bom_raw_material"].grid.add_custom_button(__('Refresh Available Stock'),
 			function() {
@@ -881,6 +900,7 @@ frappe.ui.form.on('Budget BOM Raw Material', {
     }
 });
 frappe.ui.form.on('Additional Operational Cost', {
+
     amount: function(frm, cdt, cdn) {
         var total=0
        for(var ii=0;ii<cur_frm.doc.additional_operation_cost.length;ii+=1){
