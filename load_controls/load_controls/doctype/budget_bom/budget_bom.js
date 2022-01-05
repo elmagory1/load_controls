@@ -796,10 +796,10 @@ frappe.ui.form.on('Budget BOM Raw Material', {
          d.amount = d.qty * d.rate
         cur_frm.refresh_field(d.parentfield)
           if (d.rate > 0){
-                        d.discount_rate = d.rate - d.discount_amount
-                        d.amount = d.stock_qty * d.discount_rate
-                        cur_frm.refresh_field(d.parentfield)
-                    }
+            d.discount_rate = d.rate - d.discount_amount
+            d.amount = d.qty * d.discount_rate
+            cur_frm.refresh_field(d.parentfield)
+        }
 
 
 
@@ -1038,7 +1038,7 @@ frappe.ui.form.on('Budget BOM Enclosure Raw Material', {
         cur_frm.refresh_field(d.parentfield)
           if (d.rate > 0){
                         d.discount_rate = d.rate - d.discount_amount
-                        d.amount = d.stock_qty * d.discount_rate
+                        d.amount = d.qty * d.discount_rate
                         cur_frm.refresh_field(d.parentfield)
                     }
 
