@@ -24,6 +24,12 @@
   "generate_electrical_item_template",
   "electrical_bom_raw_material",
   "electrical_bom_additiondeletion",
+  "section_break_19",
+  "total_electrical_raw_material_cost",
+  "column_break_21",
+  "total_electrical_bom_additiondeletion",
+  "column_break_23",
+  "grand_total_electrical_raw_material",
   "mechanical_bom_section",
   "mechanical_bom_details",
   "mechanical_from_template",
@@ -31,6 +37,12 @@
   "generate_mechanical_item_template",
   "mechanical_bom_raw_material",
   "mechanical_bom_additiondeletion",
+  "section_break_32",
+  "total_mechanical_raw_material_cost",
+  "column_break_34",
+  "total_mechanical_bom_additiondeletion",
+  "column_break_36",
+  "grand_total_mechanical_raw_material",
   "fgsellable_bom_section",
   "fg_sellable_bom_raw_material",
   "section_break_26",
@@ -515,12 +527,78 @@
    "fieldtype": "Table",
    "label": "Mechanical BOM Addition/Deletion",
    "options": "Budget BOM Raw Material Modifier"
+  },
+  {
+   "fieldname": "section_break_19",
+   "fieldtype": "Section Break"
+  },
+  {
+   "default": "0",
+   "fieldname": "total_electrical_raw_material_cost",
+   "fieldtype": "Currency",
+   "label": "Total Electrical Raw Material Cost",
+   "read_only": 1
+  },
+  {
+   "fieldname": "column_break_21",
+   "fieldtype": "Column Break"
+  },
+  {
+   "default": "0",
+   "fieldname": "total_electrical_bom_additiondeletion",
+   "fieldtype": "Currency",
+   "label": "Total Electrical BOM Addition/Deletion",
+   "read_only": 1
+  },
+  {
+   "fieldname": "column_break_23",
+   "fieldtype": "Column Break"
+  },
+  {
+   "default": "0",
+   "fieldname": "grand_total_electrical_raw_material",
+   "fieldtype": "Currency",
+   "label": "Grand Total Electrical Raw Material",
+   "read_only": 1
+  },
+  {
+   "fieldname": "section_break_32",
+   "fieldtype": "Section Break"
+  },
+  {
+   "default": "0",
+   "fieldname": "total_mechanical_raw_material_cost",
+   "fieldtype": "Currency",
+   "label": "Total Mechanical Raw Material Cost",
+   "read_only": 1
+  },
+  {
+   "fieldname": "column_break_34",
+   "fieldtype": "Column Break"
+  },
+  {
+   "default": "0",
+   "fieldname": "total_mechanical_bom_additiondeletion",
+   "fieldtype": "Currency",
+   "label": "Total Mechanical BOM Addition/Deletion",
+   "read_only": 1
+  },
+  {
+   "fieldname": "column_break_36",
+   "fieldtype": "Column Break"
+  },
+  {
+   "default": "0",
+   "fieldname": "grand_total_mechanical_raw_material",
+   "fieldtype": "Currency",
+   "label": "Grand Total Mechanical Raw Material",
+   "read_only": 1
   }
  ],
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2022-01-04 11:22:24.338996",
+ "modified": "2022-01-05 11:25:53.530129",
  "modified_by": "Administrator",
  "module": "Load Controls",
  "name": "Budget BOM",

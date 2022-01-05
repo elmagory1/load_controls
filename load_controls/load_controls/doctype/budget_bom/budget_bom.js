@@ -1184,33 +1184,56 @@ function compute_total_cost(cur_frm) {
     var fieldnames = ['electrical_bom_raw_material','mechanical_bom_raw_material','fg_sellable_bom_raw_material', 'mechanical_bom_additiondeletion','electrical_bom_additiondeletion']
     var total = 0
     var enclosure_subtotal = 0
+    var termc = 0
+    var tebad = 0
+
+     var tmrmc = 0
+    var tmbad = 0
     for(var i=0;i<fieldnames.length;i+=1){
         if(cur_frm.doc[fieldnames[i]]){
             for(var ii=0;ii<cur_frm.doc[fieldnames[i]].length;ii+=1){
                 if(fieldnames[i] !== 'mechanical_bom_additiondeletion' && fieldnames[i] !== 'electrical_bom_additiondeletion') {
                     total += cur_frm.doc[fieldnames[i]][ii].amount
                 }
-                if(fieldnames[i] === 'fg_sellable_bom_raw_material'){
+                if (fieldnames[i] === 'electrical_bom_raw_material'){
+                    termc += cur_frm.doc[fieldnames[i]][ii].amount
+                } else if (fieldnames[i] === 'mechanical_bom_raw_material'){
+                                        tmrmc += cur_frm.doc[fieldnames[i]][ii].amount
+
+                } else if(fieldnames[i] === 'fg_sellable_bom_raw_material'){
                     enclosure_subtotal += cur_frm.doc[fieldnames[i]][ii].amount
                 } else if(fieldnames[i] === 'mechanical_bom_additiondeletion'){
                     if(cur_frm.doc[fieldnames[i]][ii].type === "Addition"){
                         total += cur_frm.doc[fieldnames[i]][ii].amount
+                        tmbad += cur_frm.doc[fieldnames[i]][ii].amount
                     } else {
                         total -= cur_frm.doc[fieldnames[i]][ii].amount
+                        tmbad -= cur_frm.doc[fieldnames[i]][ii].amount
                     }
                 } else if(fieldnames[i] === 'electrical_bom_additiondeletion'){
                     if(cur_frm.doc[fieldnames[i]][ii].type === "Addition"){
                         total += cur_frm.doc[fieldnames[i]][ii].amount
+                        tebad += cur_frm.doc[fieldnames[i]][ii].amount
                     } else {
                         total -= cur_frm.doc[fieldnames[i]][ii].amount
+                        tebad -= cur_frm.doc[fieldnames[i]][ii].amount
                     }
                 }
+
             }
         }
     }
     cur_frm.doc.total_raw_material_cost = total
+    cur_frm.doc.total_electrical_raw_material_cost = termc
+    cur_frm.doc.total_mechanical_raw_material_cost = tmrmc
+    cur_frm.doc.total_electrical_bom_additiondeletion = tebad
+    cur_frm.doc.total_mechanical_bom_additiondeletion= tmbad
+    cur_frm.doc.grand_total_electrical_raw_material = termc + tebad
+    cur_frm.doc.grand_total_mechanical_raw_material = tmrmc + tmbad
     cur_frm.doc.enclosure_subtotal = enclosure_subtotal
-    cur_frm.refresh_fields(["total_raw_material_cost", "enclosure_subtotal"])
+    cur_frm.refresh_fields(["total_raw_material_cost", "enclosure_subtotal","total_electrical_raw_material_cost",
+        "total_mechanical_raw_material_cost", "total_electrical_bom_additiondeletion","total_mechanical_bom_additiondeletion",
+        "grand_total_electrical_raw_material","grand_total_mechanical_raw_material"])
     compute_other_figures(cur_frm)
 }
 function compute_other_figures(cur_frm) {
