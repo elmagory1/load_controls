@@ -518,16 +518,20 @@
    "read_only": 1
   },
   {
+   "allow_on_submit": 1,
    "fieldname": "electrical_bom_additiondeletion",
    "fieldtype": "Table",
    "label": "Electrical BOM Addition/Deletion",
-   "options": "Budget BOM Raw Material Modifier"
+   "options": "Budget BOM Raw Material Modifier",
+   "read_only_depends_on": "eval: doc.status != 'To Design' && doc.docstatus"
   },
   {
+   "allow_on_submit": 1,
    "fieldname": "mechanical_bom_additiondeletion",
    "fieldtype": "Table",
    "label": "Mechanical BOM Addition/Deletion",
-   "options": "Budget BOM Raw Material Modifier"
+   "options": "Budget BOM Raw Material Modifier",
+   "read_only_depends_on": "eval: doc.status != 'To Design'"
   },
   {
    "fieldname": "section_break_19",
@@ -613,7 +617,7 @@
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2022-01-06 13:19:55.861649",
+ "modified": "2022-01-06 16:35:23.516661",
  "modified_by": "Administrator",
  "module": "Load Controls",
  "name": "Budget BOM",
