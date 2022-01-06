@@ -24,6 +24,18 @@ function compute_total(cur_frm) {
     cur_frm.refresh_fields(["total",'grand_total','rounded_total'])
 }
 frappe.ui.form.on('Quotation', {
+	on_submit: function(frm) {
+	     frappe.call({
+            method: "load_controls.doc_events.quotation.submit_quotation",
+            args: {
+                name: cur_frm.doc.name
+            },
+            async: false,
+            callback: function (r) {
+                cur_frm.reload_doc()
+            }
+        })
+    },
 	update_cost: function(frm) {
 	    cur_frm.clear_table("payment_schedule")
 	    cur_frm.refresh_field("payment_schedule")
@@ -42,6 +54,39 @@ frappe.ui.form.on('Quotation', {
         })
     },
 	refresh: function(frm) {
+	    cur_frm.remove_custom_button('Sales Order', "Create")
+	        cur_frm.remove_custom_button('Subscription', "Create")
+        if(cur_frm.doc.docstatus && cur_frm.doc.status === 'In Progress'){
+
+            cur_frm.remove_custom_button('PO Received', "Action")
+	        cur_frm.remove_custom_button('Revise the Quote', "Action")
+            cur_frm.add_custom_button(__('PO Received'), () => {cur_frm.trigger("po_received")}, __('Action'));
+            cur_frm.add_custom_button(__('Revise the Quote'), () => {cur_frm.trigger("revise_the_quote")}, __('Action'));
+	        cur_frm.page.set_inner_btn_group_as_primary(__('Action'));
+
+        } else if(cur_frm.doc.docstatus){
+
+	        if(!cur_frm.doc.valid_till || frappe.datetime.get_diff(cur_frm.doc.valid_till, frappe.datetime.get_today()) >= 0) {
+				cur_frm.add_custom_button(__('Sales Order'),
+					cur_frm.cscript['Make Sales Order'], __('Create'));
+			}
+
+			if(cur_frm.doc.status!=="Ordered") {
+				cur_frm.add_custom_button(__('Set as Lost'), () => {
+						cur_frm.trigger('set_as_lost_dialog');
+					});
+				}
+
+			if(!cur_frm.doc.auto_repeat) {
+				cur_frm.add_custom_button(__('Subscription'), function() {
+					erpnext.utils.make_subscription(cur_frm.doc.doctype, cur_frm.doc.name)
+				}, __('Create'))
+			}
+
+			cur_frm.page.set_inner_btn_group_as_primary(__('Create'));
+        } else{
+
+        }
 	    cur_frm.set_query("budget_bom", "budget_bom_reference", () => {
             return {
                 filters: {
@@ -90,6 +135,61 @@ frappe.ui.form.on('Quotation', {
                             }
                         });
 				}, __("Get Items From"), "btn-default");
+    },
+    po_received: function () {
+      frappe.call({
+          method: "load_controls.doc_events.quotation.po_received",
+          args: {
+              name:cur_frm.doc.name
+          },
+          async: false,
+          callback: function () {
+              cur_frm.reload_doc()
+          }
+      })
+    },
+    revise_the_quote: function () {
+      frappe.call({
+          method: "load_controls.doc_events.quotation.revise_the_quote",
+          args: {
+              name: cur_frm.doc.name
+          },
+          async: false,
+          callback: function () {
+              cur_frm.reload_doc()
+          }
+      })
+    },
+    onload_post_render: function () {
+	    cur_frm.remove_custom_button('Sales Order', "Create")
+	        cur_frm.remove_custom_button('Subscription', "Create")
+        if(cur_frm.doc.docstatus && cur_frm.doc.status === 'In Progress'){
+            cur_frm.remove_custom_button('PO Received', "Action")
+	        cur_frm.remove_custom_button('Revise the Quote', "Action")
+            cur_frm.add_custom_button(__('PO Received'), () => {cur_frm.trigger("po_received")}, __('Action'));
+            cur_frm.add_custom_button(__('Revise the Quote'), () => {cur_frm.trigger("revise_the_quote")}, __('Action'));
+	        cur_frm.page.set_inner_btn_group_as_primary(__('Action'));
+
+        } else if(cur_frm.doc.docstatus){
+	        if(!cur_frm.doc.valid_till || frappe.datetime.get_diff(cur_frm.doc.valid_till, frappe.datetime.get_today()) >= 0) {
+				cur_frm.add_custom_button(__('Sales Order'),
+					cur_frm.cscript['Make Sales Order'], __('Create'));
+			}
+
+			if(cur_frm.doc.status!=="Ordered") {
+				cur_frm.add_custom_button(__('Set as Lost'), () => {
+						cur_frm.trigger('set_as_lost_dialog');
+					});
+				}
+
+			if(!cur_frm.doc.auto_repeat) {
+				cur_frm.add_custom_button(__('Subscription'), function() {
+					erpnext.utils.make_subscription(cur_frm.doc.doctype, cur_frm.doc.name)
+				}, __('Create'))
+			}
+
+			cur_frm.page.set_inner_btn_group_as_primary(__('Create'));
+        }
     }
 })
 

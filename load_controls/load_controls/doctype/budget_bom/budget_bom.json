@@ -534,6 +534,7 @@
    "fieldtype": "Section Break"
   },
   {
+   "allow_on_submit": 1,
    "default": "0",
    "fieldname": "total_electrical_raw_material_cost",
    "fieldtype": "Currency",
@@ -545,6 +546,7 @@
    "fieldtype": "Column Break"
   },
   {
+   "allow_on_submit": 1,
    "default": "0",
    "fieldname": "total_electrical_bom_additiondeletion",
    "fieldtype": "Currency",
@@ -556,6 +558,7 @@
    "fieldtype": "Column Break"
   },
   {
+   "allow_on_submit": 1,
    "default": "0",
    "fieldname": "grand_total_electrical_raw_material",
    "fieldtype": "Currency",
@@ -567,6 +570,7 @@
    "fieldtype": "Section Break"
   },
   {
+   "allow_on_submit": 1,
    "default": "0",
    "fieldname": "total_mechanical_raw_material_cost",
    "fieldtype": "Currency",
@@ -578,6 +582,7 @@
    "fieldtype": "Column Break"
   },
   {
+   "allow_on_submit": 1,
    "default": "0",
    "fieldname": "total_mechanical_bom_additiondeletion",
    "fieldtype": "Currency",
@@ -589,6 +594,7 @@
    "fieldtype": "Column Break"
   },
   {
+   "allow_on_submit": 1,
    "default": "0",
    "fieldname": "grand_total_mechanical_raw_material",
    "fieldtype": "Currency",
@@ -596,6 +602,7 @@
    "read_only": 1
   },
   {
+   "allow_on_submit": 1,
    "default": "0",
    "fieldname": "additiondeletion_raw_material_subtotal",
    "fieldtype": "Currency",
@@ -606,7 +613,7 @@
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2022-01-06 11:13:42.412723",
+ "modified": "2022-01-06 13:19:55.861649",
  "modified_by": "Administrator",
  "module": "Load Controls",
  "name": "Budget BOM",

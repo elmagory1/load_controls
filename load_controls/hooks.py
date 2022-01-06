@@ -37,7 +37,9 @@ doctype_js = {
 	"Material Request" : "public/js/material_request.js",
 	"Opportunity" : "public/js/opportunity.js",
 }
-# doctype_list_js = {"doctype" : "public/js/doctype_list.js"}
+doctype_list_js = {
+	"Quotation" : "public/js/quotation_list.js"
+}
 # doctype_tree_js = {"doctype" : "public/js/doctype_tree.js"}
 # doctype_calendar_js = {"doctype" : "public/js/doctype_calendar.js"}
 
@@ -288,6 +290,8 @@ fixtures = [
 					"Work Order-additional_operating_cost-fetch_from",
 					"Work Order-additional_operating_cost-fetch_if_empty",
 					"Opportunity-main-links_order",
+					"Quotation-status-default",
+					"Quotation-status-options",
 				]
 			]
 		]

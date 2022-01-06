@@ -66,5 +66,39 @@
   "property_type": "Small Text",
   "row_name": null,
   "value": "[\"5ed7fb0678\"]"
+ },
+ {
+  "default_value": null,
+  "doc_type": "Quotation",
+  "docstatus": 0,
+  "doctype": "Property Setter",
+  "doctype_or_field": "DocField",
+  "field_name": "status",
+  "modified": "2022-01-06 12:28:05.798583",
+  "name": "Quotation-status-options",
+  "parent": null,
+  "parentfield": null,
+  "parenttype": null,
+  "property": "options",
+  "property_type": "Text",
+  "row_name": null,
+  "value": "Draft\nIn Progress\nOpen\nReplied\nOrdered\nLost\nCancelled\nExpired"
+ },
+ {
+  "default_value": null,
+  "doc_type": "Quotation",
+  "docstatus": 0,
+  "doctype": "Property Setter",
+  "doctype_or_field": "DocField",
+  "field_name": "status",
+  "modified": "2022-01-06 12:28:06.007477",
+  "name": "Quotation-status-default",
+  "parent": null,
+  "parentfield": null,
+  "parenttype": null,
+  "property": "default",
+  "property_type": "Text",
+  "row_name": null,
+  "value": "In Progress"
  }
 ]

@@ -43,6 +43,10 @@ def generate_budget_bom(selections, name):
     operation = frappe.db.get_single_value('Manufacturing Settings', 'enclosure_default_operation')
     e_operation = frappe.db.get_single_value('Manufacturing Settings', 'default_operation')
     m_operation = frappe.db.get_single_value('Manufacturing Settings', 'mechanical_bom_default_operation')
+    operation_time_in_minutes = frappe.db.get_single_value('Manufacturing Settings', 'enclosure_time_in_minute')
+    e_operation_time_in_minutes = frappe.db.get_single_value('Manufacturing Settings', 'electrical_time_in_minute')
+    m_operation_time_in_minutes = frappe.db.get_single_value('Manufacturing Settings', 'mechanical_time_in_minute')
+
     doc = get_mapped_doc("Opportunity", name, {
         "Opportunity": {
             "doctype": "Budget BOM",
@@ -58,6 +62,7 @@ def generate_budget_bom(selections, name):
     doc.expected_closing_date = opportunity.expected_closing
     for ii in opportunity.items:
         if ii.item_code in selections:
+
             doc.append("fg_sellable_bom_details", {
                 "item_code": ii.item_code,
                 "item_name": ii.item_name,
@@ -65,7 +70,7 @@ def generate_budget_bom(selections, name):
                 "uom": ii.uom,
                 "workstation": workstation,
                 "operation": operation,
-                "operation_time_in_minutes": 1,
+                "operation_time_in_minutes": operation_time_in_minutes ,
 
             })
 
@@ -74,7 +79,7 @@ def generate_budget_bom(selections, name):
             "qty": 1,
             "workstation": workstation,
             "operation": e_operation if xx == 'electrical_bom_details' else m_operation if xx == 'mechanical_bom_details' else "",
-            "operation_time_in_minutes": 1,
+            "operation_time_in_minutes": e_operation_time_in_minutes if xx == 'electrical_bom_details' else m_operation_time_in_minutes,
 
         })
     activity_planner = doc.insert()

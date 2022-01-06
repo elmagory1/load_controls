@@ -1,7 +1,22 @@
 import frappe,json
 
 @frappe.whitelist()
+def po_received(name):
+    frappe.db.sql(""" UPDATE `tabQuotation` SET status='Open' WHERE name=%s """, name)
+    frappe.db.commit()
+
+@frappe.whitelist()
+def revise_the_quote(name):
+    quotation = frappe.get_doc("Quotation", name)
+    quotation.cancel()
+
+@frappe.whitelist()
+def submit_quotation(name):
+    frappe.db.sql(""" UPDATE `tabQuotation` SET status='In Progress' WHERE name=%s """, name)
+    frappe.db.commit()
+@frappe.whitelist()
 def submit_q(doc, event):
+
     for i in doc.budget_bom_reference:
         if i.budget_bom:
             frappe.db.sql(""" UPDATE `tabBudget BOM` SET status=%s WHERE name=%s  """,("Quotation In Progress", i.budget_bom))
@@ -10,7 +25,6 @@ def submit_q(doc, event):
     for ii in doc.budget_bom_opportunity:
         frappe.db.sql(""" UPDATE `tabOpportunity` SET status='Quotation' WHERE name=%s  """, (ii.opportunity))
         frappe.db.commit()
-
 @frappe.whitelist()
 def cancel_q(doc, event):
     for i in doc.budget_bom_reference:
