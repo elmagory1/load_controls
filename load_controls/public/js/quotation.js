@@ -60,8 +60,26 @@ frappe.ui.form.on('Quotation', {
 
             cur_frm.remove_custom_button('PO Received', "Action")
 	        cur_frm.remove_custom_button('Revise the Quote', "Action")
-            cur_frm.add_custom_button(__('PO Received'), () => {cur_frm.trigger("po_received")}, __('Action'));
-            cur_frm.add_custom_button(__('Revise the Quote'), () => {cur_frm.trigger("revise_the_quote")}, __('Action'));
+            cur_frm.add_custom_button(__('PO Received'), () => {
+                frappe.confirm('Are you sure you want to proceed?',
+                        () => {
+                                                                       cur_frm.trigger("po_received")
+
+
+                        }, () => {
+                            // action to perform if No is selected
+                        })
+        }, __('Action'));
+            cur_frm.add_custom_button(__('Revise the Quote'), () => {
+               frappe.confirm('Are you sure you want to proceed?',
+                        () => {
+                                                        cur_frm.trigger("revise_the_quote")
+
+
+                        }, () => {
+                            // action to perform if No is selected
+                        })
+        }, __('Action'));
 	        cur_frm.page.set_inner_btn_group_as_primary(__('Action'));
 
         } else if(cur_frm.doc.docstatus && cur_frm.doc.status === 'Open'){
@@ -166,8 +184,25 @@ frappe.ui.form.on('Quotation', {
         if(cur_frm.doc.docstatus && cur_frm.doc.status === 'In Progress'){
             cur_frm.remove_custom_button('PO Received', "Action")
 	        cur_frm.remove_custom_button('Revise the Quote', "Action")
-            cur_frm.add_custom_button(__('PO Received'), () => {cur_frm.trigger("po_received")}, __('Action'));
-            cur_frm.add_custom_button(__('Revise the Quote'), () => {cur_frm.trigger("revise_the_quote")}, __('Action'));
+            cur_frm.add_custom_button(__('PO Received'), () => {
+                frappe.confirm('Are you sure you want to proceed?',
+                        () => {
+                                            cur_frm.trigger("po_received")
+
+                        }, () => {
+                            // action to perform if No is selected
+                        })
+        }, __('Action'));
+            cur_frm.add_custom_button(__('Revise the Quote'), () => {
+                 frappe.confirm('Are you sure you want to proceed?',
+                        () => {
+                                                        cur_frm.trigger("revise_the_quote")
+
+
+                        }, () => {
+                            // action to perform if No is selected
+                        })
+        }, __('Action'));
 	        cur_frm.page.set_inner_btn_group_as_primary(__('Action'));
 
         } else if(cur_frm.doc.docstatus  && cur_frm.doc.status === 'Open'){
