@@ -44,8 +44,8 @@ def generate_budget_bom(selections, name):
     e_operation = frappe.db.get_single_value('Manufacturing Settings', 'default_operation')
     m_operation = frappe.db.get_single_value('Manufacturing Settings', 'mechanical_bom_default_operation')
     operation_time_in_minutes = frappe.db.get_single_value('Manufacturing Settings', 'enclosure_time_in_minute')
-    e_operation_time_in_minutes = frappe.db.get_single_value('Manufacturing Settings', 'electrical_time_in_minute')
-    m_operation_time_in_minutes = frappe.db.get_single_value('Manufacturing Settings', 'mechanical_time_in_minute')
+    e_operation_time_in_minutes = frappe.db.get_single_value('Manufacturing Settings', 'electrical_operation_time_in_minute')
+    m_operation_time_in_minutes = frappe.db.get_single_value('Manufacturing Settings', 'mechanical_operation_time_in_minute')
 
     doc = get_mapped_doc("Opportunity", name, {
         "Opportunity": {
