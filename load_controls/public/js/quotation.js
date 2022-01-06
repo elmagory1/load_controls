@@ -64,7 +64,7 @@ frappe.ui.form.on('Quotation', {
             cur_frm.add_custom_button(__('Revise the Quote'), () => {cur_frm.trigger("revise_the_quote")}, __('Action'));
 	        cur_frm.page.set_inner_btn_group_as_primary(__('Action'));
 
-        } else if(cur_frm.doc.docstatus){
+        } else if(cur_frm.doc.docstatus && cur_frm.doc.status === 'Open'){
 
 	        if(!cur_frm.doc.valid_till || frappe.datetime.get_diff(cur_frm.doc.valid_till, frappe.datetime.get_today()) >= 0) {
 				cur_frm.add_custom_button(__('Sales Order'),
@@ -170,7 +170,7 @@ frappe.ui.form.on('Quotation', {
             cur_frm.add_custom_button(__('Revise the Quote'), () => {cur_frm.trigger("revise_the_quote")}, __('Action'));
 	        cur_frm.page.set_inner_btn_group_as_primary(__('Action'));
 
-        } else if(cur_frm.doc.docstatus){
+        } else if(cur_frm.doc.docstatus  && cur_frm.doc.status === 'Open'){
 	        if(!cur_frm.doc.valid_till || frappe.datetime.get_diff(cur_frm.doc.valid_till, frappe.datetime.get_today()) >= 0) {
 				cur_frm.add_custom_button(__('Sales Order'),
 					cur_frm.cscript['Make Sales Order'], __('Create'));
