@@ -90,49 +90,237 @@ function get_rate_from_raw_material(item_code, parentfield, rate) {
     return rate
 }
 frappe.ui.form.on('Budget BOM Raw Material Modifier', {
-     type: function(frm, cdt, cdn) {
-        compute_total_cost(cur_frm)
-	},
-    item_code: function (frm,cdt,cdn) {
+    type: function (frm,cdt,cdn) {
         var d = locals[cdt][cdn]
         if(d.item_code){
-            var rate = get_rate_from_raw_material(d.item_code, d.parentfield, d.discount_rate)
-            d.discount_rate = rate
-            d.amount = rate * d.qty
+             compute_total_cost(cur_frm)
+        }
+    },
+     qty: function(frm, cdt, cdn) {
+        var d = locals[cdt][cdn]
+        d.amount = d.qty * d.rate
+        cur_frm.refresh_field(d.parentfield)
+
+
+        if(d.rate > 0 && d.discount_percentage > 0){
+            d.discount_rate = (d.rate * (1 - (d.discount_percentage / 100)))
+            d.discount_amount = (d.discount_percentage / 100) * d.rate
+            d.amount = d.qty * d.discount_rate
             cur_frm.refresh_field(d.parentfield)
-                        compute_total_cost(cur_frm)
+        }else if (d.rate > 0 && d.discount_amount > 0){
+            d.discount_rate = d.rate - d.discount_amount
+            d.amount = d.qty * d.discount_rate
+            cur_frm.refresh_field(d.parentfield)
+        } else {
+            d.discount_rate = d.rate
+            cur_frm.refresh_field(d.parentfield)
+        }
+
+        if(d.parentfield === 'fg_sellable_bom_raw_material'){
+         d.amount = ((d.qty * d.discount_rate) - d.discount_amount) * d.kg
+        }
+        compute_total_cost(cur_frm)
+
+	},
+    rate: function(frm, cdt, cdn) {
+        var d = locals[cdt][cdn]
+        d.amount = d.qty * d.rate
+        cur_frm.refresh_field(d.parentfield)
+
+
+        if(d.rate > 0 && d.discount_percentage > 0){
+            d.discount_rate = (d.rate * (1 - (d.discount_percentage / 100)))
+            d.discount_amount = (d.discount_percentage / 100) * d.rate
+            d.amount = d.qty * d.discount_rate
+            cur_frm.refresh_field(d.parentfield)
+        } else if (d.rate > 0 && d.discount_amount > 0){
+            d.discount_rate = d.rate - d.discount_amount
+            d.amount = d.qty * d.discount_rate
+            cur_frm.refresh_field(d.parentfield)
+        } else {
+            d.discount_rate = d.rate
+            cur_frm.refresh_field(d.parentfield)
+        }
+            if(d.parentfield === 'fg_sellable_bom_raw_material'){
+                d.amount = ((d.qty * d.discount_rate) - d.discount_amount) * d.kg
+            }
+        compute_total_cost(cur_frm)
+
+	},
+    item_code: function (frm, cdt, cdn) {
+         var d = locals[cdt][cdn]
+        if(d.item_code){
+
+            var fieldname = d.parentfield === "electrical_bom_raw_material" ? "refresh_electrical_available_stock" :
+                            d.parentfield === "mechanical_bom_raw_material" ? "refresh_mechanical_available_stock" :
+                                d.parentfield === "fg_sellable_bom_raw_material" ? "refresh_fg_sellable_available_stock" : ""
+            if(fieldname){
+                            cur_frm.trigger(fieldname)
+
+            }
+             cur_frm.call({
+                doc: cur_frm.doc,
+                method: 'get_discount',
+                args: {
+                    item: d,
+                    raw_material_table: fieldname
+                },
+                freeze: true,
+                freeze_message: "Get Templates...",
+                async:false,
+                callback: (r) => {
+                    console.log("ITEM CODEEEE TRIGGER")
+                    console.log(r.message.discount_rate)
+                        var values = r.message
+                        console.log(values.discount_rate)
+                    d.item_name = values.item_name
+                        d.discount_rate = values.discount_rate > 0 ? values.discount_rate : values.amount
+                          d.link_discount_amount = values.link_discount_amount
+                          d.discount_amount = values.discount_amount ? values.discount_amount : 0
+                          d.discount_percentage = values.discount_percentage ? values.discount_percentage : 0
+                          d.rate = values.rate
+                          d.amount = values.amount
+                            cur_frm.refresh_field(d.parentfield)
+                 }
+            })
+        compute_total_cost(cur_frm)
+        }
+
+    },
+    discount_percentage: function (frm, cdt, cdn) {
+        var d = locals[cdt][cdn]
+         d.amount = d.qty * d.rate
+        cur_frm.refresh_field(d.parentfield)
+
+      if(d.rate > 0){
+        d.discount_rate = (d.rate * (1 - (d.discount_percentage / 100)))
+       d.discount_amount = (d.discount_percentage / 100) * d.rate
+        d.amount = d.qty * d.discount_rate
+        cur_frm.refresh_field(d.parentfield)
+    }
+
+            if(d.parentfield === 'fg_sellable_bom_raw_material'){
+             d.amount = ((d.qty * d.discount_rate) - d.discount_amount) * d.kg
+            }
+
+         compute_total_cost(cur_frm)
+
+
+    },
+    discount_amount: function (frm, cdt, cdn) {
+        var d = locals[cdt][cdn]
+         d.amount = d.qty * d.rate
+        console.log(d.discount_amount > 0 )
+        console.log(!d.discount_percentage || d.discount_percentage === '0')
+        if(d.discount_amount > 0 && (!d.discount_percentage || d.discount_percentage === '0')){
+            d.triggered_discount_rate = 1
+
+        } else {
+                    d.triggered_discount_rate = 0
+        }
+        cur_frm.refresh_field(d.parentfield)
+          if (d.rate > 0){
+            d.discount_rate = d.rate - d.discount_amount
+            d.amount = d.qty * d.discount_rate
+            cur_frm.refresh_field(d.parentfield)
+        }
+
+
+
+        compute_total_cost(cur_frm)
+
+    },
+    unlink_discount: function (frm, cdt, cdn) {
+        var d = locals[cdt][cdn]
+        if(cur_frm.doc.docstatus){
+            frappe.call({
+                method: "ringlus.ringlus.doctype.budget_bom.budget_bom.unlink",
+                args: {
+                    name: d.name
+                },
+                async: false,
+                callback: function (r) {
+                    cur_frm.reload_doc()
+                }
+            })
+        } else{
+            d.link_discount_amount = ""
+            cur_frm.refresh_field(d.parentfield)
+        }
+    },
+   save_discount_amount: function (frm, cdt, cdn) {
+        var d = locals[cdt][cdn]
+        if(d.discount_percentage > 0 && d.item_code){
+             cur_frm.call({
+                doc: cur_frm.doc,
+                method: 'add_or_save_discount',
+                args: {
+                    opportunity: cur_frm.doc.opportunity,
+                    item_group: d.item_group,
+                    discount_percentage: d.discount_percentage,
+                    remarks: d.remarks ? d.remarks : '',
+                },
+                freeze: true,
+                freeze_message: "Discount...",
+                async:false,
+                callback: (r) => {
+                        frappe.show_alert({
+                            message:__('Discount created or updated'),
+                            indicator:'green'
+                        }, 3);
+                        d.link_discount_amount = r.message
+                        cur_frm.refresh_field(d.parentfield)
+                }
+            })
 
         }
+
+
+
     },
-    qty: function (frm,cdt,cdn) {
+    update_discount: function (frm, cdt, cdn) {
         var d = locals[cdt][cdn]
-        if(d.item_code){
-            var rate = get_rate_from_raw_material(d.item_code, d.parentfield, d.discount_rate)
-            d.discount_rate = rate
-            d.amount = rate * d.qty
-            cur_frm.refresh_field(d.parentfield)
-            compute_total_cost(cur_frm)
+        if(d.item_group){
+            cur_frm.call({
+                doc: cur_frm.doc,
+                method: 'update_discount',
+                args: {
+                    item: d
+                },
+                freeze: true,
+                freeze_message: "Get Templates...",
+                async:false,
+                callback: (r) => {
+                    console.log("ITEM CODEEEE TRIGGER")
+                    console.log(r.message.discount_rate)
+                        var values = r.message
+                            console.log(values.discount_rate)
+
+                            d.discount_rate = values.discount_rate > 0 ? values.discount_rate : values.amount
+                          d.link_discount_amount = values.link_discount_amount
+                          d.discount_amount = values.discount_amount
+                          d.discount_percentage = values.discount_percentage
+                          d.rate = values.rate
+                          d.amount = values.amount
+                            cur_frm.refresh_field(d.parentfield)
+
+                 }
+            })
         }
     },
-    electrical_bom_additiondeletion_remove: function (frm,cdt,cdn) {
+    kg: function (frm, cdt, cdn) {
         var d = locals[cdt][cdn]
-        if(d.item_code){
-            var rate = get_rate_from_raw_material(d.item_code, d.parentfield, d.discount_rate)
-            d.discount_rate = rate
-            d.amount = rate * d.qty
-            cur_frm.refresh_field(d.parentfield)
-            compute_total_cost(cur_frm)
-        }
+        d.amount = ((d.qty * d.discount_rate) - d.discount_amount) * d.kg
+        cur_frm.refresh_field(d.parentfield)
+
+        compute_total_cost(cur_frm)
     },
-    mechanical_bom_additiondeletion_remove: function (frm,cdt,cdn) {
+    per_kg: function (frm, cdt, cdn) {
         var d = locals[cdt][cdn]
-        if(d.item_code){
-            var rate = get_rate_from_raw_material(d.item_code, d.parentfield, d.discount_rate)
-            d.discount_rate = rate
-            d.amount = rate * d.qty
-            cur_frm.refresh_field(d.parentfield)
-            compute_total_cost(cur_frm)
-        }
+        d.amount = ((d.qty * d.discount_rate) - d.discount_amount) * d.kg
+        cur_frm.refresh_field(d.parentfield)
+
+        compute_total_cost(cur_frm)
     }
 })
 frappe.ui.form.on('Budget BOM', {
@@ -221,7 +409,7 @@ frappe.ui.form.on('Budget BOM', {
                 }
             } else {
                 return {}
-        }
+            }
         })
 	    //ELECTRICAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAL
 	    cur_frm.fields_dict["electrical_bom_raw_material"].grid.add_custom_button(__('Refresh Available Stock'),
@@ -1230,8 +1418,9 @@ function compute_total_cost(cur_frm) {
     cur_frm.doc.total_mechanical_bom_additiondeletion= tmbad
     cur_frm.doc.grand_total_electrical_raw_material = termc + tebad
     cur_frm.doc.grand_total_mechanical_raw_material = tmrmc + tmbad
+    cur_frm.doc.additiondeletion_raw_material_subtotal = tebad + tmbad
     cur_frm.doc.enclosure_subtotal = enclosure_subtotal
-    cur_frm.refresh_fields(["total_raw_material_cost", "enclosure_subtotal","total_electrical_raw_material_cost",
+    cur_frm.refresh_fields(["additiondeletion_raw_material_subtotal","total_raw_material_cost", "enclosure_subtotal","total_electrical_raw_material_cost",
         "total_mechanical_raw_material_cost", "total_electrical_bom_additiondeletion","total_mechanical_bom_additiondeletion",
         "grand_total_electrical_raw_material","grand_total_mechanical_raw_material"])
     compute_other_figures(cur_frm)

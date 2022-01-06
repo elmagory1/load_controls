@@ -481,4 +481,5 @@ def get_rate(item_code, warehouse, based_on,price_list):
 def unlink(name):
     frappe.db.sql(""" UPDATE `tabBudget BOM Raw Material` SET link_discount_amount='', unlinked=1 WHERE name=%s""", name)
     frappe.db.sql(""" UPDATE `tabBudget BOM Enclosure Raw Material` SET link_discount_amount='', unlinked=1 WHERE name=%s""", name)
+    frappe.db.sql(""" UPDATE `tabBudget BOM Raw Material Modifier` SET link_discount_amount='', unlinked=1 WHERE name=%s""", name)
     frappe.db.commit()

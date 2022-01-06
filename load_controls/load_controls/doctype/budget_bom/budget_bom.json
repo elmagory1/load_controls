@@ -47,6 +47,7 @@
   "fg_sellable_bom_raw_material",
   "section_break_26",
   "column_break_27",
+  "additiondeletion_raw_material_subtotal",
   "column_break_28",
   "enclosure_subtotal",
   "fg_sellable_from_template",
@@ -593,12 +594,19 @@
    "fieldtype": "Currency",
    "label": "Grand Total Mechanical Raw Material",
    "read_only": 1
+  },
+  {
+   "default": "0",
+   "fieldname": "additiondeletion_raw_material_subtotal",
+   "fieldtype": "Currency",
+   "label": "Addition/Deletion Raw Material Subtotal",
+   "read_only": 1
   }
  ],
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2022-01-05 11:25:53.530129",
+ "modified": "2022-01-06 11:13:42.412723",
  "modified_by": "Administrator",
  "module": "Load Controls",
  "name": "Budget BOM",
