@@ -90,10 +90,10 @@ function get_rate_from_raw_material(item_code, parentfield, rate) {
     return rate
 }
 frappe.ui.form.on('Budget BOM Raw Material Modifier', {
-    electrical_bom_additiondeletion: function () {
+    electrical_bom_additiondeletion_remove: function () {
         compute_total_cost(cur_frm)
     },
-    mechanical_bom_additiondeletion: function () {
+    mechanical_bom_additiondeletion_remove: function () {
         compute_total_cost(cur_frm)
     },
     type: function (frm,cdt,cdn) {
@@ -874,11 +874,11 @@ cur_frm.cscript.refresh_fg_sellable_available_stock = function () {
         })
 }
 frappe.ui.form.on('Budget BOM Raw Material', {
-    electrical_bom_raw_material: function () {
+    electrical_bom_raw_material_remove: function () {
                 compute_total_cost(cur_frm)
 
     },
-    mechanical_bom_raw_material: function () {
+    mechanical_bom_raw_materia_removel: function () {
                 compute_total_cost(cur_frm)
 
     },
