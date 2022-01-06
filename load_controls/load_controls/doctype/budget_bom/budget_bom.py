@@ -8,8 +8,10 @@ from erpnext.stock.stock_ledger import get_previous_sle
 
 class BudgetBOM(Document):
     def on_cancel(self):
-        frappe.db.sql(""" UPDATE `tabOpportunity` SET budget_bom='' WHERE budget_bom=%s """, self.name)
+
+        frappe.db.sql(""" UPDATE `tabOpportunity` SET budget_bom='' WHERE opportunity=%s """, self.opportunity)
         frappe.db.commit()
+
     def on_update_after_submit(self):
         allow_tmr = frappe.db.get_single_value('Manufacturing Settings', 'allow_budget_bom_total_raw_material_cost')
         if self.status == 'Updated Changes' and self.total_raw_material_cost >= allow_tmr:
