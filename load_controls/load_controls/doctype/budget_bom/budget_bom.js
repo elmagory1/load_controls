@@ -878,7 +878,7 @@ frappe.ui.form.on('Budget BOM Raw Material', {
                 compute_total_cost(cur_frm)
 
     },
-    mechanical_bom_raw_materia_removel: function () {
+    mechanical_bom_raw_material_remove: function () {
                 compute_total_cost(cur_frm)
 
     },
