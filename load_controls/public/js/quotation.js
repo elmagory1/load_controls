@@ -54,6 +54,17 @@ frappe.ui.form.on('Quotation', {
         })
     },
 	refresh: function(frm) {
+	    var show = true
+	    frappe.call({
+            method: "load_controls.doc_events.quotation.check_bb_status",
+            args: {
+                bb: cur_frm.doc.budget_bom_reference ? cur_frm.doc.budget_bom_reference : []
+            },
+            async: false,
+            callback: function (r) {
+                show = r.message
+            }
+        })
 	    cur_frm.remove_custom_button('Sales Order', "Create")
 	        cur_frm.remove_custom_button('Subscription', "Create")
         if(cur_frm.doc.docstatus && cur_frm.doc.status === 'In Progress'){
@@ -62,29 +73,17 @@ frappe.ui.form.on('Quotation', {
 	        cur_frm.remove_custom_button('Revise the Quote', "Action")
             cur_frm.add_custom_button(__('PO Received'), () => {
                 frappe.confirm('Are you sure you want to proceed?',
-                        () => {
-                                                                       cur_frm.trigger("po_received")
-
-
-                        }, () => {
-                            // action to perform if No is selected
-                        })
+                        () => { cur_frm.trigger("po_received")}, () => {})
         }, __('Action'));
             cur_frm.add_custom_button(__('Revise the Quote'), () => {
                frappe.confirm('Are you sure you want to proceed?',
-                        () => {
-                                                        cur_frm.trigger("revise_the_quote")
-
-
-                        }, () => {
-                            // action to perform if No is selected
-                        })
+                        () => {cur_frm.trigger("revise_the_quote")}, () => {   })
         }, __('Action'));
 	        cur_frm.page.set_inner_btn_group_as_primary(__('Action'));
 
         } else if(cur_frm.doc.docstatus && cur_frm.doc.status === 'Open'){
 
-	        if(!cur_frm.doc.valid_till || frappe.datetime.get_diff(cur_frm.doc.valid_till, frappe.datetime.get_today()) >= 0) {
+	        if((!cur_frm.doc.valid_till || frappe.datetime.get_diff(cur_frm.doc.valid_till, frappe.datetime.get_today()) >= 0) && show) {
 				cur_frm.add_custom_button(__('Sales Order'),
 					cur_frm.cscript['Make Sales Order'], __('Create'));
 			}
@@ -179,6 +178,17 @@ frappe.ui.form.on('Quotation', {
       })
     },
     onload_post_render: function () {
+	        var show = true
+	    frappe.call({
+            method: "load_controls.doc_events.quotation.check_bb_status",
+            args: {
+                bb: cur_frm.doc.budget_bom_reference ? cur_frm.doc.budget_bom_reference : []
+            },
+            async: false,
+            callback: function (r) {
+                show = r.message
+            }
+        })
 	    cur_frm.remove_custom_button('Sales Order', "Create")
 	        cur_frm.remove_custom_button('Subscription', "Create")
         if(cur_frm.doc.docstatus && cur_frm.doc.status === 'In Progress'){
@@ -186,27 +196,16 @@ frappe.ui.form.on('Quotation', {
 	        cur_frm.remove_custom_button('Revise the Quote', "Action")
             cur_frm.add_custom_button(__('PO Received'), () => {
                 frappe.confirm('Are you sure you want to proceed?',
-                        () => {
-                                            cur_frm.trigger("po_received")
-
-                        }, () => {
-                            // action to perform if No is selected
-                        })
+                        () => {cur_frm.trigger("po_received")}, () => {})
         }, __('Action'));
             cur_frm.add_custom_button(__('Revise the Quote'), () => {
                  frappe.confirm('Are you sure you want to proceed?',
-                        () => {
-                                                        cur_frm.trigger("revise_the_quote")
-
-
-                        }, () => {
-                            // action to perform if No is selected
-                        })
+                        () => {cur_frm.trigger("revise_the_quote")}, () => {})
         }, __('Action'));
 	        cur_frm.page.set_inner_btn_group_as_primary(__('Action'));
 
         } else if(cur_frm.doc.docstatus  && cur_frm.doc.status === 'Open'){
-	        if(!cur_frm.doc.valid_till || frappe.datetime.get_diff(cur_frm.doc.valid_till, frappe.datetime.get_today()) >= 0) {
+	        if(!cur_frm.doc.valid_till || frappe.datetime.get_diff(cur_frm.doc.valid_till, frappe.datetime.get_today()) >= 0 && show) {
 				cur_frm.add_custom_button(__('Sales Order'),
 					cur_frm.cscript['Make Sales Order'], __('Create'));
 			}

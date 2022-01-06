@@ -1,6 +1,14 @@
 import frappe,json
 
 @frappe.whitelist()
+def check_bb_status(bb):
+    data = json.loads(bb)
+    for i in data:
+        bbb = frappe.db.sql(""" SELECT * FROM `tabBudget BOM` WHERE name=%s""", i['budget_bom'])
+        if "Sales Order" in bbb[0].status:
+            return False
+    return True
+@frappe.whitelist()
 def po_received(name):
     frappe.db.sql(""" UPDATE `tabQuotation` SET status='Open' WHERE name=%s """, name)
     frappe.db.commit()

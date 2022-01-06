@@ -1,7 +1,7 @@
 frappe.listview_settings['Budget BOM'] = {
 	add_fields: ["status"],
 	get_indicator: function (doc) {
-		if (["To Quotation"].includes(doc.status)) {
+		if (["To Quotation","Approve and To Sales Order", "Declined and To Sales Order"].includes(doc.status)) {
 			// Closed
 			return [__(doc.status), "orange", "status,=," + doc.status];
 		} else if (["Rejected"].includes(doc.status)) {

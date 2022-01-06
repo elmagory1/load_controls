@@ -7,6 +7,13 @@ from frappe.model.mapper import get_mapped_doc
 from erpnext.stock.stock_ledger import get_previous_sle
 
 class BudgetBOM(Document):
+    def request_for_revise(self):
+        frappe.db.sql(""" UPDATE `tabBudget BOM` SET request=1 WHERE name=%s """, self.name)
+        frappe.db.commit()
+    def submit_for_approval(self):
+        frappe.db.sql(""" UPDATE `tabBudget BOM` SET submitted_changes=1 WHERE name=%s """, self.name)
+        frappe.db.commit()
+
     def on_cancel(self):
 
         frappe.db.sql(""" UPDATE `tabOpportunity` SET budget_bom='' WHERE opportunity=%s """, self.opportunity)
@@ -14,9 +21,8 @@ class BudgetBOM(Document):
 
     def on_update_after_submit(self):
         allow_tmr = frappe.db.get_single_value('Manufacturing Settings', 'allow_budget_bom_total_raw_material_cost')
-        if self.status == 'Updated Changes' and self.total_raw_material_cost >= allow_tmr:
-            frappe.db.sql(""" UPDATE `tabBudget BOM` SET status='To Material Request' WHERE name=%s """,
-                          self.name)
+        if self.status == 'To Design':
+            frappe.db.sql(""" UPDATE `tabBudget BOM` SET updated_changes=%s WHERE name=%s """,(self.additiondeletion_raw_material_subtotal >= allow_tmr,self.name))
             frappe.db.commit()
             self.reload()
 
@@ -188,21 +194,17 @@ class BudgetBOM(Document):
 
     @frappe.whitelist()
     def amend_quotation(self):
-        quotation = frappe.db.sql(""" SELECT * FROM `tabQuotation` Q NNER JOIN `tabBudget BOM References` BBR ON BBR.parent = Q.name WHERE BBR.budget_bom=%s and Q.docstatus=1""", self.name, as_dict=1)
+        quotation = frappe.db.sql(""" SELECT * FROM `tabQuotation` Q INNER JOIN `tabBudget BOM References` BBR ON BBR.parent = Q.name WHERE BBR.budget_bom=%s and Q.docstatus=1""", self.name, as_dict=1)
         q = frappe.get_doc("Quotation", quotation[0].name)
         q.cancel()
-        frappe.db.sql(""" UPDATE `tabBudget BOM` SET status='To Quotation', quotation_amended=1 WHERE name=%s """, self.name)
+        frappe.db.sql(""" UPDATE `tabBudget BOM` SET status='To Quotation' WHERE name=%s """, self.name)
         frappe.db.commit()
 
     @frappe.whitelist()
     def action_to_design(self, status):
-        if status == "Updated Changes":
-            old_data = json.dumps(self.as_dict())
-            frappe.db.sql(""" UPDATE `tabBudget BOM` SET old_data=%s WHERE name=%s """,
-                        (old_data,self.name))
-            frappe.db.commit()
-
         if status == "To Material Request":
+            frappe.db.sql(""" UPDATE `tabBudget BOM` SET submitted_changes=1 WHERE name=%s """, self.name)
+            frappe.db.commit()
             if self.old_data:
                 old_data_fetch = json.loads(self.old_data)
                 fields = [

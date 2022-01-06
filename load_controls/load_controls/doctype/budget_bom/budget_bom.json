@@ -29,8 +29,8 @@
   "column_break_21",
   "total_electrical_bom_additiondeletion",
   "column_break_23",
-  "grand_total_electrical_raw_material",
   "mechanical_bom_section",
+  "grand_total_electrical_raw_material",
   "mechanical_bom_details",
   "mechanical_from_template",
   "mechanical_item_template",
@@ -83,7 +83,10 @@
   "quotation_amended",
   "quotation_cancelled",
   "declined",
-  "old_data"
+  "old_data",
+  "updated_changes",
+  "submitted_changes",
+  "request"
  ],
  "fields": [
   {
@@ -159,7 +162,8 @@
    "fieldname": "electrical_bom_raw_material",
    "fieldtype": "Table",
    "label": "Electrical Raw Material",
-   "options": "Budget BOM Raw Material"
+   "options": "Budget BOM Raw Material",
+   "read_only_depends_on": "eval: doc.status == 'To Design' && doc.docstatus"
   },
   {
    "fieldname": "mechanical_bom_section",
@@ -178,7 +182,8 @@
    "fieldname": "mechanical_bom_raw_material",
    "fieldtype": "Table",
    "label": "Mechanical Raw Material",
-   "options": "Budget BOM Raw Material"
+   "options": "Budget BOM Raw Material",
+   "read_only_depends_on": "eval: doc.status == 'To Design' && doc.docstatus"
   },
   {
    "fieldname": "fgsellable_bom_section",
@@ -196,7 +201,8 @@
    "fieldname": "fg_sellable_bom_raw_material",
    "fieldtype": "Table",
    "label": "Enclosure`",
-   "options": "Budget BOM Enclosure Raw Material"
+   "options": "Budget BOM Enclosure Raw Material",
+   "read_only_depends_on": "eval: doc.status == 'To Design' && doc.docstatus"
   },
   {
    "fieldname": "amended_from",
@@ -324,7 +330,7 @@
    "fieldname": "status",
    "fieldtype": "Select",
    "label": "Status",
-   "options": "To Quotation\nTo Design\nPending\nRejected\nTo Purchase Order\nQuotation In Progress\nUpdated Changes\nTo Material Request\nDeclined\nTo PO and SO\nTo Purchase Invoice\nTo SO\nTo DN and PO\nTo DN and PR\nTo SI and PR\nTo SI and PI\nTo SI\nTo PI",
+   "options": "To Quotation\nTo Design\nPending\nRejected\nTo Purchase Order\nQuotation In Progress\nUpdated Changes\nDeclined and To Sales Order\nApprove and To Sales Order\nTo Material Request\nDeclined\nTo PO and SO\nTo Purchase Invoice\nTo SO\nTo DN and PO\nTo DN and PR\nTo SI and PR\nTo SI and PI\nTo SI\nTo PI",
    "read_only": 1
   },
   {
@@ -374,6 +380,7 @@
    "default": "0",
    "fieldname": "quotation_cancelled",
    "fieldtype": "Check",
+   "hidden": 1,
    "label": "Quotation Cancelled",
    "read_only": 1
   },
@@ -388,6 +395,7 @@
    "default": "0",
    "fieldname": "declined",
    "fieldtype": "Check",
+   "hidden": 1,
    "label": "Declined",
    "read_only": 1
   },
@@ -523,7 +531,7 @@
    "fieldtype": "Table",
    "label": "Electrical BOM Addition/Deletion",
    "options": "Budget BOM Raw Material Modifier",
-   "read_only_depends_on": "eval: doc.status != 'To Design' && doc.docstatus"
+   "read_only_depends_on": "eval: (doc.status != 'To Design' && doc.docstatus) || !frappe.user.has_role(\"Level 1\") || doc.submitted_changes"
   },
   {
    "allow_on_submit": 1,
@@ -531,7 +539,7 @@
    "fieldtype": "Table",
    "label": "Mechanical BOM Addition/Deletion",
    "options": "Budget BOM Raw Material Modifier",
-   "read_only_depends_on": "eval: doc.status != 'To Design'"
+   "read_only_depends_on": "eval: (doc.status != 'To Design' && doc.docstatus) || !frappe.user.has_role(\"Level 1\") || doc.submitted_changes"
   },
   {
    "fieldname": "section_break_19",
@@ -612,12 +620,33 @@
    "fieldtype": "Currency",
    "label": "Addition/Deletion Raw Material Subtotal",
    "read_only": 1
+  },
+  {
+   "default": "0",
+   "fieldname": "updated_changes",
+   "fieldtype": "Check",
+   "hidden": 1,
+   "label": "Updated Changes"
+  },
+  {
+   "default": "0",
+   "fieldname": "submitted_changes",
+   "fieldtype": "Check",
+   "hidden": 1,
+   "label": "Submitted Changes"
+  },
+  {
+   "default": "0",
+   "fieldname": "request",
+   "fieldtype": "Check",
+   "hidden": 1,
+   "label": "Request"
   }
  ],
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2022-01-06 16:35:23.516661",
+ "modified": "2022-01-07 01:04:41.177617",
  "modified_by": "Administrator",
  "module": "Load Controls",
  "name": "Budget BOM",

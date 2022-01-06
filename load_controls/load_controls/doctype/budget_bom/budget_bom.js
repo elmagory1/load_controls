@@ -417,8 +417,8 @@ frappe.ui.form.on('Budget BOM', {
                 return {}
             }
         })
-	    //ELECTRICAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAL
-	    cur_frm.fields_dict["electrical_bom_raw_material"].grid.add_custom_button(__('Refresh Available Stock'),
+        if(cur_frm.doc.status !== 'To Design'){
+             cur_frm.fields_dict["electrical_bom_raw_material"].grid.add_custom_button(__('Refresh Available Stock'),
 			function() {
 	        cur_frm.trigger("refresh_electrical_available_stock")
         }).css('background-color','#00008B').css('color','white').css('margin-left','10px').css('margin-right','10px').css('font-weight','bold')
@@ -461,6 +461,9 @@ frappe.ui.form.on('Budget BOM', {
 
         }).css('background-color','#00008B').css('color','white').css('margin-left','10px').css('margin-right','10px').css('font-weight','bold')
 
+
+        }
+	    //ELECTRICAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAL
 
 	    if(!generating_quotation){
 	        cur_frm.call({
@@ -587,89 +590,113 @@ frappe.ui.form.on('Budget BOM', {
                         }
                     })
                 })
-        } else if(cur_frm.doc.docstatus && cur_frm.doc.status === "To Design" ){
-            // if(frappe.user.has_role("Sales User")) {
-            //     frm.add_custom_button(__("Amend Quotation"), () => {
-            //         cur_frm.call({
-            //             doc: cur_frm.doc,
-            //             method: 'amend_quotation',
-            //             args: {},
-            //             freeze: true,
-            //             freeze_message: "Amending Quotation...",
-            //             callback: (r) => {
-            //                 cur_frm.reload_doc()
-            //             }
-            //         })
-            //     })
-            // }
-            if(frappe.user.has_role("Mechanical")){
-	                 frm.add_custom_button(__("Submit"), () => {
-                    cur_frm.call({
-                        doc: cur_frm.doc,
-                        method: 'action_to_design',
-                        args: {
-                            status: "To Material Request"
-                        },
-                        freeze: true,
-                        freeze_message: "Amending Quotation...",
-                        callback: (r) => {
-                            cur_frm.reload_doc()
-                        }
-                    })
-                }, "Action")
-            frm.add_custom_button(__("Update Changes"), () => {
-                    cur_frm.call({
-                        doc: cur_frm.doc,
-                        method: 'action_to_design',
-                        args: {
-                            status: "Updated Changes"
-                        },
-                        freeze: true,
-                        freeze_message: "Amending Quotation...",
-                        callback: (r) => {
-                            cur_frm.reload_doc()
-                        }
-                    })
-                }, "Action")
+        } else if(cur_frm.doc.docstatus && cur_frm.doc.status === "To Design" && !cur_frm.doc.submitted_changes && !cur_frm.doc.request){
+
+            if(frappe.user.has_role("Level 1") && !cur_frm.doc.updated_changes){
+	                 cur_frm.add_custom_button(__("Submit"), () => {
+                            cur_frm.call({
+                                doc: cur_frm.doc,
+                                method: 'action_to_design',
+                                args: {
+                                    status: "To Material Request"
+                                },
+                                freeze: true,
+                                freeze_message: "Amending Quotation...",
+                                callback: (r) => {
+                                    cur_frm.reload_doc()
+                                }
+                            })
+                        }, "Action")
+            } else  if(frappe.user.has_role("Level 1") && cur_frm.doc.updated_changes){
+                  cur_frm.add_custom_button(__("Submit for Approval"), () => {
+                            cur_frm.call({
+                                doc: cur_frm.doc,
+                                method: 'submit_for_approval',
+                                args: {},
+                                freeze: true,
+                                freeze_message: "Submitting...",
+                                callback: (r) => {
+                                    cur_frm.reload_doc()
+                                }
+                            })
+                        }, "Action")
             }
 
 
 
-        } else if(cur_frm.doc.docstatus && cur_frm.doc.status === "Updated Changes" && cur_frm.doc.total_raw_material_cost < allow_bb){
-            if(frappe.user.has_role("Sales User")) {
-            frm.add_custom_button(__("Approve"), () => {
-                    cur_frm.call({
-                        doc: cur_frm.doc,
-                        method: 'action_to_design',
-                        args: {
-                            status: "To Material Request",
-                        },
-                        freeze: true,
-                        freeze_message: "Amending Quotation...",
-                        callback: (r) => {
-                            cur_frm.reload_doc()
-                        }
-                    })
-                }, "Action")
-            frm.add_custom_button(__("Decline"), () => {
-                    cur_frm.call({
-                        doc: cur_frm.doc,
-                        method: 'action_to_design',
-                        args: {
-                            status: "To Material Request"
-                        },
-                        freeze: true,
-                        freeze_message: "Amending Quotation...",
-                        callback: (r) => {
-                            cur_frm.reload_doc()
-                        }
-                    })
-                }, "Action")
-                }
+        } else if(cur_frm.doc.docstatus && cur_frm.doc.status === "To Design" && cur_frm.doc.submitted_changes && !cur_frm.doc.request){
+            if(frappe.user.has_role("Level 2")) {
+                    frm.add_custom_button(__("Approve"), () => {
+                        cur_frm.call({
+                            doc: cur_frm.doc,
+                            method: 'action_to_design',
+                            args: {
+                                status: "Approve and To Sales Order",
+                            },
+                            freeze: true,
+                            freeze_message: "Approving...",
+                            callback: (r) => {
+                                cur_frm.reload_doc()
+                            }
+                        })
+                    }, "Action")
+                    frm.add_custom_button(__("Request for Revise the Quote"), () => {
+                        cur_frm.call({
+                            doc: cur_frm.doc,
+                            method: 'request_for_revise',
+                            args: { },
+                            freeze: true,
+                            freeze_message: "Requesting...",
+                            callback: (r) => {
+                                cur_frm.reload_doc()
+                            }
+                        })
+                    }, "Action")
+            }
 
 
 
-        }  else if(cur_frm.doc.docstatus && cur_frm.doc.status === "To Material Request" ){
+        }  else if(cur_frm.doc.docstatus && cur_frm.doc.status === "To Design" && cur_frm.doc.submitted_changes && cur_frm.doc.request){
+            if(frappe.user.has_role("Level 3")) {
+                    frm.add_custom_button(__("Accept"), () => {
+                        frappe.confirm('Are you sure you want to proceed?',
+                        () => {
+                            cur_frm.call({
+                                doc: cur_frm.doc,
+                                method: 'amend_quotation',
+                                args: {},
+                                freeze: true,
+                                freeze_message: "Cancelling Quotation...",
+                                callback: (r) => {
+                                    cur_frm.reload_doc()
+                                }
+                            })
+                        }, () => {})
+
+                    }, "Action")
+                    frm.add_custom_button(__("Decline"), () => {
+                         frappe.confirm('Are you sure you want to proceed?',
+                        () => {
+                           cur_frm.call({
+                                doc: cur_frm.doc,
+                                method: 'action_to_design',
+                                args: {
+                                    status: "Declined and To Sales Order"
+                                },
+                                freeze: true,
+                                freeze_message: "Requesting...",
+                                callback: (r) => {
+                                    cur_frm.reload_doc()
+                                }
+                            })
+                        }, () => {})
+
+                    }, "Action")
+            }
+
+
+
+        } else if(cur_frm.doc.docstatus && cur_frm.doc.status === "To Material Request" ){
 
                 frm.add_custom_button(__("Material Request"), () => {
                     cur_frm.trigger("material_request")
@@ -696,61 +723,11 @@ frappe.ui.form.on('Budget BOM', {
                 }
 
         }
-         if(cur_frm.doc.docstatus && frappe.user.has_role("Sales User") && !(cur_frm.doc.status === "Updated Changes")) {
-             cur_frm.set_df_property("electrical_bom_raw_material", "read_only", (!cur_frm.doc.quotation_cancelled && !cur_frm.doc.quotation_amended))
-             cur_frm.set_df_property("fg_sellable_raw_material", "read_only", (!cur_frm.doc.quotation_cancelled && !cur_frm.doc.quotation_amended))
-             cur_frm.set_df_property("mechanical_bom_raw_material", "read_only",  (!cur_frm.doc.quotation_cancelled && !cur_frm.doc.quotation_amended))
-             cur_frm.set_df_property("additional_operation_cost", "read_only",  (!cur_frm.doc.quotation_cancelled && !cur_frm.doc.quotation_amended))
-
-             var fields_for_cancel1 = [
-                 "electrical_bom_raw_material",
-                 "mechanical_bom_raw_material",
-                 "fg_sellable_bom_raw_material",
-                 "additional_operation_cost",
-                 "posting_date",
-                 "expected_closing_date",
-                 "discount_percentage",
-                 "discount_amount",
-                 "rate_of_materials_based_on",
-                 "price_list",
-             ]
-
-             for (var ii = 0; ii < fields_for_cancel1.length; ii += 1) {
-                 cur_frm.set_df_property(fields_for_cancel1[ii], "read_only",(!cur_frm.doc.quotation_cancelled && !cur_frm.doc.quotation_amended))
-             }
-         } else if(cur_frm.doc.docstatus && frappe.user.has_role("Mechanical") && cur_frm.doc.status === "Updated Changes") {
-
-             cur_frm.set_df_property("electrical_bom_raw_material", "read_only", (!cur_frm.doc.quotation_cancelled && !cur_frm.doc.quotation_amended))
-             cur_frm.set_df_property("fg_sellable_raw_material", "read_only", (!cur_frm.doc.quotation_cancelled && !cur_frm.doc.quotation_amended))
-             cur_frm.set_df_property("mechanical_bom_raw_material", "read_only",  (!cur_frm.doc.quotation_cancelled && !cur_frm.doc.quotation_amended))
-             cur_frm.set_df_property("additional_operation_cost", "read_only",  (!cur_frm.doc.quotation_cancelled && !cur_frm.doc.quotation_amended))
-
-             var fields_for_cancel = [
-                 "electrical_bom_raw_material",
-                 "electrical_bom_details",
-                 "mechanical_bom_raw_material",
-                 "mechanical_bom_details",
-                 "fg_sellable_bom_details",
-                 "fg_sellable_bom_raw_material",
-                 "additional_operation_cost",
-                 "posting_date",
-                 "expected_closing_date",
-                 "discount_percentage",
-                 "discount_amount",
-                 "rate_of_materials_based_on",
-                 "price_list",
-             ]
-
-             for (var ii = 0; ii < fields_for_cancel.length; ii += 1) {
-                 cur_frm.set_df_property(fields_for_cancel[ii], "read_only",(!cur_frm.doc.quotation_cancelled && !cur_frm.doc.quotation_amended))
-             }
-         }
-      var label_change = frappe.meta.get_docfield("Budget BOM Details","rate", cur_frm.doc.name);
+        var label_change = frappe.meta.get_docfield("Budget BOM Details","rate", cur_frm.doc.name);
         if(label_change){
             label_change.label = 'Child Qty'
             cur_frm.refresh_field("activity_details")
         }
-
     },
 
 	onload_post_render: function(frm) {
