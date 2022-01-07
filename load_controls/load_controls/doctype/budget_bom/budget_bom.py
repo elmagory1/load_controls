@@ -18,7 +18,7 @@ class BudgetBOM(Document):
 
     def on_cancel(self):
 
-        frappe.db.sql(""" UPDATE `tabOpportunity` SET budget_bom='' WHERE opportunity=%s """, self.opportunity)
+        frappe.db.sql(""" UPDATE `tabOpportunity` SET budget_bom='' WHERE name=%s """, self.opportunity)
         frappe.db.commit()
 
     def on_update_after_submit(self):
