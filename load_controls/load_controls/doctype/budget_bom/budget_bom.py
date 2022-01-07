@@ -60,6 +60,7 @@ class BudgetBOM(Document):
                 obj = {
                     'item_code': x.item_code,
                     'item_name': item_master.item_name,
+                    'item_group': item_master.item_group,
                     'uom': x.uom,
                     'qty': x.qty,
                     'warehouse': raw_material_warehouse,
