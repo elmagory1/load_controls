@@ -593,12 +593,14 @@ frappe.ui.form.on('Budget BOM', {
         } else if(cur_frm.doc.docstatus && cur_frm.doc.status === "To Design" && !cur_frm.doc.submitted_changes && !cur_frm.doc.request){
 
             if(frappe.user.has_role("Level 1") && !cur_frm.doc.updated_changes){
-	                 cur_frm.add_custom_button(__("Submit"), () => {
-                            cur_frm.call({
+	                 cur_frm.add_custom_button(__("Reviewed"), () => {
+	                     frappe.confirm('Are you sure you want to proceed?',
+                        () => {
+	                       cur_frm.call({
                                 doc: cur_frm.doc,
                                 method: 'action_to_design',
                                 args: {
-                                    status: "To Material Request"
+                                    status: "To Sales Order"
                                 },
                                 freeze: true,
                                 freeze_message: "Amending Quotation...",
@@ -606,10 +608,15 @@ frappe.ui.form.on('Budget BOM', {
                                     cur_frm.reload_doc()
                                 }
                             })
+                        }, () => {})
+
                         }, "Action")
             } else  if(frappe.user.has_role("Level 1") && cur_frm.doc.updated_changes){
-                  cur_frm.add_custom_button(__("Submit for Approval"), () => {
-                            cur_frm.call({
+
+                 cur_frm.add_custom_button(__("Review for Approval"), () => {
+                      frappe.confirm('Are you sure you want to proceed?',
+                        () => {
+                              cur_frm.call({
                                 doc: cur_frm.doc,
                                 method: 'submit_for_approval',
                                 args: {},
@@ -619,6 +626,8 @@ frappe.ui.form.on('Budget BOM', {
                                     cur_frm.reload_doc()
                                 }
                             })
+                        }, () => {})
+
                         }, "Action")
             }
 
@@ -627,7 +636,9 @@ frappe.ui.form.on('Budget BOM', {
         } else if(cur_frm.doc.docstatus && cur_frm.doc.status === "To Design" && cur_frm.doc.submitted_changes && !cur_frm.doc.request){
             if(frappe.user.has_role("Level 2")) {
                     frm.add_custom_button(__("Approve"), () => {
-                        cur_frm.call({
+                        frappe.confirm('Are you sure you want to proceed?',
+                        () => {
+                              cur_frm.call({
                             doc: cur_frm.doc,
                             method: 'action_to_design',
                             args: {
@@ -639,9 +650,13 @@ frappe.ui.form.on('Budget BOM', {
                                 cur_frm.reload_doc()
                             }
                         })
+                        }, () => {})
+
                     }, "Action")
                     frm.add_custom_button(__("Request for Revise the Quote"), () => {
-                        cur_frm.call({
+                         frappe.confirm('Are you sure you want to proceed?',
+                        () => {
+                             cur_frm.call({
                             doc: cur_frm.doc,
                             method: 'request_for_revise',
                             args: { },
@@ -651,6 +666,8 @@ frappe.ui.form.on('Budget BOM', {
                                 cur_frm.reload_doc()
                             }
                         })
+                        }, () => {})
+
                     }, "Action")
             }
 

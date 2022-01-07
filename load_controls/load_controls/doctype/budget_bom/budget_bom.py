@@ -141,12 +141,11 @@ class BudgetBOM(Document):
     @frappe.whitelist()
     def validate(self):
         if self.opportunity:
-            if self.opportunity:
-                opp = frappe.get_doc("Opportunity", self.opportunity)
-                opp.append("budget_bom_reference", {
-                    "budget_bom": self.name
-                })
-                opp.save()
+            opp = frappe.get_doc("Opportunity", self.opportunity)
+            opp.append("budget_bom_reference", {
+                "budget_bom": self.name
+            })
+            opp.save()
 
     @frappe.whitelist()
     def generate_quotation(self):
