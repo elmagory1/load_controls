@@ -37,8 +37,8 @@ class BudgetBOM(Document):
 
     @frappe.whitelist()
     def update_discount(self, item):
-        discount = frappe.db.sql(""" SELECT * FROm `tabDiscount` WHERE opportunity=%s and item_code=%s and item_group=%s """,
-                                 (self.opportunity, item['item_code'], item['item_group']), as_dict=1)
+        discount = frappe.db.sql("""SELECT D.name, DD.item_group, DD.discount_percentage, DD.remarks FROM `tabDiscount` D INNER JOIN `tabDiscount Details` DD ON DD.parent = D.name WHERE D.opportunity=%s and DD.item_group=%s """,
+                                 (self.opportunity, item['item_group']), as_dict=1)
 
         if len(discount) > 0:
             item['discount_rate'] = discount[0].discount_rate
