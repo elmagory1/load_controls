@@ -531,7 +531,7 @@
    "fieldtype": "Table",
    "label": "Electrical BOM Addition/Deletion",
    "options": "Budget BOM Raw Material Modifier",
-   "read_only_depends_on": "eval: (doc.status != 'To Design' && doc.docstatus) || !frappe.user.has_role(\"Level 1\") || doc.submitted_changes || cur_frm.is_new()"
+   "read_only_depends_on": " eval: (doc.status != 'To Design' && doc.docstatus) || !frappe.user.has_role(\"Level 1\") || doc.submitted_changes || !doc.docstatus"
   },
   {
    "allow_on_submit": 1,
@@ -539,7 +539,7 @@
    "fieldtype": "Table",
    "label": "Mechanical BOM Addition/Deletion",
    "options": "Budget BOM Raw Material Modifier",
-   "read_only_depends_on": "eval: (doc.status != 'To Design' && doc.docstatus) || !frappe.user.has_role(\"Level 1\") || doc.submitted_changes || cur_frm.is_new()"
+   "read_only_depends_on": " eval: (doc.status != 'To Design' && doc.docstatus) || !frappe.user.has_role(\"Level 1\") || doc.submitted_changes || !doc.docstatus"
   },
   {
    "fieldname": "section_break_19",
@@ -651,7 +651,7 @@
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2022-01-07 13:45:55.548534",
+ "modified": "2022-01-07 14:18:14.128775",
  "modified_by": "Administrator",
  "module": "Load Controls",
  "name": "Budget BOM",
