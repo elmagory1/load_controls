@@ -6,8 +6,8 @@ def check_bb_status(bb):
     for i in data:
         bbb = frappe.db.sql(""" SELECT * FROM `tabBudget BOM` WHERE name=%s""", i['budget_bom'], as_dict=1)
         if "Sales Order" in bbb[0].status:
-            return False
-    return True
+            return True
+    return False
 @frappe.whitelist()
 def po_received(name):
     frappe.db.sql(""" UPDATE `tabQuotation` SET status='Open' WHERE name=%s """, name)

@@ -205,7 +205,7 @@ frappe.ui.form.on('Quotation', {
 	        cur_frm.page.set_inner_btn_group_as_primary(__('Action'));
 
         } else if(cur_frm.doc.docstatus  && cur_frm.doc.status === 'Open'){
-	        if(!cur_frm.doc.valid_till || frappe.datetime.get_diff(cur_frm.doc.valid_till, frappe.datetime.get_today()) >= 0 && show) {
+	        if(!cur_frm.doc.valid_till || frappe.datetime.get_diff(cur_frm.doc.valid_till, frappe.datetime.get_today()) >= 0 && show ) {
 				cur_frm.add_custom_button(__('Sales Order'),
 					cur_frm.cscript['Make Sales Order'], __('Create'));
 			}
