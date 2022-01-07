@@ -642,7 +642,7 @@ frappe.ui.form.on('Budget BOM', {
                             doc: cur_frm.doc,
                             method: 'action_to_design',
                             args: {
-                                status: "Approve and To Sales Order",
+                                status: "Approved and To Sales Order",
                             },
                             freeze: true,
                             freeze_message: "Approving...",
