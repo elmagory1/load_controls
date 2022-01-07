@@ -5,7 +5,7 @@ def on_submit_so(doc, method):
         frappe.throw("Please Generate Project Code First")
     for i in doc.budget_bom_reference:
         if i.budget_bom:
-            frappe.db.sql(""" UPDATE `tabBudget BOM` SET status=%s WHERE name=%s  """, ("To Design", i.budget_bom))
+            frappe.db.sql(""" UPDATE `tabBudget BOM` SET status=%s WHERE name=%s  """, ("To Material Request and To Work Order", i.budget_bom))
             frappe.db.commit()
 
 
@@ -38,6 +38,15 @@ def on_cancel_so(doc, method):
         if i.budget_bom:
             frappe.db.sql(""" UPDATE `tabBudget BOM` SET status=%s WHERE name=%s  """,("To Sales Order", i.budget_bom))
             frappe.db.commit()
+    for i in doc.items:
+        frappe.db.sql(""" DELETE FROM `tabCost Center` WHERE name=%s""", i.project_code)
+        frappe.db.sql(""" UPDATE `tabSales Order Item` SET project_code='' WHERE name=%s""", i.name)
+        frappe.db.commit()
+    frappe.db.sql(""" UPDATE `tabSales Order` SET cost_center='' WHERE name=%s""", doc.name)
+    frappe.db.sql(""" DELETE FROM `tabCost Center` WHERE name=%s""", doc.cost_center)
+    frappe.db.commit()
+
+    doc.reload()
 
 @frappe.whitelist()
 def generate_cost_centers(items, name, customer,project_code, company):
