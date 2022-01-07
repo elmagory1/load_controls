@@ -16,7 +16,6 @@
   "expected_closing_date",
   "rate_of_materials_based_on",
   "price_list",
-  "update_discount",
   "electrical_bom_section",
   "electrical_bom_details",
   "electrical_from_template",
@@ -400,11 +399,6 @@
    "read_only": 1
   },
   {
-   "fieldname": "update_discount",
-   "fieldtype": "Button",
-   "label": "Update Discount"
-  },
-  {
    "allow_on_submit": 1,
    "default": "0",
    "fieldname": "enclosure_subtotal",
@@ -651,7 +645,7 @@
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2022-01-07 23:01:39.864687",
+ "modified": "2022-01-08 00:53:05.220675",
  "modified_by": "Administrator",
  "module": "Load Controls",
  "name": "Budget BOM",

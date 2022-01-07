@@ -29,15 +29,13 @@ class BudgetBOM(Document):
             self.reload()
 
     @frappe.whitelist()
-    def update_discounts(self):
-        fields = ['electrical_bom_raw_material', 'mechanical_bom_raw_material', 'fg_sellable_bom_raw_material']
-        for i in fields:
-            for ii in self.__dict__[i]:
-                obj = self.update_discount(ii.__dict__)
-
+    def update_discounts(self, fieldname):
+        for ii in self.__dict__[fieldname]:
+            self.update_discount(ii.__dict__)
     @frappe.whitelist()
     def update_discount(self, item):
-        discount = frappe.db.sql("""SELECT D.name, DD.item_group, DD.discount_percentage, DD.remarks FROM `tabDiscount` D INNER JOIN `tabDiscount Details` DD ON DD.parent = D.name WHERE D.opportunity=%s and DD.item_group=%s """,
+        discount = frappe.db.sql("""SELECT D.name, DD.item_group, DD.discount_percentage, DD.remarks 
+                                  FROM `tabDiscount` D INNER JOIN `tabDiscount Details` DD ON DD.parent = D.name WHERE D.opportunity=%s and DD.item_group=%s """,
                                  (self.opportunity, item['item_group']), as_dict=1)
 
         if len(discount) > 0:

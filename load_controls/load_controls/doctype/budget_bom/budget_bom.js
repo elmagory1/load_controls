@@ -240,7 +240,7 @@ frappe.ui.form.on('Budget BOM Raw Material Modifier', {
         var d = locals[cdt][cdn]
         if(cur_frm.doc.docstatus){
             frappe.call({
-                method: "ringlus.ringlus.doctype.budget_bom.budget_bom.unlink",
+                method: "load_controls.load_controls.doctype.budget_bom.budget_bom.unlink",
                 args: {
                     name: d.name
                 },
@@ -373,10 +373,6 @@ frappe.ui.form.on('Budget BOM', {
             cur_frm.doc.status = "To Quotation"
             cur_frm.refresh_field("status")
         }
-    document.querySelectorAll("[data-fieldname='update_discount']")[1].style.backgroundColor ="blue"
-       document.querySelectorAll("[data-fieldname='update_discount']")[1].style.color ="white"
-       document.querySelectorAll("[data-fieldname='update_discount']")[1].style.fontWeight ="bold"
-
 	    cur_frm.set_query("opportunity", () => {
 	        return {
 	            filters:{
@@ -418,6 +414,28 @@ frappe.ui.form.on('Budget BOM', {
             }
         })
         if(cur_frm.doc.status !== 'To Design'){
+
+            cur_frm.fields_dict["electrical_bom_raw_material"].grid.add_custom_button(__('Update Discount'),
+                function() {
+                cur_frm.call({
+                    doc: cur_frm.doc,
+                    method: 'update_discounts',
+                    args: {
+                        fieldname: "electrical_bom_raw_material"
+                    },
+                    freeze: true,
+                    freeze_message: "Get Quotation...",
+                    async:false,
+                    callback: (r) => {
+                        cur_frm.dirty()
+                        cur_frm.refresh_field('electrical_bom_raw_material')
+                                 compute_total_cost(cur_frm)
+
+
+                    }
+                })
+            }).css('background-color','#006622').css('color','white').css('font-weight','bold')
+
              cur_frm.fields_dict["electrical_bom_raw_material"].grid.add_custom_button(__('Refresh Available Stock'),
 			function() {
 	        cur_frm.trigger("refresh_electrical_available_stock")
@@ -437,6 +455,27 @@ frappe.ui.form.on('Budget BOM', {
         }).css('background-color','brown').css('color','white').css('font-weight','bold')
 
         //MECHANICAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAL
+            cur_frm.fields_dict["mechanical_bom_raw_material"].grid.add_custom_button(__('Update Discount'),
+                function() {
+                cur_frm.call({
+                    doc: cur_frm.doc,
+                    method: 'update_discounts',
+                    args: {
+                        fieldname: "mechanical_bom_raw_material"
+                    },
+                    freeze: true,
+                    freeze_message: "Get Quotation...",
+                    async:false,
+                    callback: (r) => {
+                        cur_frm.dirty()
+                        cur_frm.refresh_field('mechanical_bom_raw_material')
+                                 compute_total_cost(cur_frm)
+
+
+                    }
+                })
+            }).css('background-color','#006622').css('color','white').css('font-weight','bold')
+
 	    cur_frm.fields_dict["mechanical_bom_raw_material"].grid.add_custom_button(__('Refresh Available Stock'),
 			function() {
             cur_frm.trigger("refresh_mechanical_available_stock")
@@ -613,7 +652,7 @@ frappe.ui.form.on('Budget BOM', {
                         }, "Action")
             } else  if(frappe.user.has_role("Level 1") && cur_frm.doc.updated_changes){
 
-                 cur_frm.add_custom_button(__("Review for Approval"), () => {
+                 cur_frm.add_custom_button(__("Sent to Review"), () => {
                       frappe.confirm('Are you sure you want to proceed?',
                         () => {
                               cur_frm.call({
@@ -713,7 +752,7 @@ frappe.ui.form.on('Budget BOM', {
 
 
 
-        } else if(cur_frm.doc.docstatus && cur_frm.doc.status === "To Material Request" ){
+        } else if(cur_frm.doc.docstatus && cur_frm.doc.status === "To Material Request and To Work Order" ){
 
                 frm.add_custom_button(__("Material Request"), () => {
                     cur_frm.trigger("material_request")
@@ -806,7 +845,7 @@ cur_frm.get_field("electrical_bom_details").grid.cannot_add_rows = true;
 
     material_request: function(frm) {
        frappe.model.open_mapped_doc({
-			method: "load_controls.load_controls.doctype.budget_bom.budget_bom.make_mr",
+			method: "load_controls.load_controls.doctype.budget_bom.budget_bom.c",
 			frm: cur_frm
 		})
 
@@ -1014,7 +1053,7 @@ frappe.ui.form.on('Budget BOM Raw Material', {
         var d = locals[cdt][cdn]
         if(cur_frm.doc.docstatus){
             frappe.call({
-                method: "ringlus.ringlus.doctype.budget_bom.budget_bom.unlink",
+                method: "load_controls.load_controls.doctype.budget_bom.budget_bom.unlink",
                 args: {
                     name: d.name
                 },
@@ -1076,7 +1115,7 @@ frappe.ui.form.on('Budget BOM Raw Material', {
                         var values = r.message
                             console.log(values.discount_rate)
 
-                            d.discount_rate = values.discount_rate > 0 ? values.discount_rate : values.amount
+                        d.discount_rate = values.discount_rate > 0 ? values.discount_rate : values.amount
                           d.link_discount_amount = values.link_discount_amount
                           d.discount_amount = values.discount_amount
                           d.discount_percentage = values.discount_percentage
@@ -1261,7 +1300,7 @@ frappe.ui.form.on('Budget BOM Enclosure Raw Material', {
         var d = locals[cdt][cdn]
         if(cur_frm.doc.docstatus){
             frappe.call({
-                method: "ringlus.ringlus.doctype.budget_bom.budget_bom.unlink",
+                method: "load_controls.load_controls.doctype.budget_bom.budget_bom.unlink",
                 args: {
                     name: d.name
                 },
