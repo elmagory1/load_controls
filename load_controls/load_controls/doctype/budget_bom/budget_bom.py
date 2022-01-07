@@ -139,7 +139,7 @@ class BudgetBOM(Document):
 
         return obj
     @frappe.whitelist()
-    def validate(self):
+    def on_submit(self):
         if self.opportunity:
             opp = frappe.get_doc("Opportunity", self.opportunity)
             opp.append("budget_bom_reference", {
