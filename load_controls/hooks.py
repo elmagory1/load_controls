@@ -36,6 +36,7 @@ doctype_js = {
 	"Quotation" : "public/js/quotation.js",
 	"Material Request" : "public/js/material_request.js",
 	"Opportunity" : "public/js/opportunity.js",
+	"Sales Order" : "public/js/sales_order.js",
 }
 doctype_list_js = {
 	"Quotation" : "public/js/quotation_list.js"
@@ -273,6 +274,12 @@ fixtures = [
                     "Opportunity-project",
                     "Opportunity-project_name",
                     "Opportunity-budget_bom",
+
+                    "Sales Order-cost_center",
+                    "Sales Order-generate_project_code",
+                    "Sales Order Item-references",
+                    "Sales Order Item-project_code",
+                    "Global Defaults-default_project_code",
 
 
 				]
