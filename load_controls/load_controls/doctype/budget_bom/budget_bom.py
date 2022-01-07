@@ -16,7 +16,8 @@ class BudgetBOM(Document):
 
     def on_cancel(self):
 
-        frappe.db.sql(""" UPDATE `tabOpportunity` SET budget_bom='' WHERE opportunity=%s """, self.opportunity)
+        frappe.db.sql(""" DELETE FROM `tabBudget BOM References` WHERE parent=%s and budget_bom=%s""",
+                      (self.opportunity, self.name))
         frappe.db.commit()
 
     def on_update_after_submit(self):
@@ -140,8 +141,12 @@ class BudgetBOM(Document):
     @frappe.whitelist()
     def validate(self):
         if self.opportunity:
-            frappe.db.sql(""" UPDATE `tabOpportunity` SET budget_bom=%s WHERE name=%s""", (self.name, self.opportunity))
-            frappe.db.commit()
+            if self.opportunity:
+                opp = frappe.get_doc("Opportunity", self.opportunity)
+                opp.append("budget_bom_reference", {
+                    "budget_bom": self.name
+                })
+                opp.save()
 
     @frappe.whitelist()
     def generate_quotation(self):
