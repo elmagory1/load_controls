@@ -41,12 +41,13 @@ class BudgetBOM(Document):
                                  (self.opportunity, item['item_group']), as_dict=1)
 
         if len(discount) > 0:
-            item['discount_rate'] = discount[0].discount_rate
-            item['link_discount_amount'] = discount[0].name
-            item['discount_amount'] = discount[0].discount_amount
             item['discount_percentage'] = discount[0].discount_percentage
-            item['rate'] = (discount[0].discount_rate * item['qty']) + discount[0].discount_amount
-            item['amount'] = (discount[0].discount_rate * item['qty'])
+            item['discount_amount'] = (discount[0].discount_percentage / 100) * item['rate'] * item['qty']
+            item['amount'] = (item['rate'] * item['qty']) - item['discount_amount']
+            item['discount_rate'] = item['amount'] / item['qty']
+            item['remarks'] = discount[0].remarks
+            item['link_discount_amount'] = discount[0].name
+            item['rate'] = (item['discount_rate'] * item['qty']) + item['discount_amount']
 
     @frappe.whitelist()
     def get_templates(self, templates, raw_material_table):
@@ -74,7 +75,7 @@ class BudgetBOM(Document):
                 if len(discount) > 0:
                     obj['discount_percentage'] = discount[0].discount_percentage
                     obj['discount_amount'] = (discount[0].discount_percentage / 100) * rate[0] * x.qty
-                    obj['amount'] = (rate[0] * (x.conversion_factor * x.qty)) - obj['discount_amount']
+                    obj['amount'] = (rate[0] * x.qty) - obj['discount_amount']
                     obj['discount_rate'] = obj['amount'] / x.qty
                     obj['remarks'] = discount[0].remarks
                     obj['link_discount_amount'] = discount[0].name
