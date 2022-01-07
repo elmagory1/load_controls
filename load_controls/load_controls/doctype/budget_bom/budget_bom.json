@@ -330,7 +330,7 @@
    "fieldname": "status",
    "fieldtype": "Select",
    "label": "Status",
-   "options": "To Quotation\nTo Design\nPending\nRejected\nTo Purchase Order\nQuotation In Progress\nUpdated Changes\nDeclined and To Sales Order\nApprove and To Sales Order\nTo Material Request\nDeclined\nTo PO and SO\nTo Purchase Invoice\nTo SO\nTo DN and PO\nTo DN and PR\nTo SI and PR\nTo SI and PI\nTo SI\nTo PI",
+   "options": "To Quotation\nTo Design\nPending\nRejected\nTo Purchase Order\nWaiting for Review\nQuotation In Progress\nUpdated Changes\nDeclined and To Sales Order\nApprove and To Sales Order\nTo Material Request\nDeclined\nTo PO and SO\nTo Purchase Invoice\nTo SO\nTo DN and PO\nTo DN and PR\nTo SI and PR\nTo SI and PI\nTo SI\nTo PI",
    "read_only": 1
   },
   {
@@ -651,7 +651,7 @@
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2022-01-07 13:12:48.313471",
+ "modified": "2022-01-07 13:42:12.605291",
  "modified_by": "Administrator",
  "module": "Load Controls",
  "name": "Budget BOM",

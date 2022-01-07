@@ -590,7 +590,7 @@ frappe.ui.form.on('Budget BOM', {
                         }
                     })
                 })
-        } else if(cur_frm.doc.docstatus && cur_frm.doc.status === "To Design" && !cur_frm.doc.submitted_changes && !cur_frm.doc.request){
+        } else if(cur_frm.doc.docstatus && cur_frm.doc.status === 'To Design' && !cur_frm.doc.submitted_changes && !cur_frm.doc.request){
 
             if(frappe.user.has_role("Level 1") && !cur_frm.doc.updated_changes){
 	                 cur_frm.add_custom_button(__("Reviewed"), () => {
@@ -633,7 +633,7 @@ frappe.ui.form.on('Budget BOM', {
 
 
 
-        } else if(cur_frm.doc.docstatus && cur_frm.doc.status === "To Design" && cur_frm.doc.submitted_changes && !cur_frm.doc.request){
+        } else if(cur_frm.doc.docstatus && cur_frm.doc.status === 'Waiting for Review' && cur_frm.doc.submitted_changes && !cur_frm.doc.request){
             if(frappe.user.has_role("Level 2")) {
                     frm.add_custom_button(__("Approve"), () => {
                         frappe.confirm('Are you sure you want to proceed?',
@@ -673,7 +673,7 @@ frappe.ui.form.on('Budget BOM', {
 
 
 
-        }  else if(cur_frm.doc.docstatus && cur_frm.doc.status === "To Design" && cur_frm.doc.submitted_changes && cur_frm.doc.request){
+        }  else if(cur_frm.doc.docstatus && cur_frm.doc.status === 'Waiting for Review' && cur_frm.doc.submitted_changes && cur_frm.doc.request){
             if(frappe.user.has_role("Level 3")) {
                     frm.add_custom_button(__("Accept"), () => {
                         frappe.confirm('Are you sure you want to proceed?',

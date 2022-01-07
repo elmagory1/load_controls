@@ -13,7 +13,7 @@ class BudgetBOM(Document):
         frappe.db.commit()
     @frappe.whitelist()
     def submit_for_approval(self):
-        frappe.db.sql(""" UPDATE `tabBudget BOM` SET submitted_changes=1 WHERE name=%s """, self.name)
+        frappe.db.sql(""" UPDATE `tabBudget BOM` SET submitted_changes=1, status=%s WHERE name=%s """, ("Waiting for Review", self.name))
         frappe.db.commit()
 
     def on_cancel(self):
