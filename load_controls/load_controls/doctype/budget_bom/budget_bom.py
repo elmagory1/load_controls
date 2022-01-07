@@ -65,7 +65,7 @@ class BudgetBOM(Document):
                     'warehouse': raw_material_warehouse,
                     'rate': rate[0],
                     'amount': rate[0] * x.qty,
-                    'discount_rate': 0
+                    'discount_rate': (rate[0] * x.qty) / x.qty if rate[0] > 0 else 0
                 }
                 discount = frappe.db.sql(""" 
                                                       SELECT D.name, DD.item_group, DD.discount_percentage, DD.remarks FROM `tabDiscount` D INNER JOIN `tabDiscount Details` DD ON DD.parent = D.name WHERE D.opportunity=%s and DD.item_group=%s """,
