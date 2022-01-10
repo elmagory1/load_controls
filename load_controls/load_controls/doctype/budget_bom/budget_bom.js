@@ -757,7 +757,7 @@ frappe.ui.form.on('Budget BOM', {
                 frm.add_custom_button(__("Material Request"), () => {
                     cur_frm.trigger("material_request")
                 })
-        } else if(cur_frm.doc.docstatus && ["To Material Request", "To SO", "To PO", "To PO and SO"].includes(cur_frm.doc.status)){
+        } else if(cur_frm.doc.docstatus && ["To Material Request and To Work Order", "To SO", "To PO", "To PO and SO"].includes(cur_frm.doc.status)){
 
               if(!check_bom) {
                     frm.add_custom_button(__("Create BOM"), () => {
