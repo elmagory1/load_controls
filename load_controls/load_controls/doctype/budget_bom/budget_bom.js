@@ -650,7 +650,7 @@ frappe.ui.form.on('Budget BOM', {
                         }, () => {})
 
                         }, "Action")
-            } else  if(frappe.user.has_role("Level 1") && cur_frm.doc.updated_changes){
+            } else if(frappe.user.has_role("Level 1") && cur_frm.doc.updated_changes){
 
                  cur_frm.add_custom_button(__("Sent to Review"), () => {
                       frappe.confirm('Are you sure you want to proceed?',
@@ -845,7 +845,7 @@ cur_frm.get_field("electrical_bom_details").grid.cannot_add_rows = true;
 
     material_request: function(frm) {
        frappe.model.open_mapped_doc({
-			method: "load_controls.load_controls.doctype.budget_bom.budget_bom.c",
+			method: "load_controls.load_controls.doctype.budget_bom.budget_bom.make_mr",
 			frm: cur_frm
 		})
 

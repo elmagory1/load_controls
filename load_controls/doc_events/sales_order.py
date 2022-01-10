@@ -1,4 +1,5 @@
 import frappe, json
+from frappe.model.mapper import get_mapped_doc
 
 def on_submit_so(doc, method):
     if not doc.cost_center:
@@ -91,3 +92,72 @@ def generate_cc(project_code, customer, name, company, items_data,default_projec
             ccc = frappe.get_doc(obj).insert()
             frappe.db.sql(""" UPDATE `tabSales Order Item` SET project_code=%s WHERE name=%s""", (ccc.name, i['name']))
             frappe.db.commit()
+
+@frappe.whitelist()
+def get_budget_bom(a,b,c,d,e,f):
+    print("FILTTEERS")
+    print(a)
+    print(b)
+    print(c)
+    print(d)
+    print(e)
+    print(f)
+    data = []
+
+    bb =  frappe.db.sql(""" SELECT budget_bom as name FROM `tabBudget BOM References` WHERE parent=%s""",f['parent'],as_dict=1)
+    for i in bb:
+        mr = frappe.db.sql(""" SELECT * FROM `tabBudget BOM References` WHERE parenttype='Material Request' and budget_bom=%s""",i.name,as_dict=1)
+        if len(mr) == 0:
+            data.append(i)
+
+    return data
+
+@frappe.whitelist()
+def generate_mr(budget_boms, schedule_date, transaction_date, so_name):
+    data = json.loads(budget_boms)
+    doc = get_mapped_doc("Sales Order", so_name, {
+        "Sales Order": {
+            "doctype": "Material Request",
+            "validation": {
+                "docstatus": ["=", 1]
+            }
+        }
+    }, ignore_permissions=True)
+    doc.schedule_date = schedule_date
+    doc.transaction_date = transaction_date
+    doc.items = []
+    for x in data:
+        bb_doc = get_mapped_doc("Budget BOM", x, {
+            "Budget BOM": {
+                "doctype": "Material Request",
+                "validation": {
+                    "docstatus": ["=", 1]
+                }
+            },
+            "Budget BOM Raw Material": {
+                "doctype": "Material Request Item",
+                "field_map": {
+                    "name": "budget_bom_raw_material"
+                }
+            },
+            "Budget BOM Enclosure Raw Material": {
+                "doctype": "Material Request Item",
+                "field_map": {
+                    "name": "budget_bom_raw_material"
+                }
+            }
+        })
+
+        for xx in bb_doc.items:
+            doc.items.append(xx)
+        #
+        # doc.append("budget_bom_reference", {
+        #     "budget_bom": x
+        # })
+
+    for i in doc.items:
+        i.schedule_date = transaction_date
+    print("ITEEEEMS")
+    print(doc.items)
+    mr = doc.insert()
+    return mr.name

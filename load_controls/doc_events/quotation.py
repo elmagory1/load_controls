@@ -8,6 +8,7 @@ def check_bb_status(bb):
         if "Sales Order" in bbb[0].status:
             return True
     return False
+
 @frappe.whitelist()
 def po_received(name):
     frappe.db.sql(""" UPDATE `tabQuotation` SET status='Open' WHERE name=%s """, name)
@@ -15,9 +16,10 @@ def po_received(name):
     quotation = frappe.get_doc("Quotation", name)
     for i in quotation.budget_bom_reference:
         if i.budget_bom:
-            frappe.db.sql(""" UPDATE `tabBudget BOM` SET status=%s WHERE name=%s  """,
+            frappe.db.sql(""" UPDATE `tabBudget BOM` SET status=%s, submitted_changes=0 WHERE name=%s  """,
                           ("To Design", i.budget_bom))
             frappe.db.commit()
+
 @frappe.whitelist()
 def revise_the_quote(name):
     quotation = frappe.get_doc("Quotation", name)
