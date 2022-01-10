@@ -757,9 +757,7 @@ frappe.ui.form.on('Budget BOM', {
                 frm.add_custom_button(__("Material Request"), () => {
                     cur_frm.trigger("material_request")
                 })
-        } else if(cur_frm.doc.docstatus && ["To Material Request and To Work Order", "To SO", "To PO", "To PO and SO"].includes(cur_frm.doc.status)){
-
-              if(!check_bom) {
+            if(!check_bom) {
                     frm.add_custom_button(__("Create BOM"), () => {
                         cur_frm.call({
                             doc: cur_frm.doc,
@@ -777,7 +775,6 @@ frappe.ui.form.on('Budget BOM', {
                         })
                     })
                 }
-
         }
         var label_change = frappe.meta.get_docfield("Budget BOM Details","rate", cur_frm.doc.name);
         if(label_change){
