@@ -9,7 +9,7 @@ from erpnext.stock.stock_ledger import get_previous_sle
 class BudgetBOM(Document):
     @frappe.whitelist()
     def request_for_revise(self):
-        frappe.db.sql(""" UPDATE `tabBudget BOM` SET request=1 WHERE name=%s """, self.name)
+        frappe.db.sql(""" UPDATE `tabBudget BOM` SET request=1, status='Waiting for Accept / Decline' WHERE name=%s """, self.name)
         frappe.db.commit()
     @frappe.whitelist()
     def submit_for_approval(self):

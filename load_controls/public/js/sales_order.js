@@ -18,6 +18,10 @@ frappe.ui.form.on("Sales Order", {
         })
     },
     refresh: function (frm) {
+        document.querySelectorAll("[data-fieldname='generate_project_code']")[1].style.backgroundColor =" #80bfff"
+       document.querySelectorAll("[data-fieldname='generate_project_code']")[1].style.color ="white"
+       document.querySelectorAll("[data-fieldname='generate_project_code']")[1].style.fontWeight ="bold"
+
         if(cur_frm.doc.docstatus) {
             cur_frm.add_custom_button('Material Request', () => {
                 let query_args = {
