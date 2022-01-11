@@ -249,10 +249,20 @@ class BudgetBOM(Document):
                             WHERE budget_bom=%s and docstatus < 2""", self.name, as_dict=1)
 
         return bom[0].count > 0
+
+    @frappe.whitelist()
+    def get_raw_materials_additional(self, fieldname, item_code):
+        sum = 0
+        if fieldname:
+            for i in self.__dict__[fieldname]:
+                if i.type == 'Addition' and i.item_code== item_code:
+                    sum += i.qty
+                elif i.type == 'Deletion' and i.item_code== item_code:
+                    sum -= i.qty
+        return sum
     @frappe.whitelist()
     def create_bom(self):
         self.create_first_bom()
-
 
     @frappe.whitelist()
     def create_first_bom(self):
@@ -329,14 +339,16 @@ class BudgetBOM(Document):
     def get_raw_materials(self, raw_material, bom = None):
         items = []
         for i in self.__dict__[raw_material]:
+            additional_fn = "electrical_bom_additiondeletion" if raw_material == 'electrical_bom_raw_material' else 'mechanical_bom_additiondeletion' if raw_material == 'mechanical_bom_raw_material' else ""
+            qty = i.qty + self.get_raw_materials_additional(additional_fn, i.item_code)
             obj = {
                 "item_code": i.item_code,
                 "item_name": i.item_name,
                 "rate": i.rate if 'rate' in i.__dict__ else 0,
-                "qty": i.qty,
+                "qty": qty,
                 "uom": i.uom,
                 "operation_time_in_minutes": i.operation_time_in_minutes if 'operation_time_in_minutes' in i.__dict__ else 0,
-                "amount": i.qty * i.rate if 'rate' in i.__dict__ else 0,
+                "amount": qty * i.rate if 'rate' in i.__dict__ else 0,
             }
             if bom == "Third" and raw_material == "mechanical_bom_details":
                 obj['bom_no'] = self.second_bom
@@ -346,8 +358,6 @@ class BudgetBOM(Document):
 
             items.append(obj)
 
-        print("OBJEEEEEEECT")
-        print(items)
         return items
 
 @frappe.whitelist()
