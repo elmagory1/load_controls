@@ -299,6 +299,8 @@ fixtures = [
 					"Opportunity-main-links_order",
 					"Quotation-status-default",
 					"Quotation-status-options",
+					"Opportunity-expected_closing-reqd",
+					"Opportunity Item-qty-default",
 				]
 			]
 		]
