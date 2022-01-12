@@ -423,8 +423,6 @@ def make_mr(source_name, target_doc=None):
     # }, target_doc)
     #
     # return doc
-    print(source_name)
-    print(target_doc)
     doc = get_mapped_doc("Budget BOM", source_name, {
         "Budget BOM": {
             "doctype": "Material Request",
@@ -441,7 +439,8 @@ def make_mr(source_name, target_doc=None):
         "Budget BOM Enclosure Raw Material": {
             "doctype": "Material Request Item",
             "field_map": {
-                "name": "budget_bom_raw_material"
+                "name": "budget_bom_raw_material",
+                "discount": "budget_bom_rate"
             }
         }
 
@@ -452,13 +451,24 @@ def make_mr(source_name, target_doc=None):
     for i in doc.items:
         i.schedule_date = str(frappe.db.get_value("Budget BOM", source_name, "expected_closing_date"))
 
+    doc.items = consolidate_items(doc.items)
     doc.append("budget_bom_reference", {
         "budget_bom": source_name
     })
     print(doc.as_dict())
     return doc
 
-
+def consolidate_items(items):
+    c_items = []
+    for i in items:
+        add = False
+        for x in c_items:
+            if i.item_code == x.item_code and i.budget_bom_rate == x.budget_bom_rate:
+                x.qty += i.qty
+                add = True
+        if not add:
+            c_items.append(i)
+    return c_items
 @frappe.whitelist()
 def get_rate(item_code, warehouse, based_on,price_list):
     time = frappe.utils.now_datetime().time()

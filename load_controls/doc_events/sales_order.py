@@ -144,7 +144,8 @@ def generate_mr(budget_boms, schedule_date, transaction_date, so_name):
             "Budget BOM Enclosure Raw Material": {
                 "doctype": "Material Request Item",
                 "field_map": {
-                    "name": "budget_bom_raw_material"
+                    "name": "budget_bom_raw_material",
+                    "rate": "budget_bom_rate"
                 }
             }
         })
@@ -158,10 +159,24 @@ def generate_mr(budget_boms, schedule_date, transaction_date, so_name):
 
     for i in doc.items:
         i.schedule_date = transaction_date
+
+    doc.items = consolidate_items(doc.items)
     print("ITEEEEMS")
     print(doc.items)
     mr = doc.insert()
     return mr.name
+
+def consolidate_items(items):
+    c_items = []
+    for i in items:
+        add = False
+        for x in c_items:
+            if i.item_code == x.item_code and i.budget_bom_rate == x.budget_bom_rate:
+                x.qty += i.qty
+                add = True
+        if not add:
+            c_items.append(i)
+    return c_items
 
 def get_default_bom_item(item_code):
     bom = frappe.get_all('BOM', dict(item=item_code, is_active=True),
