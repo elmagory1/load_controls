@@ -25,7 +25,7 @@ frappe.ui.form.on('Discount Details', {
 	update_to_budget_bom: function(frm, cdt, cdn) {
 	    var d = locals[cdt][cdn]
         frappe.call({
-            method: "ringlus.ringlus.doctype.discount.discount.update_budget_bom",
+            method: "load_controls.load_controls.doctype.discount.discount.update_budget_bom",
             args:{
                 d: d,
                 opportunity: cur_frm.doc.opportunity ? cur_frm.doc.opportunity : ""

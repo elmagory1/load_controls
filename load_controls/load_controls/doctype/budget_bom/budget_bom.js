@@ -421,7 +421,8 @@ frappe.ui.form.on('Budget BOM', {
                     doc: cur_frm.doc,
                     method: 'update_discounts',
                     args: {
-                        fieldname: "electrical_bom_raw_material"
+                        fieldname: "electrical_bom_raw_material",
+                        opportunity: cur_frm.doc.opportunity
                     },
                     freeze: true,
                     freeze_message: "Get Quotation...",
@@ -461,7 +462,8 @@ frappe.ui.form.on('Budget BOM', {
                     doc: cur_frm.doc,
                     method: 'update_discounts',
                     args: {
-                        fieldname: "mechanical_bom_raw_material"
+                        fieldname: "mechanical_bom_raw_material",
+                        opportunity: cur_frm.doc.opportunity
                     },
                     freeze: true,
                     freeze_message: "Get Quotation...",
@@ -712,7 +714,7 @@ frappe.ui.form.on('Budget BOM', {
 
 
 
-        }  else if(cur_frm.doc.docstatus && cur_frm.doc.status === 'Waiting for Review' && cur_frm.doc.submitted_changes && cur_frm.doc.request){
+        }  else if(cur_frm.doc.docstatus && cur_frm.doc.status === 'Waiting for Accept / Decline' && cur_frm.doc.submitted_changes && cur_frm.doc.request){
             if(frappe.user.has_role("Level 3")) {
                     frm.add_custom_button(__("Accept"), () => {
                         frappe.confirm('Are you sure you want to proceed?',

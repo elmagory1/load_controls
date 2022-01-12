@@ -29,15 +29,17 @@ class BudgetBOM(Document):
             self.reload()
 
     @frappe.whitelist()
-    def update_discounts(self, fieldname):
+    def update_discounts(self, fieldname,opportunity):
         for ii in self.__dict__[fieldname]:
-            self.update_discount(ii.__dict__)
+            self.update_discount(ii.__dict__,opportunity)
+
     @frappe.whitelist()
-    def update_discount(self, item):
+    def update_discount(self, item,opportunity):
         discount = frappe.db.sql("""SELECT D.name, DD.item_group, DD.discount_percentage, DD.remarks 
                                   FROM `tabDiscount` D INNER JOIN `tabDiscount Details` DD ON DD.parent = D.name WHERE D.opportunity=%s and DD.item_group=%s """,
-                                 (self.opportunity, item['item_group']), as_dict=1)
-
+                                 (opportunity, item['item_group']), as_dict=1)
+        print("DISCOOOOOOOUNT")
+        print(discount)
         if len(discount) > 0:
             item['discount_percentage'] = discount[0].discount_percentage
             item['discount_amount'] = (discount[0].discount_percentage / 100) * item['rate'] * item['qty']
@@ -125,10 +127,13 @@ class BudgetBOM(Document):
             'discount_rate': 0
 
         }
-        discount = frappe.db.sql(""" 
-                                           SELECT D.name, DD.item_group, DD.discount_percentage, DD.remarks FROM `tabDiscount` D INNER JOIN `tabDiscount Details` DD ON DD.parent = D.name WHERE D.opportunity=%s and DD.item_group=%s """,
-                                 (self.opportunity, item_master.item_group), as_dict=1)
+        print(self.opportunity)
+        query = """ 
+                                           SELECT D.name, DD.item_group, DD.discount_percentage, DD.remarks FROM `tabDiscount` D 
+                                           INNER JOIN `tabDiscount Details` DD ON DD.parent = D.name WHERE D.opportunity='{0}' and DD.item_group='{1}'""".format(self.opportunity, item_master.item_group)
 
+        discount = frappe.db.sql(query, as_dict=1)
+        print(discount)
         if len(discount) > 0:
             obj['discount_percentage'] = discount[0].discount_percentage
             obj['discount_amount'] = (discount[0].discount_percentage / 100) * rate[0] * item['qty']
