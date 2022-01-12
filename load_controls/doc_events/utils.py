@@ -57,7 +57,7 @@ def on_submit_record(doc, method):
             status = "To DN and PO"
 
         elif po[0].count == 0 and so[0].count > 0 and si[0].count > 0 and pi[0].count == 0 and dn[0].count == 0 and pr[0].count == 0:
-            status = "To Material Request"
+            status = "To Material Request and To Work Order"
 
         elif po[0].count > 0 and si[0].count > 0 and pi[0].count > 0 and dn[0].count > 0 and pr[0].count > 0:
             status = "Completed"
@@ -113,7 +113,7 @@ def on_cancel_record(doc, method):
             status = "To DN and PO"
 
         elif po[0].count == 0 and so[0].count > 0 and si[0].count > 0 and pi[0].count == 0 and dn[0].count == 0 and pr[0].count == 0:
-            status = "To Material Request"
+            status = "To Material Request and To Work Order"
 
         elif po[0].count > 0 and si[0].count > 0 and pi[0].count > 0 and dn[0].count > 0 and pr[0].count > 0:
             status = "Completed"
