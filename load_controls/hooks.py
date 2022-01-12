@@ -37,6 +37,7 @@ doctype_js = {
 	"Material Request" : "public/js/material_request.js",
 	"Opportunity" : "public/js/opportunity.js",
 	"Sales Order" : "public/js/sales_order.js",
+	"Supplier Quotation" : "public/js/supplier_quotation.js",
 }
 doctype_list_js = {
 	"Quotation" : "public/js/quotation_list.js"
@@ -281,6 +282,7 @@ fixtures = [
                     "Sales Order Item-references",
                     "Sales Order Item-project_code",
                     "Global Defaults-default_project_code",
+                    "Supplier Quotation-fetch_material_request",
 
 
 				]

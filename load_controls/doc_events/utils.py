@@ -53,7 +53,10 @@ def on_submit_record(doc, method):
 
         # Statuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuus
 
-        if po[0].count == 0 and so[0].count > 0 and si[0].count > 0 and pi[0].count == 0 and dn[0].count == 0 and pr[0].count == 0:
+        if po[0].count == 0 and so[0].count > 0 and si[0].count == 0 and pi[0].count == 0 and dn[0].count == 0 and pr[0].count == 0:
+            status = "To Work Order"
+
+        elif po[0].count == 0 and so[0].count > 0 and si[0].count > 0 and pi[0].count == 0 and dn[0].count == 0 and pr[0].count == 0:
             status = "To DN and PO"
 
         elif po[0].count == 0 and so[0].count > 0 and si[0].count > 0 and pi[0].count == 0 and dn[0].count == 0 and pr[0].count == 0:
