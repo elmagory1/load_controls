@@ -111,8 +111,9 @@ def on_cancel_record(doc, method):
             i.budget_bom, as_dict=1)
 
         status = ""
-
-        if po[0].count == 0 and so[0].count > 0 and si[0].count > 0 and pi[0].count == 0 and dn[0].count == 0 and pr[0].count == 0:
+        if po[0].count == 0 and so[0].count > 0 and si[0].count == 0 and pi[0].count == 0 and dn[0].count == 0 and pr[0].count == 0:
+            status = "To Material Request and To Work Order"
+        elif po[0].count == 0 and so[0].count > 0 and si[0].count > 0 and pi[0].count == 0 and dn[0].count == 0 and pr[0].count == 0:
             status = "To DN and PO"
 
         elif po[0].count == 0 and so[0].count > 0 and si[0].count > 0 and pi[0].count == 0 and dn[0].count == 0 and pr[0].count == 0:
