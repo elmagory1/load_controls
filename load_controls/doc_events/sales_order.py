@@ -145,7 +145,7 @@ def generate_mr(budget_boms, schedule_date, transaction_date, so_name):
                 "doctype": "Material Request Item",
                 "field_map": {
                     "name": "budget_bom_raw_material",
-                    "rate": "budget_bom_rate"
+                    "discount": "budget_bom_rate"
                 }
             }
         })
@@ -157,7 +157,6 @@ def generate_mr(budget_boms, schedule_date, transaction_date, so_name):
             i.schedule_date = transaction_date
 
         doc.items = consolidate_items(doc.items, x)
-
     mr = doc.insert()
     return mr.name
 
@@ -170,8 +169,19 @@ def consolidate_items(items, source_name):
                 x.qty += i.qty
                 add = True
         if not add:
+            i.budget_bom_rate = i.rate
+            i.budget_bom_raw_material = i.name
+            i.doctype = "Material Request Item"
+            i.parentfield = "items"
+            i.parent = ""
+            i.parenttype = "Material Request"
+            i.docstatus = 0
             c_items.append(i)
+            
     final_items = get_addition_deletion(c_items, source_name)
+    print("FINALT ITEEEEEEEEEEEEEMS")
+    for xxx in final_items:
+        print(xxx.__dict__)
     return final_items
 
 
@@ -184,6 +194,12 @@ def get_addition_deletion(items, source_name):
             if not existing_item(i, data_items):
                 i.budget_bom_rate = i.rate
                 i.budget_bom_raw_material = i.name
+                i.doctype = "Material Request Item"
+                i.parentfield = "items"
+                i.parent = ""
+                i.parenttype = "Material Request"
+                i.docstatus = 0
+
                 data_items.append(i)
 
     return data_items

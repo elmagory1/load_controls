@@ -9,7 +9,7 @@ frappe.ui.form.on("Budget BOM References", {
             }
             frappe.db.get_doc("Budget BOM",d.budget_bom)
                 .then(doc => {
-                    var fields = ["electrical_bom_raw_material","mechanical_bom_raw_material","fg_sellable_bom_raw_material",]
+                    var fields = ["electrical_bom_raw_material","mechanical_bom_raw_material","fg_sellable_bom_raw_material","electrical_bom_additiondeletion","mechanical_bom_addition_deletion"]
                 for(var x=0;x<fields.length;x+=1){
                     for(var i=0;i<doc[fields[x]].length;i+=1){
                         if(!check_items(doc[fields[x]][i], cur_frm)) {
