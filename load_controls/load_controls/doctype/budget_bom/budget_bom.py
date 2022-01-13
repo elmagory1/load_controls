@@ -448,21 +448,30 @@ def consolidate_items(items,source_name):
         for x in c_items:
             if i.item_code == x.item_code and i.budget_bom_rate == x.budget_bom_rate:
                 x.qty += i.qty
-                x.qty += (get_addition_deletion(i.item_code,source_name))
                 add = True
+            x.qty += (get_addition_deletion(x.item_code,source_name))
+
         if not add:
             c_items.append(i)
     return c_items
 
 def get_addition_deletion(item_code,source_name):
+    print("===================================================")
     doc = frappe.get_doc("Budget BOM", source_name)
     sum = 0
     for fieldname in ['electrical_bom_additiondeletion', 'mechanical_bom_additiondeletion']:
         for i in doc.__dict__[fieldname]:
+            print(i)
+            print(i.type)
+            print(i.item_code)
+            print(item_code)
+            print(i.type == 'Addition' and i.item_code == item_code)
+            print(i.qty)
             if i.type == 'Addition' and i.item_code == item_code:
                 sum += i.qty
             elif i.type == 'Deletion' and i.item_code == item_code:
                 sum -= i.qty
+    print(sum)
     return sum
 
 @frappe.whitelist()
