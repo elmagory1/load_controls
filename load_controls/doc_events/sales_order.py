@@ -182,6 +182,8 @@ def get_addition_deletion(items, source_name):
     for fieldname in ['electrical_bom_additiondeletion', 'mechanical_bom_additiondeletion']:
         for i in doc.__dict__[fieldname]:
             if not existing_item(i, data_items):
+                i.budget_bom_rate = i.rate
+                i.budget_bom_raw_material = i.name
                 data_items.append(i)
 
     return data_items
