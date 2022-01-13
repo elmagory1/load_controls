@@ -107,7 +107,7 @@ def get_budget_bom(a,b,c,d,e,f):
 
     bb =  frappe.db.sql(""" SELECT budget_bom as name FROM `tabBudget BOM References` WHERE parent=%s""",f['parent'],as_dict=1)
     for i in bb:
-        mr = frappe.db.sql(""" SELECT * FROM `tabBudget BOM References` WHERE parenttype='Material Request' and budget_bom=%s""",i.name,as_dict=1)
+        mr = frappe.db.sql(""" SELECT * FROM `tabBudget BOM References` WHERE parenttype='Material Request' and budget_bom=%s and docstatus=1""",i.name,as_dict=1)
         if len(mr) == 0:
             data.append(i)
 
