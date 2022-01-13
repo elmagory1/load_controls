@@ -152,21 +152,16 @@ def generate_mr(budget_boms, schedule_date, transaction_date, so_name):
 
         for xx in bb_doc.items:
             doc.items.append(xx)
-        #
-        # doc.append("budget_bom_reference", {
-        #     "budget_bom": x
-        # })
 
-    for i in doc.items:
-        i.schedule_date = transaction_date
+        for i in doc.items:
+            i.schedule_date = transaction_date
 
-    doc.items = consolidate_items(doc.items)
-    print("ITEEEEMS")
-    print(doc.items)
+        doc.items = consolidate_items(doc.items, x)
+
     mr = doc.insert()
     return mr.name
 
-def consolidate_items(items):
+def consolidate_items(items, source_name):
     c_items = []
     for i in items:
         add = False
@@ -176,7 +171,33 @@ def consolidate_items(items):
                 add = True
         if not add:
             c_items.append(i)
-    return c_items
+    final_items = get_addition_deletion(c_items, source_name)
+    return final_items
+
+
+def get_addition_deletion(items, source_name):
+    data_items = items
+    doc = frappe.get_doc("Budget BOM", source_name)
+
+    for fieldname in ['electrical_bom_additiondeletion', 'mechanical_bom_additiondeletion']:
+        for i in doc.__dict__[fieldname]:
+            if not existing_item(i, data_items):
+                data_items.append(i)
+
+    return data_items
+
+
+@frappe.whitelist()
+def existing_item(item, items):
+    for i in items:
+        if i.item_code == item.item_code:
+            if item.type == 'Addition' and i.item_code == item.item_code:
+                i.qty += item.qty
+            elif item.type == 'Deletion' and i.item_code == item.item_code:
+                i.qty -= item.qty
+
+            return True
+    return False
 
 def get_default_bom_item(item_code):
     bom = frappe.get_all('BOM', dict(item=item_code, is_active=True),

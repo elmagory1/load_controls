@@ -445,7 +445,6 @@ def consolidate_items(items,source_name):
     c_items = []
     for i in items:
         add = False
-        i.qty += (get_addition_deletion(i.item_code, source_name))
         for x in c_items:
             if i.item_code == x.item_code and i.budget_bom_rate == x.budget_bom_rate:
                 x.qty += i.qty
@@ -453,21 +452,31 @@ def consolidate_items(items,source_name):
 
         if not add:
             c_items.append(i)
-    return c_items
+    final_items = get_addition_deletion(c_items, source_name)
+    return final_items
 
-def get_addition_deletion(item_code,source_name):
-    print("===================================================")
+def get_addition_deletion(items,source_name):
+    data_items = items
     doc = frappe.get_doc("Budget BOM", source_name)
-    sum = 0
+
     for fieldname in ['electrical_bom_additiondeletion', 'mechanical_bom_additiondeletion']:
         for i in doc.__dict__[fieldname]:
-            if i.type == 'Addition' and i.item_code == item_code:
-                sum += i.qty
-            elif i.type == 'Deletion' and i.item_code == item_code:
-                sum -= i.qty
-    print(sum)
-    return sum
+            if not existing_item(i,data_items):
+                data_items.append(i)
 
+    return data_items
+
+@frappe.whitelist()
+def existing_item(item, items):
+    for i in items:
+        if i.item_code == item.item_code:
+            if item.type == 'Addition' and i.item_code == item.item_code:
+                i.qty += item.qty
+            elif item.type == 'Deletion' and i.item_code == item.item_code:
+                i.qty -= item.qty
+
+            return True
+    return False
 @frappe.whitelist()
 def get_rate(item_code, warehouse, based_on,price_list):
     time = frappe.utils.now_datetime().time()
