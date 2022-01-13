@@ -408,21 +408,6 @@ def generate_item_templates(items, description):
 
 @frappe.whitelist()
 def make_mr(source_name, target_doc=None):
-    # print("==================================================")
-    # doc = get_mapped_doc("Budget BOM", source_name, {
-    #     "Budget BOM": {
-    #         "doctype": "Material Request",
-    #         "validation": {
-    #             "docstatus": ["=", 1]
-    #         }
-    #     },
-    #     "Budget BOM Raw Material": {
-    #         "doctype": "Material Request Item",
-    #     }
-    #
-    # }, target_doc)
-    #
-    # return doc
     doc = get_mapped_doc("Budget BOM", source_name, {
         "Budget BOM": {
             "doctype": "Material Request",
@@ -445,30 +430,41 @@ def make_mr(source_name, target_doc=None):
         }
 
     }, ignore_permissions=True)
-    print("DOOOOOOOOOOOOOOOOOOOOOC")
-    print(str(frappe.db.get_value("Budget BOM", source_name, "expected_closing_date")))
     doc.schedule_date = str(frappe.db.get_value("Budget BOM", source_name, "expected_closing_date"))
     for i in doc.items:
         i.schedule_date = str(frappe.db.get_value("Budget BOM", source_name, "expected_closing_date"))
 
-    doc.items = consolidate_items(doc.items)
+    doc.items = consolidate_items(doc.items,source_name)
     doc.append("budget_bom_reference", {
         "budget_bom": source_name
     })
-    print(doc.as_dict())
     return doc
 
-def consolidate_items(items):
+def consolidate_items(items,source_name):
+
     c_items = []
     for i in items:
         add = False
         for x in c_items:
             if i.item_code == x.item_code and i.budget_bom_rate == x.budget_bom_rate:
                 x.qty += i.qty
+                x.qty += (get_addition_deletion(i.item_code,source_name))
                 add = True
         if not add:
             c_items.append(i)
     return c_items
+
+def get_addition_deletion(item_code,source_name):
+    doc = frappe.get_doc("Budget BOM", source_name)
+    sum = 0
+    for fieldname in ['electrical_bom_additiondeletion', 'mechanical_bom_additiondeletion']:
+        for i in doc.__dict__[fieldname]:
+            if i.type == 'Addition' and i.item_code == item_code:
+                sum += i.qty
+            elif i.type == 'Deletion' and i.item_code == item_code:
+                sum -= i.qty
+    return sum
+
 @frappe.whitelist()
 def get_rate(item_code, warehouse, based_on,price_list):
     time = frappe.utils.now_datetime().time()
