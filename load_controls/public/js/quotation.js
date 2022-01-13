@@ -157,7 +157,8 @@ frappe.ui.form.on('Quotation', {
       frappe.call({
           method: "load_controls.doc_events.quotation.po_received",
           args: {
-              name:cur_frm.doc.name
+              name:cur_frm.doc.name,
+              amended_from: cur_frm.doc.amended_from ? cur_frm.doc.amended_from : ""
           },
           async: false,
           callback: function () {

@@ -201,10 +201,10 @@ class BudgetBOM(Document):
 
     @frappe.whitelist()
     def amend_quotation(self):
-        quotation = frappe.db.sql(""" SELECT * FROM `tabQuotation` Q INNER JOIN `tabBudget BOM References` BBR ON BBR.parent = Q.name WHERE BBR.budget_bom=%s and Q.docstatus=1""", self.name, as_dict=1)
+        quotation = frappe.db.sql(""" SELECT Q.name FROM `tabQuotation` Q INNER JOIN `tabBudget BOM References` BBR ON BBR.parent = Q.name WHERE BBR.budget_bom=%s and Q.docstatus=1""", self.name, as_dict=1)
         q = frappe.get_doc("Quotation", quotation[0].name)
         q.cancel()
-        frappe.db.sql(""" UPDATE `tabBudget BOM` SET status='To Quotation' WHERE name=%s """, self.name)
+        frappe.db.sql(""" UPDATE `tabBudget BOM` SET status='To Revised Quotation' WHERE name=%s """, self.name)
         frappe.db.commit()
 
     @frappe.whitelist()

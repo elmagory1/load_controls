@@ -10,14 +10,14 @@ def check_bb_status(bb):
     return False
 
 @frappe.whitelist()
-def po_received(name):
+def po_received(name,amended_from):
     frappe.db.sql(""" UPDATE `tabQuotation` SET status='Open' WHERE name=%s """, name)
     frappe.db.commit()
     quotation = frappe.get_doc("Quotation", name)
     for i in quotation.budget_bom_reference:
         if i.budget_bom:
             frappe.db.sql(""" UPDATE `tabBudget BOM` SET status=%s, submitted_changes=0 WHERE name=%s  """,
-                          ("To Design", i.budget_bom))
+                          ("To Design" if not amended_from else "To Sales Order", i.budget_bom))
             frappe.db.commit()
 
 @frappe.whitelist()
