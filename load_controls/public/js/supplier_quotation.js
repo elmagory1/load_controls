@@ -2,7 +2,7 @@
 
 frappe.ui.form.on("Supplier Quotation", {
     fetch_material_request: function () {
-        if(cur_frm.doc.items && !cur_frm.doc.items[0].item_code){
+        if(cur_frm.doc.items.length > 0 && !cur_frm.doc.items[0].item_code){
             cur_frm.clear_table("items")
             cur_frm.refresh_field("items")
         }
@@ -29,7 +29,7 @@ frappe.ui.form.on("Supplier Quotation", {
                         method: "load_controls.doc_events.supplier_quotation.get_mr",
                         args: {
                             supplier: cur_frm.doc.supplier,
-                            mr: selections[0],
+                            mr: selections,
                         },
                         callback: function (r) {
                                 for(var x=0;x<r.message.length;x+=1){

@@ -96,13 +96,6 @@ def generate_cc(project_code, customer, name, company, items_data,default_projec
 
 @frappe.whitelist()
 def get_budget_bom(a,b,c,d,e,f):
-    print("FILTTEERS")
-    print(a)
-    print(b)
-    print(c)
-    print(d)
-    print(e)
-    print(f)
     data = []
 
     bb =  frappe.db.sql(""" SELECT budget_bom as name FROM `tabBudget BOM References` WHERE parent=%s""",f['parent'],as_dict=1)
@@ -147,6 +140,13 @@ def generate_mr(budget_boms, schedule_date, transaction_date, so_name):
                     "name": "budget_bom_raw_material",
                     "discount": "budget_bom_rate"
                 }
+            },
+            "Budget BOM Raw Material Modifier": {
+                "doctype": "Material Request Item",
+                "field_map": {
+                    "name": "budget_bom_raw_material",
+                    "discount": "budget_bom_rate"
+                }
             }
         })
 
@@ -156,66 +156,31 @@ def generate_mr(budget_boms, schedule_date, transaction_date, so_name):
         for i in doc.items:
             i.schedule_date = transaction_date
 
-        doc.items = consolidate_items(doc.items, x)
+        doc.items = consolidate_items(doc.items)
+        doc.append("budget_bom_reference", {
+            "budget_bom": x
+        })
     mr = doc.insert()
     return mr.name
 
-def consolidate_items(items, source_name):
+def consolidate_items(items):
     c_items = []
     for i in items:
         add = False
         for x in c_items:
             if i.item_code == x.item_code and i.budget_bom_rate == x.budget_bom_rate:
-                x.qty += i.qty
+                if 'type' in i.__dict__ and i.type:
+                    if i.type == 'Deletion':
+                        x.qty -= i.qty
+                    else:
+                        x.qty += i.qty
+                else:
+                    x.qty += i.qty
                 add = True
         if not add:
-            i.budget_bom_rate = i.rate
-            i.budget_bom_raw_material = i.name
-            i.doctype = "Material Request Item"
-            i.parentfield = "items"
-            i.parent = ""
-            i.parenttype = "Material Request"
-            i.docstatus = 0
             c_items.append(i)
-            
-    final_items = get_addition_deletion(c_items, source_name)
-    print("FINALT ITEEEEEEEEEEEEEMS")
-    for xxx in final_items:
-        print(xxx.__dict__)
-    return final_items
 
-
-def get_addition_deletion(items, source_name):
-    data_items = items
-    doc = frappe.get_doc("Budget BOM", source_name)
-
-    for fieldname in ['electrical_bom_additiondeletion', 'mechanical_bom_additiondeletion']:
-        for i in doc.__dict__[fieldname]:
-            if not existing_item(i, data_items):
-                i.budget_bom_rate = i.rate
-                i.budget_bom_raw_material = i.name
-                i.doctype = "Material Request Item"
-                i.parentfield = "items"
-                i.parent = ""
-                i.parenttype = "Material Request"
-                i.docstatus = 0
-
-                data_items.append(i)
-
-    return data_items
-
-
-@frappe.whitelist()
-def existing_item(item, items):
-    for i in items:
-        if i.item_code == item.item_code:
-            if item.type == 'Addition' and i.item_code == item.item_code:
-                i.qty += item.qty
-            elif item.type == 'Deletion' and i.item_code == item.item_code:
-                i.qty -= item.qty
-
-            return True
-    return False
+    return c_items
 
 def get_default_bom_item(item_code):
     bom = frappe.get_all('BOM', dict(item=item_code, is_active=True),
@@ -242,8 +207,6 @@ def get_work_order_items(so,for_raw_material_request=0):
                 pending_qty = stock_qty - total_work_order_qty
             else:
                 pending_qty = stock_qty
-            print("PENDIIIIING QQQTY")
-            print(pending_qty)
             for ii in range(1,int(pending_qty + 1)):
                 if ii and i.item_code not in product_bundle_parents:
                     if bom:

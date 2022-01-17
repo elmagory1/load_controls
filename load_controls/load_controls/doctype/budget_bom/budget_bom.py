@@ -427,6 +427,13 @@ def make_mr(source_name, target_doc=None):
                 "name": "budget_bom_raw_material",
                 "discount": "budget_bom_rate"
             }
+        },
+        "Budget BOM Raw Material Modifier": {
+            "doctype": "Material Request Item",
+            "field_map": {
+                "name": "budget_bom_raw_material",
+                "discount": "budget_bom_rate"
+            }
         }
 
     }, ignore_permissions=True)
@@ -434,67 +441,31 @@ def make_mr(source_name, target_doc=None):
     for i in doc.items:
         i.schedule_date = str(frappe.db.get_value("Budget BOM", source_name, "expected_closing_date"))
 
-    doc.items = consolidate_items(doc.items,source_name)
+    doc.items = consolidate_items(doc.items)
     doc.append("budget_bom_reference", {
         "budget_bom": source_name
     })
     return doc
 
-def consolidate_items(items,source_name):
-
+def consolidate_items(items):
     c_items = []
     for i in items:
         add = False
         for x in c_items:
             if i.item_code == x.item_code and i.budget_bom_rate == x.budget_bom_rate:
-                x.qty += i.qty
+                if 'type' in i.__dict__ and i.type:
+                    if i.type == 'Deletion':
+                        x.qty -= i.qty
+                    else:
+                        x.qty += i.qty
+                else:
+                    x.qty += i.qty
                 add = True
-
         if not add:
-            i.budget_bom_rate = i.rate
-            i.budget_bom_raw_material = i.name
-            i.doctype = "Material Request Item"
-            i.parentfield = "items"
-            i.parent = ""
-            i.parenttype = "Material Request"
-
-            i.docstatus = 0
-
             c_items.append(i)
-    final_items = get_addition_deletion(c_items, source_name)
-    return final_items
 
-def get_addition_deletion(items,source_name):
-    data_items = items
-    doc = frappe.get_doc("Budget BOM", source_name)
+    return c_items
 
-    for fieldname in ['electrical_bom_additiondeletion', 'mechanical_bom_additiondeletion']:
-        for i in doc.__dict__[fieldname]:
-            if not existing_item(i,data_items):
-                i.budget_bom_rate = i.rate
-                i.budget_bom_raw_material = i.name
-                i.doctype = "Material Request Item"
-                i.parentfield = "items"
-                i.parenttype = "Material Request"
-
-                i.docstatus = 0
-                i.parent = ""
-
-                data_items.append(i)
-
-    return data_items
-
-@frappe.whitelist()
-def existing_item(item, items):
-    for i in items:
-        if i.item_code == item.item_code:
-            if item.type == 'Addition' and i.item_code == item.item_code:
-                i.qty += item.qty
-            elif item.type == 'Deletion' and i.item_code == item.item_code:
-                i.qty -= item.qty
-
-            return True
-    return False
 @frappe.whitelist()
 def get_rate(item_code, warehouse, based_on,price_list):
     time = frappe.utils.now_datetime().time()
