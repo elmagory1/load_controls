@@ -36,6 +36,12 @@ frappe.ui.form.on("Budget BOM References", {
     }
 })
 frappe.ui.form.on("Material Request", {
+    onload_post_render: function () {
+      cur_frm.remove_custom_button("Request for Quotation", "Create")
+      cur_frm.remove_custom_button("Bill of Materials", "Get Items From")
+      cur_frm.remove_custom_button("Sales Order", "Get Items From")
+      cur_frm.remove_custom_button("Product Bundle", "Get Items From")
+    },
     refresh: function (frm, cdt, cdn) {
         cur_frm.set_query("budget_bom", "budget_bom_reference", () => {
             return {

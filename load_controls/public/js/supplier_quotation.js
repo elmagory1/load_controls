@@ -1,6 +1,10 @@
 
 
 frappe.ui.form.on("Supplier Quotation", {
+    onload_post_render: function () {
+            cur_frm.remove_custom_button("Request for Quotation", "Get Items From")
+
+    },
     fetch_material_request: function () {
         if(cur_frm.doc.items.length > 0 && !cur_frm.doc.items[0].item_code){
             cur_frm.clear_table("items")
@@ -32,9 +36,16 @@ frappe.ui.form.on("Supplier Quotation", {
                             mr: selections,
                         },
                         callback: function (r) {
-                                for(var x=0;x<r.message.length;x+=1){
-                                    cur_frm.add_child("items",r.message[x])
+                                for(var x=0;x<r.message[0].length;x+=1){
+                                    cur_frm.add_child("items",r.message[0][x])
                                     cur_frm.refresh_fields("items")
+                                }
+
+                                for(var xx=0;xx<r.message[1].length;xx+=1){
+                                    cur_frm.add_child("budget_bom_reference",{
+                                        budget_bom: r.message[1][xx]
+                                    })
+                                    cur_frm.refresh_fields("budget_bom_reference")
                                 }
                         }
                     })
