@@ -135,6 +135,7 @@ doc_events = {
 	},
 	"Supplier Quotation": {
 		"on_submit": "load_controls.doc_events.supplier_quotation.on_submit_sq",
+		"on_cancel": "load_controls.doc_events.supplier_quotation.on_cancel_sq",
 	}
 }
 

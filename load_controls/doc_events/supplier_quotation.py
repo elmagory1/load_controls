@@ -102,3 +102,10 @@ def on_submit_sq(doc, method):
             frappe.db.sql(""" UPDATE `tabBudget BOM` SET status=%s WHERE name=%s  """,
                           ("To Purchase Order", i.budget_bom))
             frappe.db.commit()
+
+def on_cancel_sq(doc, method):
+    for i in doc.budget_bom_reference:
+        if i.budget_bom:
+            frappe.db.sql(""" UPDATE `tabBudget BOM` SET status=%s WHERE name=%s  """,
+                          ("To Supplier Quotation", i.budget_bom))
+            frappe.db.commit()
