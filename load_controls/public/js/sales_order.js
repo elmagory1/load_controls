@@ -134,7 +134,7 @@ frappe.ui.form.on("Sales Order", {
 								}
 							}
 							frappe.call({
-								method: 'ringlus.doc_events.sales_order.make_work_orders',
+								method: 'load_controls.doc_events.sales_order.make_work_orders',
 								args: {
 									items: data,
 									company: cur_frm.doc.company,
