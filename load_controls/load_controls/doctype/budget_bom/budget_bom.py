@@ -330,13 +330,10 @@ class BudgetBOM(Document):
 
         operations = []
         for i in self.__dict__[raw_material]:
-            operation_record= frappe.db.sql(""" SELECT * FROM `tabWorkstation` WHERE name=%s""", i.workstation, as_dict=1)
-            operation_time = operation_record[0].operation_time if len(operation_record) > 0 else 0
-
             operations.append({
                 "operation": i.operation,
                 "workstation": i.workstation,
-                "time_in_mins": operation_time,
+                "time_in_mins": i.operation_time_in_minutes,
                 "operating_cost": i.net_hour_rate,
             })
         return operations
