@@ -759,7 +759,14 @@ frappe.ui.form.on('Budget BOM', {
                 frm.add_custom_button(__("Material Request"), () => {
                     cur_frm.trigger("material_request")
                 })
-            if(!check_bom) {
+
+        }
+        var label_change = frappe.meta.get_docfield("Budget BOM Details","rate", cur_frm.doc.name);
+        if(label_change){
+            label_change.label = 'Child Qty'
+            cur_frm.refresh_field("activity_details")
+        }
+        if(!check_bom) {
                     frm.add_custom_button(__("Create BOM"), () => {
                         cur_frm.call({
                             doc: cur_frm.doc,
@@ -777,12 +784,6 @@ frappe.ui.form.on('Budget BOM', {
                         })
                     })
                 }
-        }
-        var label_change = frappe.meta.get_docfield("Budget BOM Details","rate", cur_frm.doc.name);
-        if(label_change){
-            label_change.label = 'Child Qty'
-            cur_frm.refresh_field("activity_details")
-        }
     },
 
 	onload_post_render: function(frm) {
