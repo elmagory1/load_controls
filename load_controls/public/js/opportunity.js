@@ -1,6 +1,9 @@
 frappe.ui.form.on("Opportunity", {
     refresh: function () {
         if(!cur_frm.is_new()){
+           cur_frm.remove_custom_button("Quotation", "Create")
+            cur_frm.remove_custom_button("Supplier Quotation", "Create")
+            cur_frm.remove_custom_button("Request For Quotation", "Create")
             cur_frm.remove_custom_button("Budget BOM", "Create")
               cur_frm.add_custom_button(__('Budget BOM'),
 				function() {

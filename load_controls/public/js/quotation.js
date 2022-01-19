@@ -65,6 +65,7 @@ frappe.ui.form.on('Quotation', {
                 show = r.message
             }
         })
+	    cur_frm.remove_custom_button('Opportunity', "Get Items From")
 	    cur_frm.remove_custom_button('Sales Order', "Create")
 	        cur_frm.remove_custom_button('Subscription', "Create")
         if(cur_frm.doc.docstatus && cur_frm.doc.status === 'In Progress'){
@@ -190,6 +191,7 @@ frappe.ui.form.on('Quotation', {
                 show = r.message
             }
         })
+        	    cur_frm.remove_custom_button('Opportunity', "Get Items From")
 	    cur_frm.remove_custom_button('Sales Order', "Create")
 	        cur_frm.remove_custom_button('Subscription', "Create")
         if(cur_frm.doc.docstatus && cur_frm.doc.status === 'In Progress'){
@@ -229,11 +231,13 @@ frappe.ui.form.on('Quotation', {
 })
 
 function fetch_boms(cur_frm, selections) {
+    if(cur_frm.doc.items.length > 0 && !cur_frm.doc.items[0].item_code){
+        cur_frm.clear_table("items")
+        cur_frm.refresh_field("items")
+    }
     for(var x=0;x<selections.length;x+=1){
         var check_opp = check_opportunity(selections[x])
         if(!check_opp){
-            console.log(check_opp)
-            console.log("NISULOD UNA")
             cur_frm.add_child("budget_bom_opportunity",{
                 opportunity: selections[x]
             })
@@ -244,36 +248,39 @@ function fetch_boms(cur_frm, selections) {
                    opportunity: selections[x]
                 }
             }).then(records => {
+                console.log("RECOOORDS")
+                console.log(records)
                 if(records.length > 0){
+                    for(var xxx=0;xxx<records.length;xxx+=1){
+                         frappe.db.get_doc('Budget BOM',records[xxx].name)
+                            .then(doc => {
+                                cur_frm.doc.party_name = doc.customer
+                                cur_frm.doc.customer_name = doc.customer_name
+                                cur_frm.refresh_field("party_name")
+                                cur_frm.refresh_field("customer_name")
+                                cur_frm.add_child("budget_bom_reference",{
+                                    budget_bom: doc.name
+                                })
+                                cur_frm.refresh_field("budget_bom_reference")
 
-                    frappe.db.get_doc('Budget BOM', null, { opportunity: selections[x]})
-                    .then(doc => {
-                        cur_frm.doc.party_name = doc.customer
-                        cur_frm.doc.customer_name = doc.customer_name
-                        cur_frm.refresh_field("party_name")
-                        cur_frm.refresh_field("customer_name")
-                        cur_frm.add_child("budget_bom_reference",{
-                            budget_bom: doc.name
+                                if(!check_items(doc.fg_sellable_bom_details[0], cur_frm)){
+                                      cur_frm.add_child("items",{
+                                    "item_code": doc.fg_sellable_bom_details[0].item_code,
+                                    "item_name": doc.fg_sellable_bom_details[0].item_name,
+                                    "description": doc.fg_sellable_bom_details[0].item_name,
+                                    "qty": doc.fg_sellable_bom_details[0].qty,
+                                    "uom": doc.fg_sellable_bom_details[0].uom,
+                                    "rate": doc.total_cost,
+                                    "amount": doc.total_cost * doc.fg_sellable_bom_details[0].qty,
+                                })
+                                cur_frm.refresh_field("items")
+                                }
+
+
+
                         })
-                        cur_frm.refresh_field("budget_bom_reference")
+                    }
 
-                        cur_frm.clear_table("items")
-                        if(!check_items(doc.fg_sellable_bom_details[0], cur_frm)){
-                              cur_frm.add_child("items",{
-                            "item_code": doc.fg_sellable_bom_details[0].item_code,
-                            "item_name": doc.fg_sellable_bom_details[0].item_name,
-                            "description": doc.fg_sellable_bom_details[0].item_name,
-                            "qty": doc.fg_sellable_bom_details[0].qty,
-                            "uom": doc.fg_sellable_bom_details[0].uom,
-                            "rate": doc.total_cost,
-                            "amount": doc.total_cost * doc.fg_sellable_bom_details[0].qty,
-                        })
-                        cur_frm.refresh_field("items")
-                        }
-
-
-
-                    })
                 }
             })
         }
@@ -294,14 +301,9 @@ function check_items(item, cur_frm) {
         return false
 }
 function check_opportunity(name) {
-    console.log("NAAAAAAAAAME")
-    console.log(name)
     if(cur_frm.doc.budget_bom_opportunity){
-        console.log("WAAAAAAAAT")
         for(var x=0;x<cur_frm.doc.budget_bom_opportunity.length;x+=1){
             var item_row = cur_frm.doc.budget_bom_opportunity[x]
-            console.log(item_row.opportunity)
-            console.log(name)
             if(item_row.opportunity === name){
                 console.log("AFTER CHECK")
                 return true
