@@ -35,6 +35,10 @@ def on_submit_record(doc, method):
             """ SELECT COUNT(*) as count FROM `tabSales Order` SO INNER JOIN `tabBudget BOM References` BBR ON BBR.parent = SO.name WHERE BBR.budget_bom=%s and  SO.docstatus=1""",
             i.budget_bom, as_dict=1)
 
+        sq = frappe.db.sql(
+            """ SELECT COUNT(*) as count FROM `tabSupplier Quotation` SO INNER JOIN `tabBudget BOM References` BBR ON BBR.parent = SO.name WHERE BBR.budget_bom=%s and  SO.docstatus=1""",
+            i.budget_bom, as_dict=1)
+
         status = ""
         if doc.doctype == "Purchase Order":
             po[0].count = 1

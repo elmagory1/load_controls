@@ -24,3 +24,19 @@ def check_gate_pass(name):
     gate_pass = frappe.db.sql(""" SELECT COUNT(*) as count FROM `tabGate Pass` WHERE purchase_order=%s and docstatus < 2 """, name,as_dict=1)
 
     return gate_pass[0].count > 0
+
+
+
+def on_submit_po(doc, method):
+    for i in doc.budget_bom_reference:
+        if i.budget_bom:
+            frappe.db.sql(""" UPDATE `tabBudget BOM` SET status=%s WHERE name=%s  """,
+                          ("To Purchase Receipt", i.budget_bom))
+            frappe.db.commit()
+
+def on_cancel_po(doc, method):
+    for i in doc.budget_bom_reference:
+        if i.budget_bom:
+            frappe.db.sql(""" UPDATE `tabBudget BOM` SET status=%s WHERE name=%s  """,
+                          ("To Purchase Order", i.budget_bom))
+            frappe.db.commit()
