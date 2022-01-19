@@ -132,6 +132,9 @@ doc_events = {
 	"Sales Invoice": {
 		"on_submit": "load_controls.doc_events.utils.on_submit_record",
 		"on_cancel": "load_controls.doc_events.utils.on_cancel_record",
+	},
+	"Supplier Quotation": {
+		"on_submit": "load_controls.doc_events.supplier_quotation.on_submit_sq",
 	}
 }
 
@@ -284,6 +287,9 @@ fixtures = [
                     "Global Defaults-default_project_code",
                     "Supplier Quotation-fetch_material_request",
                     "Supplier Quotation Item-budget_bom_rate",
+
+                    "Supplier Quotation-reference_bom",
+                    "Supplier Quotation-budget_bom_reference",
 
 
 				]

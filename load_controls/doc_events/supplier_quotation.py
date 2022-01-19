@@ -87,3 +87,11 @@ def consolidate_items(items):
             c_items.append(i)
 
     return c_items
+
+
+def on_submit_sq(doc, method):
+    for i in doc.budget_bom_reference:
+        if i.budget_bom:
+            frappe.db.sql(""" UPDATE `tabBudget BOM` SET status=%s WHERE name=%s  """,
+                          ("To Purchase Order", i.budget_bom))
+            frappe.db.commit()
