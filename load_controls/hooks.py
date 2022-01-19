@@ -283,7 +283,7 @@ fixtures = [
                     "Sales Order Item-project_code",
                     "Global Defaults-default_project_code",
                     "Supplier Quotation-fetch_material_request",
-                    "Supplier Quotation-budget_bom_rate",
+                    "Supplier Quotation Item-budget_bom_rate",
 
 
 				]
