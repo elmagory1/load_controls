@@ -255,16 +255,7 @@ class BudgetBOM(Document):
 
         return bom[0].count > 0
 
-    @frappe.whitelist()
-    def get_raw_materials_additional(self, fieldname, item_code):
-        sum = 0
-        if fieldname:
-            for i in self.__dict__[fieldname]:
-                if i.type == 'Addition' and i.item_code== item_code:
-                    sum += i.qty
-                elif i.type == 'Deletion' and i.item_code== item_code:
-                    sum -= i.qty
-        return sum
+
     @frappe.whitelist()
     def create_bom(self):
         self.create_first_bom()
@@ -342,6 +333,8 @@ class BudgetBOM(Document):
         items = []
         for i in self.__dict__[raw_material]:
             additional_fn = "electrical_bom_additiondeletion" if raw_material == 'electrical_bom_raw_material' else 'mechanical_bom_additiondeletion' if raw_material == 'mechanical_bom_raw_material' else ""
+
+
             qty = i.qty + self.get_raw_materials_additional(additional_fn, i.item_code)
             obj = {
                 "item_code": i.item_code,
@@ -359,8 +352,39 @@ class BudgetBOM(Document):
                 obj['bom_no'] = self.first_bom
 
             items.append(obj)
-
+        self.add_raw_material_items(items, raw_material)
         return items
+
+    @frappe.whitelist()
+    def add_raw_material_items(self, items, raw_material):
+        additional_fn = "electrical_bom_additiondeletion" if raw_material == 'electrical_bom_raw_material' else 'mechanical_bom_additiondeletion' if raw_material == 'mechanical_bom_raw_material' else ""
+
+        for i in self.__dict__[additional_fn]:
+            add = True
+            for x in items:
+                if x['item_code'] == i.item_code:
+                    add = False
+            if add:
+                obj = {
+                    "item_code": i.item_code,
+                    "item_name": i.item_name,
+                    "rate": i.rate if 'rate' in i.__dict__ else 0,
+                    "qty": i.qty,
+                    "uom": i.uom,
+                    "operation_time_in_minutes": i.operation_time_in_minutes if 'operation_time_in_minutes' in i.__dict__ else 0,
+                    "amount": i.qty * i.rate if 'rate' in i.__dict__ else 0,
+                }
+                items.append(obj)
+    @frappe.whitelist()
+    def get_raw_materials_additional(self, fieldname, item_code):
+        sum = 0
+        if fieldname:
+            for i in self.__dict__[fieldname]:
+                if i.type == 'Addition' and i.item_code == item_code:
+                    sum += i.qty
+                elif i.type == 'Deletion' and i.item_code == item_code:
+                    sum -= i.qty
+        return sum
 
 @frappe.whitelist()
 def set_available_qty(items):

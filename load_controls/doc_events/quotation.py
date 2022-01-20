@@ -1,5 +1,12 @@
 import frappe,json
 
+def validate_q(doc, method):
+    sum = 0
+    for i in doc.budget_bom_reference:
+        total = frappe.db.get_value("Budget BOM", i.budget_bom,"total_additional_operation_cost")
+        sum += total
+    doc.additional_operating_cost = sum
+
 @frappe.whitelist()
 def check_bb_status(bb):
     data = json.loads(bb)

@@ -40,7 +40,8 @@ doctype_js = {
 	"Supplier Quotation" : "public/js/supplier_quotation.js",
 }
 doctype_list_js = {
-	"Quotation" : "public/js/quotation_list.js"
+	"Quotation" : "public/js/quotation_list.js",
+	"Opportunity" : "public/js/opportunity_list.js",
 }
 # doctype_tree_js = {"doctype" : "public/js/doctype_tree.js"}
 # doctype_calendar_js = {"doctype" : "public/js/doctype_calendar.js"}
@@ -101,6 +102,7 @@ doctype_list_js = {
 doc_events = {
 	"Quotation": {
 		"on_submit": "load_controls.doc_events.quotation.submit_q",
+		"validate": "load_controls.doc_events.quotation.validate_q",
 		"on_cancel": "load_controls.doc_events.quotation.cancel_q",
 	},
 	"Material Request": {
@@ -315,6 +317,7 @@ fixtures = [
 					"Quotation-status-options",
 					"Opportunity-expected_closing-reqd",
 					"Opportunity Item-qty-default",
+					"Opportunity-status-options",
 				]
 			]
 		]

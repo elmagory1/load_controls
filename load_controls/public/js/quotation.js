@@ -237,7 +237,9 @@ function fetch_boms(cur_frm, selections) {
     }
     for(var x=0;x<selections.length;x+=1){
         var check_opp = check_opportunity(selections[x])
+
         if(!check_opp){
+
             cur_frm.add_child("budget_bom_opportunity",{
                 opportunity: selections[x]
             })
@@ -248,8 +250,6 @@ function fetch_boms(cur_frm, selections) {
                    opportunity: selections[x]
                 }
             }).then(records => {
-                console.log("RECOOORDS")
-                console.log(records)
                 if(records.length > 0){
                     for(var xxx=0;xxx<records.length;xxx+=1){
                          frappe.db.get_doc('Budget BOM',records[xxx].name)
@@ -262,7 +262,6 @@ function fetch_boms(cur_frm, selections) {
                                     budget_bom: doc.name
                                 })
                                 cur_frm.refresh_field("budget_bom_reference")
-
                                 if(!check_items(doc.fg_sellable_bom_details[0], cur_frm)){
                                       cur_frm.add_child("items",{
                                     "item_code": doc.fg_sellable_bom_details[0].item_code,
@@ -280,6 +279,7 @@ function fetch_boms(cur_frm, selections) {
 
                         })
                     }
+
 
                 }
             })

@@ -17,7 +17,23 @@ frappe.ui.form.on("Sales Order", {
                 }
         })
     },
+    onload_post_render: function (frm) {
+			 cur_frm.remove_custom_button("Work Order", "Create")
+			 cur_frm.remove_custom_button("Pick List", "Create")
+			 cur_frm.remove_custom_button("Material Request", "Create")
+			 cur_frm.remove_custom_button("Request for Raw Materials", "Create")
+			 cur_frm.remove_custom_button("Purchase Order", "Create")
+			 cur_frm.remove_custom_button("Project", "Create")
+			 cur_frm.remove_custom_button("Subscription", "Create")
+	},
     refresh: function (frm) {
+    	 cur_frm.remove_custom_button("Work Order", "Create")
+			 cur_frm.remove_custom_button("Pick List", "Create")
+			 cur_frm.remove_custom_button("Material Request", "Create")
+			 cur_frm.remove_custom_button("Request for Raw Materials", "Create")
+			 cur_frm.remove_custom_button("Purchase Order", "Create")
+			 cur_frm.remove_custom_button("Project", "Create")
+			 cur_frm.remove_custom_button("Subscription", "Create")
         document.querySelectorAll("[data-fieldname='generate_project_code']")[1].style.backgroundColor =" #80bfff"
        document.querySelectorAll("[data-fieldname='generate_project_code']")[1].style.color ="white"
        document.querySelectorAll("[data-fieldname='generate_project_code']")[1].style.fontWeight ="bold"

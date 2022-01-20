@@ -766,7 +766,8 @@ frappe.ui.form.on('Budget BOM', {
             label_change.label = 'Child Qty'
             cur_frm.refresh_field("activity_details")
         }
-        if(!check_bom) {
+        if(cur_frm.doc.docstatus && !(['To Quotation', "To Sales Order", "To Design"].includes(cur_frm.doc.status))){
+                if(!check_bom) {
                     frm.add_custom_button(__("Create BOM"), () => {
                         cur_frm.call({
                             doc: cur_frm.doc,
@@ -784,6 +785,8 @@ frappe.ui.form.on('Budget BOM', {
                         })
                     })
                 }
+        }
+
     },
 
 	onload_post_render: function(frm) {
