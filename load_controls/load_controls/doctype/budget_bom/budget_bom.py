@@ -352,7 +352,8 @@ class BudgetBOM(Document):
                 obj['bom_no'] = self.first_bom
 
             items.append(obj)
-        self.add_raw_material_items(items, raw_material)
+        if raw_material in ["electrical_bom_raw_material", "mechanical_bom_raw_material"]:
+            self.add_raw_material_items(items, raw_material)
         return items
 
     @frappe.whitelist()
