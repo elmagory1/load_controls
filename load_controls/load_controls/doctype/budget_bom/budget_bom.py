@@ -333,7 +333,10 @@ class BudgetBOM(Document):
         items = []
         for i in self.__dict__[raw_material]:
             additional_fn = "electrical_bom_additiondeletion" if raw_material == 'electrical_bom_raw_material' else 'mechanical_bom_additiondeletion' if raw_material == 'mechanical_bom_raw_material' else ""
-
+            print("======================== QTY ===================================")
+            print(i.qty)
+            print(self.get_raw_materials_additional(additional_fn, i.item_code))
+            print(self.get_raw_materials_additional(additional_fn, i.item_code))
             if i.qty + self.get_raw_materials_additional(additional_fn, i.item_code) > 0:
                 qty = i.qty + self.get_raw_materials_additional(additional_fn, i.item_code)
                 obj = {
@@ -361,21 +364,22 @@ class BudgetBOM(Document):
         additional_fn = "electrical_bom_additiondeletion" if raw_material == 'electrical_bom_raw_material' else 'mechanical_bom_additiondeletion' if raw_material == 'mechanical_bom_raw_material' else ""
 
         for i in self.__dict__[additional_fn]:
-            add = True
-            for x in items:
-                if x['item_code'] == i.item_code:
-                    add = False
-            if add:
-                obj = {
-                    "item_code": i.item_code,
-                    "item_name": i.item_name,
-                    "rate": i.rate if 'rate' in i.__dict__ else 0,
-                    "qty": i.qty,
-                    "uom": i.uom,
-                    "operation_time_in_minutes": i.operation_time_in_minutes if 'operation_time_in_minutes' in i.__dict__ else 0,
-                    "amount": i.qty * i.rate if 'rate' in i.__dict__ else 0,
-                }
-                items.append(obj)
+            if i.type == 'Addition':
+                add = True
+                for x in items:
+                    if x['item_code'] == i.item_code:
+                        add = False
+                if add:
+                    obj = {
+                        "item_code": i.item_code,
+                        "item_name": i.item_name,
+                        "rate": i.rate if 'rate' in i.__dict__ else 0,
+                        "qty": i.qty,
+                        "uom": i.uom,
+                        "operation_time_in_minutes": i.operation_time_in_minutes if 'operation_time_in_minutes' in i.__dict__ else 0,
+                        "amount": i.qty * i.rate if 'rate' in i.__dict__ else 0,
+                    }
+                    items.append(obj)
     @frappe.whitelist()
     def get_raw_materials_additional(self, fieldname, item_code):
         sum = 0
