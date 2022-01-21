@@ -302,6 +302,7 @@ fixtures = [
 
                     "Operation-quality_inspection_required",
                     "Job Card-quality_inspection_required",
+                    "Work Order-budget_bom",
 
 
 				]
