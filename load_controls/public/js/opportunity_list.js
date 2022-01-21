@@ -4,7 +4,9 @@ frappe.listview_settings['Opportunity'] = {
 		var indicator = [__(doc.status), frappe.utils.guess_colour(doc.status), "status,=," + doc.status];
 		if(doc.status=="Quotation") {
 			indicator[1] = "green";
-		} else if(doc.status=="Qualification and Qualified") {
+		} else if(doc.status=="Qualification") {
+			indicator[1] = "orange";
+		} else if(doc.status=="Qualified") {
 			indicator[1] = "orange";
 		}
 		return indicator;

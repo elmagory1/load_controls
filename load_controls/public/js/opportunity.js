@@ -5,7 +5,8 @@ frappe.ui.form.on("Opportunity", {
             cur_frm.remove_custom_button("Supplier Quotation", "Create")
             cur_frm.remove_custom_button("Request For Quotation", "Create")
             cur_frm.remove_custom_button("Budget BOM", "Create")
-              cur_frm.add_custom_button(__('Budget BOM'),
+            if(cur_frm.doc.status === 'Qualified') {
+             cur_frm.add_custom_button(__('Budget BOM'),
 				function() {
                     // frappe.model.open_mapped_doc({
                     //     method: "load_controls.doc_events.opportunity.make_bb",
@@ -49,6 +50,9 @@ frappe.ui.form.on("Opportunity", {
                         }
                     });
 				}, __("Create"));
+            }
+
+
         }
 
     }
