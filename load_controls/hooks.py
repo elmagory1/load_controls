@@ -100,6 +100,9 @@ doctype_list_js = {
 # Hook on document methods and events
 
 doc_events = {
+	"Job Card": {
+		"validate": "load_controls.doc_events.job_card.save_job_card",
+	},
 	"Quotation": {
 		"on_submit": "load_controls.doc_events.quotation.submit_q",
 		"validate": "load_controls.doc_events.quotation.validate_q",
@@ -297,6 +300,9 @@ fixtures = [
                     "Supplier Quotation-reference_bom",
                     "Supplier Quotation-budget_bom_reference",
 
+                    "Operation-quality_inspection_required",
+                    "Job Card-quality_inspection_required",
+
 
 				]
 			]
@@ -318,6 +324,7 @@ fixtures = [
 					"Opportunity-expected_closing-reqd",
 					"Opportunity Item-qty-default",
 					"Opportunity-status-options",
+					"Job Card-quality_inspection-mandatory_depends_on",
 				]
 			]
 		]
