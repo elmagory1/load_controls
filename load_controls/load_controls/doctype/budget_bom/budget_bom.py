@@ -334,24 +334,24 @@ class BudgetBOM(Document):
         for i in self.__dict__[raw_material]:
             additional_fn = "electrical_bom_additiondeletion" if raw_material == 'electrical_bom_raw_material' else 'mechanical_bom_additiondeletion' if raw_material == 'mechanical_bom_raw_material' else ""
 
+            if i.qty + self.get_raw_materials_additional(additional_fn, i.item_code) > 0:
+                qty = i.qty + self.get_raw_materials_additional(additional_fn, i.item_code)
+                obj = {
+                    "item_code": i.item_code,
+                    "item_name": i.item_name,
+                    "rate": i.rate if 'rate' in i.__dict__ else 0,
+                    "qty": qty,
+                    "uom": i.uom,
+                    "operation_time_in_minutes": i.operation_time_in_minutes if 'operation_time_in_minutes' in i.__dict__ else 0,
+                    "amount": qty * i.rate if 'rate' in i.__dict__ else 0,
+                }
+                if bom == "Third" and raw_material == "mechanical_bom_details":
+                    obj['bom_no'] = self.second_bom
 
-            qty = i.qty + self.get_raw_materials_additional(additional_fn, i.item_code)
-            obj = {
-                "item_code": i.item_code,
-                "item_name": i.item_name,
-                "rate": i.rate if 'rate' in i.__dict__ else 0,
-                "qty": qty,
-                "uom": i.uom,
-                "operation_time_in_minutes": i.operation_time_in_minutes if 'operation_time_in_minutes' in i.__dict__ else 0,
-                "amount": qty * i.rate if 'rate' in i.__dict__ else 0,
-            }
-            if bom == "Third" and raw_material == "mechanical_bom_details":
-                obj['bom_no'] = self.second_bom
+                elif bom == "Third" and raw_material == "electrical_bom_details":
+                        obj['bom_no'] = self.first_bom
 
-            elif bom == "Third" and raw_material == "electrical_bom_details":
-                obj['bom_no'] = self.first_bom
-
-            items.append(obj)
+                items.append(obj)
         if raw_material in ["electrical_bom_raw_material", "mechanical_bom_raw_material"]:
             self.add_raw_material_items(items, raw_material)
         return items
