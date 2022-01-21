@@ -116,12 +116,12 @@ doc_events = {
 		"on_cancel": "load_controls.doc_events.purchase_order.on_cancel_po",
 	},
 	"Purchase Invoice": {
-		"on_submit": "load_controls.doc_events.utils.on_submit_record",
-		"on_cancel": "load_controls.doc_events.utils.on_cancel_record",
+		"on_submit": "load_controls.doc_events.purchase_invoice.on_submit_pi",
+		"on_cancel": "load_controls.doc_events.purchase_invoice.on_cancel_pi",
 	},
 	"Purchase Receipt": {
-		"on_submit": "load_controls.doc_events.utils.on_submit_record",
-		"on_cancel": "load_controls.doc_events.utils.on_cancel_record",
+		"on_submit": "load_controls.doc_events.purchase_receipt.on_submit_pr",
+		"on_cancel": "load_controls.doc_events.purchase_receipt.on_cancel_pr",
 	},
 	"Sales Order": {
 		"on_submit": "load_controls.doc_events.sales_order.on_submit_so",
