@@ -12,6 +12,7 @@ def on_submit_se(doc, method):
 
 
 def on_save_se(doc, method):
+    print("AFTERRRRRRRRRRRR INSERT")
     if doc.stock_entry_type == 'Manufacture' and doc.work_order:
         wo = frappe.get_doc("Work Order", doc.work_order)
         for i in wo.budget_bom_reference:
