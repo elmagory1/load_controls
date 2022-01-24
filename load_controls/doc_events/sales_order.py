@@ -149,8 +149,12 @@ def generate_mr(budget_boms, schedule_date, transaction_date, so_name):
                 }
             }
         })
+        bb_document = frappe.get_doc("Budget BOM", x)
+        so = frappe.get_doc("Sales Order", so_name)
+        qty = check_qty(bb_document.fg_sellab_bom_details[0].item_code, so.items)
 
         for xx in bb_doc.items:
+            xx.qty = xx.qty * qty
             doc.items.append(xx)
 
         for i in doc.items:
@@ -162,7 +166,11 @@ def generate_mr(budget_boms, schedule_date, transaction_date, so_name):
         # })
     mr = doc.insert()
     return mr.name
-
+def check_qty(item_code, items):
+    for i in items:
+        if i.item_code == item_code:
+            return i.qty
+    return 1
 def consolidate_items(items):
     c_items = []
     for i in items:
