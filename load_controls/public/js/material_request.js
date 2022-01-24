@@ -97,7 +97,7 @@ function fetch_boms(cur_frm, selections) {
     }
     if(selections.length > 0){
                     frappe.call({
-                        method: "load_controls.doc_events.supplier_quotation.get_bb",
+                        method: "load_controls.doc_events.material_request.get_bb",
                         args: {
                             mr: selections
                         },
