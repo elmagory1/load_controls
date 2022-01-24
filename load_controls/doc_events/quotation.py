@@ -68,7 +68,8 @@ def get_opportunity(doctype,target,e,r,t,filter):
         party = filter['party_name']
         condition += " and O.party_name = '{0}' ".format(party)
 
-    query = """ SELECT O.name, O.party_name FROM `tabOpportunity` as O INNER JOIN `tabBudget BOM` as BB ON BB.opportunity = O.name  WHERE O.status='Open' and BB.docstatus = 1 {0} GROUP BY O.name """.format(condition)
+    query = """ SELECT O.name, O.party_name FROM `tabOpportunity` as O 
+  INNER JOIN `tabBudget BOM` as BB ON BB.opportunity = O.name  WHERE O.status='Qualified' and BB.docstatus = 1 {0} GROUP BY O.name """.format(condition)
     opportunities = frappe.db.sql(query,as_dict=1)
     return opportunities
 
