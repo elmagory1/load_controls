@@ -47,7 +47,6 @@ class BudgetBOM(Document):
             item['discount_rate'] = item['amount'] / item['qty']
             item['remarks'] = discount[0].remarks
             item['link_discount_amount'] = discount[0].name
-            item['rate'] = (item['discount_rate'] * item['qty']) + item['discount_amount']
 
     @frappe.whitelist()
     def get_templates(self, templates, raw_material_table):
@@ -88,13 +87,20 @@ class BudgetBOM(Document):
         disc = frappe.db.sql(""" SELECT COUNT(*) as count, name FROM `tabDiscount` WHERE opportunity=%s """,
                              opportunity, as_dict=1)
         if disc[0].count > 0:
-            discount = frappe.get_doc("Discount", disc[0].name)
-            discount.append("discount_details", {
-                "item_group": item_group,
-                "discount_percentage": discount_percentage
-            })
-            discount.save()
-            return disc[0].name
+            discount_row = frappe.db.sql(""" SELECT * FROM `tabDiscount Details` WHERE parent=%s and item_group=%s """, (disc[0].name, item_group), as_dict=1)
+            if len(discount_row) == 0:
+                discount = frappe.get_doc("Discount", disc[0].name)
+                discount.append("discount_details", {
+                    "item_group": item_group,
+                    "discount_percentage": discount_percentage
+                })
+                discount.save()
+                return disc[0].name
+            else:
+                frappe.db.sql(""" UPDATE `tabDiscount Details` SET discount_percentage=%s WHERE parent=%s and item_group=%s """,
+                              (discount_percentage,disc[0].name, item_group), as_dict=1)
+                frappe.db.commit()
+                return disc[0].name
         else:
             obj = {
                 "doctype": "Discount",
