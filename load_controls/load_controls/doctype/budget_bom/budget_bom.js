@@ -376,7 +376,7 @@ frappe.ui.form.on('Budget BOM', {
 	    cur_frm.set_query("opportunity", () => {
 	        return {
 	            filters:{
-	                status: 'Qualified'
+	                status: 'Open'
                 }
             }
         })

@@ -72,13 +72,14 @@ def generate_budget_bom(selections, name):
         "Opportunity": {
             "doctype": "Budget BOM",
             "validation": {
-                "status": ["=", "Open"]
+                "status": ["in", ["Open", "Qualified"]]
             },
             "field_map": {
                 "party_name": "customer",
             }
         }
     })
+
     doc.posting_date = opportunity.expected_closing
     doc.expected_closing_date = opportunity.expected_closing
     estimated_bom_operation_cost = 0
