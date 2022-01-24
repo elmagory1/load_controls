@@ -7,7 +7,7 @@ frappe.listview_settings['Opportunity'] = {
 		} else if(doc.status=="Qualification") {
 			indicator[1] = "orange";
 		} else if(doc.status=="Qualified") {
-			indicator[1] = "orange";
+			indicator[1] = "blue";
 		}
 		return indicator;
 	},
