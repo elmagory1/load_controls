@@ -161,9 +161,6 @@ def generate_mr(budget_boms, schedule_date, transaction_date, so_name):
             i.schedule_date = transaction_date
 
         doc.items = consolidate_items(doc.items)
-        # doc.append("budget_bom_reference", {
-        #     "budget_bom": x
-        # })
     mr = doc.insert()
     return mr.name
 def check_qty(item_code, items):
@@ -176,7 +173,7 @@ def consolidate_items(items):
     for i in items:
         add = False
         for x in c_items:
-            if i.item_code == x.item_code and i.budget_bom_rate == x.budget_bom_rate:
+            if i.item_code == x.item_code:
                 if 'type' in i.__dict__ and i.type:
                     if i.type == 'Deletion':
                         x.qty -= i.qty

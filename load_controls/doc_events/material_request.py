@@ -59,19 +59,19 @@ def get_bb(mr):
                 "doctype": "Material Request Item",
                 "field_map": {
                     "name": "budget_bom_raw_material",
-                    "discount": "budget_bom_rate"
+                    "discount_rate": "budget_bom_rate"
                 }
             },
             "Budget BOM Raw Material Modifier": {
                 "doctype": "Material Request Item",
                 "field_map": {
                     "name": "budget_bom_raw_material",
-                    "discount": "budget_bom_rate"
+                    "discount_rate": "budget_bom_rate"
                 }
             }
         })
         bb_document = frappe.get_doc("Budget BOM", x)
-        so = frappe.db.sql(""" SELECT SOI.* FROM `tabSales Order` SO 
+        so = frappe.db.sql(""" SELECT SOI.*, SO.transaction_date FROM `tabSales Order` SO 
                               INNER JOIN `tabSales Order Item` SOI ON SOI.parent = SO.name 
                               INNER JOIN `tabBudget BOM References` BBR ON BBR.parent = SO.name  
                               WHERE BBR.budget_bom = %s
@@ -81,6 +81,8 @@ def get_bb(mr):
 
         for xx in bb_doc.items:
             xx.qty = xx.qty * qty
+            xx.schedule_date = bb_doc.posting_date
+
             items.append(xx)
 
         items = consolidate_items(items)
