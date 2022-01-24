@@ -34,24 +34,38 @@ def update_budget_bom(d, opportunity):
     bb = frappe.db.sql(""" SELECT * FROM `tabBudget BOM` WHERE opportunity=%s """, opportunity, as_dict=1)
     for i in bb:
         bb_details = frappe.db.sql(""" SELECT * FROM `tabBudget BOM Raw Material` WHERE item_group=%s and parent=%s """, (discount['item_group'], i.name), as_dict=1)
-        if len(bb_details) > 0:
-            for xx in bb_details:
-                discount_percentage = discount['discount_percentage']
-                discount_amount = (xx.qty * xx.rate) * (discount_percentage / 100)
-                amount = (xx.qty * xx.rate) - discount_amount
-                discount_rate = amount / xx.qty
+        bb_details1 = frappe.db.sql(""" SELECT * FROM `tabBudget BOM Enclosure Raw Material` WHERE item_group=%s and parent=%s """, (discount['item_group'], i.name), as_dict=1)
+        for xx in bb_details:
+            discount_percentage = discount['discount_percentage']
+            discount_amount = (xx.qty * xx.rate) * (discount_percentage / 100)
+            amount = (xx.qty * xx.rate) - discount_amount
+            discount_rate = amount / xx.qty
 
-                frappe.db.sql(""" UPDATE `tabBudget BOM Raw Material` SET discount_percentage=%s, discount_amount=%s, amount=%s, discount_rate=%s, remarks=%s WHERE name=%s""",
-                              (discount_percentage, discount_amount, amount, discount_rate,discount['remarks'], xx.name))
-                frappe.db.commit()
+            frappe.db.sql(""" UPDATE `tabBudget BOM Raw Material` SET discount_percentage=%s, discount_amount=%s, amount=%s, discount_rate=%s, remarks=%s WHERE name=%s""",
+                          (discount_percentage, discount_amount, amount, discount_rate,discount['remarks'], xx.name))
+            frappe.db.commit()
 
-            compute_bb = frappe.db.sql(""" SELECT * FROM `tabBudget BOM Raw Material` WHERE parent=%s""", i.name, as_dict=1)
-            total_amount = 0
-            for x in compute_bb:
-                total_amount += x.amount
+        for xx in bb_details1:
+            discount_percentage = discount['discount_percentage']
+            discount_amount = (xx.qty * xx.rate) * (discount_percentage / 100)
+            amount = (xx.qty * xx.rate) - discount_amount
+            discount_rate = amount / xx.qty
 
             frappe.db.sql(
-                """ UPDATE `tabBudget BOM` SET total_raw_material_cost=%s WHERE name=%s""",
-                (total_amount, i.name))
-
+                """ UPDATE `tabBudget BOM Enclosure Raw Material` SET discount_percentage=%s, discount_amount=%s, amount=%s, discount_rate=%s, remarks=%s WHERE name=%s""",
+                (discount_percentage, discount_amount, amount, discount_rate, discount['remarks'], xx.name))
             frappe.db.commit()
+
+        compute_bb = frappe.db.sql(""" SELECT * FROM `tabBudget BOM Raw Material` WHERE parent=%s""", i.name, as_dict=1)
+        compute_bb1 = frappe.db.sql(""" SELECT * FROM `tabBudget BOM Enclosure Raw Material` WHERE parent=%s""", i.name, as_dict=1)
+        total_amount = 0
+        for x in compute_bb:
+            total_amount += x.amount
+        for x in compute_bb1:
+            total_amount += x.amount
+
+        frappe.db.sql(
+            """ UPDATE `tabBudget BOM` SET total_raw_material_cost=%s WHERE name=%s""",
+            (total_amount, i.name))
+
+        frappe.db.commit()

@@ -496,13 +496,33 @@ frappe.ui.form.on('Budget BOM', {
         }).css('background-color','brown').css('color','white').css('font-weight','bold')
 
         //ENCLOSUUUUUUUUUURE
-	    cur_frm.fields_dict["fg_sellable_bom_raw_material"].grid.add_custom_button(__('Refresh Available Stock'),
+
+cur_frm.fields_dict["fg_sellable_bom_raw_material"].grid.add_custom_button(__('Update Discount'),
+                function() {
+                cur_frm.call({
+                    doc: cur_frm.doc,
+                    method: 'update_discounts',
+                    args: {
+                        fieldname: "fg_sellable_bom_raw_material",
+                        opportunity: cur_frm.doc.opportunity
+                    },
+                    freeze: true,
+                    freeze_message: "Get Quotation...",
+                    async:false,
+                    callback: (r) => {
+                        cur_frm.dirty()
+                        cur_frm.refresh_field('fg_sellable_bom_raw_material')
+                                 compute_total_cost(cur_frm)
+
+
+                    }
+                })
+            }).css('background-color','#006622').css('color','white').css('font-weight','bold')
+  cur_frm.fields_dict["fg_sellable_bom_raw_material"].grid.add_custom_button(__('Refresh Available Stock'),
 			function() {
 	        	        cur_frm.trigger("refresh_fg_sellable_available_stock")
 
         }).css('background-color','#00008B').css('color','white').css('margin-left','10px').css('margin-right','10px').css('font-weight','bold')
-
-
         }
 	    //ELECTRICAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAL
 
