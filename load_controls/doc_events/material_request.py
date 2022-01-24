@@ -102,7 +102,7 @@ def consolidate_items(items):
     for i in items:
         add = False
         for x in c_items:
-            if i.item_code == x.item_code and i.budget_bom_rate == x.budget_bom_rate:
+            if i.item_code == x.item_code:
                 if 'type' in i.__dict__ and i.type:
                     if i.type == 'Deletion':
                         x.qty -= i.qty
