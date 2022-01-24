@@ -247,7 +247,8 @@ function fetch_boms(cur_frm, selections) {
 
             frappe.db.get_list('Budget BOM', {
                 filters: {
-                   opportunity: selections[x]
+                   opportunity: selections[x],
+                    status: "To Quotation"
                 }
             }).then(records => {
                 if(records.length > 0){
