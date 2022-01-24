@@ -81,7 +81,7 @@ def get_bb(mr):
 
         for xx in bb_doc.items:
             xx.qty = xx.qty * qty
-            xx.schedule_date = bb_doc.posting_date
+            xx.schedule_date = bb_document.posting_date
 
             items.append(xx)
 
