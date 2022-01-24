@@ -138,14 +138,14 @@ def generate_mr(budget_boms, schedule_date, transaction_date, so_name):
                 "doctype": "Material Request Item",
                 "field_map": {
                     "name": "budget_bom_raw_material",
-                    "discount": "budget_bom_rate"
+                    "discount_rate": "budget_bom_rate"
                 }
             },
             "Budget BOM Raw Material Modifier": {
                 "doctype": "Material Request Item",
                 "field_map": {
                     "name": "budget_bom_raw_material",
-                    "discount": "budget_bom_rate"
+                    "discount_rate": "budget_bom_rate"
                 }
             }
         })
@@ -157,9 +157,9 @@ def generate_mr(budget_boms, schedule_date, transaction_date, so_name):
             i.schedule_date = transaction_date
 
         doc.items = consolidate_items(doc.items)
-        doc.append("budget_bom_reference", {
-            "budget_bom": x
-        })
+        # doc.append("budget_bom_reference", {
+        #     "budget_bom": x
+        # })
     mr = doc.insert()
     return mr.name
 

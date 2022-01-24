@@ -24,8 +24,12 @@ def validate_mr(doc, method):
             for ii in doc.items:
                 if ii.budget_bom_raw_material:
                     rate = frappe.db.sql(""" SELECT * from `tabBudget BOM Raw Material` WHERE name=%s""", ii.budget_bom_raw_material, as_dict=1)
+                    rate2 = frappe.db.sql(""" SELECT * from `tabBudget BOM Enclosure Raw Material` WHERE name=%s""", ii.budget_bom_raw_material, as_dict=1)
                     rate1 = frappe.db.sql(""" SELECT * from `tabBudget BOM Raw Material Modifier` WHERE name=%s""", ii.budget_bom_raw_material, as_dict=1)
                     ii.budget_bom_rate =  ii.rate if len(rate) > 0 and rate[0].discount_rate == 0  else rate[0].discount_rate if len(rate) > 0 and rate[0].discount_rate > 0 else 0
                     if len(rate1) > 0:
                         ii.budget_bom_rate = ii.rate if len(rate1) > 0 and rate1[0].discount_rate == 0  else rate1[
                             0].discount_rate if len(rate1) > 0 and rate1[0].discount_rate > 0 else 0
+                    if len(rate2) > 0:
+                        ii.budget_bom_rate = ii.rate if len(rate2) > 0 and rate2[0].discount_rate == 0  else rate2[
+                            0].discount_rate if len(rate2) > 0 and rate2[0].discount_rate > 0 else 0
