@@ -396,6 +396,13 @@ frappe.ui.form.on('Budget BOM', {
                 return {}
         }
         })
+        cur_frm.set_query("cost_type", "additional_operation_cost", ()=>{
+            return {
+                filters: {
+                    account_type: "Expenses Included In Valuation"
+                }
+            }
+        })
         cur_frm.set_query("item_code","electrical_bom_additiondeletion", (frm, cdt, cdn) => {
             console.log("======================")
             console.log(d)
