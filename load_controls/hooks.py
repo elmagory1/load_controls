@@ -144,7 +144,7 @@ doc_events = {
 	},
 	"Stock Entry": {
 		"on_submit": "load_controls.doc_events.stock_entry.on_submit_se",
-		"after_insert": "load_controls.doc_events.stock_entry.on_save_se",
+		"validate": "load_controls.doc_events.stock_entry.on_save_se",
 	},
 	"Work Order": {
 		"validate": "load_controls.doc_events.work_order.on_save_wo",

@@ -5,7 +5,7 @@ frappe.listview_settings['Budget BOM'] = {
 				"To Sales Order", "Declined and To Sales Order",
 				"Waiting for Review","To Material Request and To Work Order",
 				"Waiting for Accept / Decline", "To Work Order","To Revised Quotation",
-				"To Supplier Quotation", "To Purchase Order","To Purchase Receipt","To Purchase Invoice"].includes(doc.status)) {
+				"To Supplier Quotation", "To Purchase Order","To Purchase Receipt","To Purchase Invoice", "To Deliver"].includes(doc.status)) {
 			// Closed
 			return [__(doc.status), "orange", "status,=," + doc.status];
 		} else if (["Rejected"].includes(doc.status)) {
