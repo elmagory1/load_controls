@@ -20,12 +20,11 @@ def on_save_se(doc, method):
             if i.budget_bom:
                 bb = frappe.get_doc("Budget BOM", i.budget_bom)
                 for xxx in bb.additional_operation_cost:
-                    if not check_costs(xxx, doc.additional_costs):
-                        doc.append("additional_costs",{
-                            "expense_account": xxx.cost_type,
-                            "description": xxx.description,
-                            "amount": xxx.amount,
-                        })
+                    doc.append("additional_costs",{
+                        "expense_account": xxx.cost_type,
+                        "description": xxx.description,
+                        "amount": xxx.amount,
+                    })
         total_amount = 0
         for i in doc.additional_costs:
             total_amount += i.amount

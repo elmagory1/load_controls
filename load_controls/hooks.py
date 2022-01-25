@@ -278,7 +278,7 @@ fixtures = [
                     "Sales Invoice-budget_bom_reference",
                     "Sales Invoice-references",
                     "Delivery Note-budget_bom_reference",
-                    "Delivery Note-references",
+                    "Delivery Note-reference",
                     "BOM Item-operation_time_in_minutes",
                     "Material Request Item-budget_bom_raw_material",
                     "Purchase Invoice-budget_bom_reference",
