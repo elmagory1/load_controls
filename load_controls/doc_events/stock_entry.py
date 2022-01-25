@@ -30,6 +30,7 @@ def on_save_se(doc, method):
         for i in doc.additional_costs:
             total_amount += i.amount
         doc.total_additional_costs = total_amount
+        doc.value_difference = total_amount
 
 def check_costs(xxx, additional_costs):
     for i in additional_costs:
