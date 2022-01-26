@@ -262,12 +262,17 @@ def make_work_orders(items, sales_order, company, project=None):
             project=project,
             fg_warehouse=i['warehouse'],
             description=i['description']
-        )).insert()
+        ))
         references = frappe.get_doc("Sales Order",sales_order)
-        for i in references.budget_bom_reference:
-            work_order.append("budget_bom_reference",i)
-        work_order.set_work_order_operations()
-        work_order.save()
-        out.append(work_order)
+
+        for x in references.budget_bom_reference:
+            work_order.append("budget_bom_reference",{
+                "budget_bom": x.budget_bom
+            })
+
+        wo = work_order.insert()
+        wo.set_work_order_operations()
+        wo.save()
+        out.append(wo)
 
     return [p.name for p in out]
