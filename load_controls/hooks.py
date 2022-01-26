@@ -290,7 +290,6 @@ fixtures = [
 					"Material Request-reference_bom",
                     "Material Request-budget_bom_reference",
                     "Opportunity-project",
-                    "Opportunity-project_name",
                     "Opportunity-budget_bom",
 
                     "Sales Order-cost_center",
