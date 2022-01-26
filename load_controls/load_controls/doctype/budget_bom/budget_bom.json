@@ -16,6 +16,7 @@
   "expected_closing_date",
   "rate_of_materials_based_on",
   "price_list",
+  "project",
   "electrical_bom_section",
   "electrical_bom_details",
   "electrical_from_template",
@@ -640,12 +641,20 @@
    "fieldtype": "Check",
    "hidden": 1,
    "label": "Request"
+  },
+  {
+   "fetch_from": "oppportunity.project",
+   "fieldname": "project",
+   "fieldtype": "Link",
+   "label": "Project",
+   "options": "LC Project"
   }
  ],
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2022-01-25 11:06:01.665520",
+ "migration_hash": "005d3b6f6bfb37ee8412352c8fef7f86",
+ "modified": "2022-01-26 08:59:15.110093",
  "modified_by": "Administrator",
  "module": "Load Controls",
  "name": "Budget BOM",

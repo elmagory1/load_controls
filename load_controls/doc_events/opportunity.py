@@ -81,6 +81,7 @@ def generate_budget_bom(selections, name):
     })
 
     doc.posting_date = opportunity.expected_closing
+    doc.project = opportunity.project
     doc.expected_closing_date = opportunity.expected_closing
     estimated_bom_operation_cost = 0
 
