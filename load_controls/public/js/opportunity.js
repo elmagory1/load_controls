@@ -1,5 +1,12 @@
 frappe.ui.form.on("Opportunity", {
     refresh: function () {
+        cur_frm.set_query("project", ()=>{
+            return {
+                filters: {
+                    disabled: 0
+                }
+            }
+        })
         if(!cur_frm.is_new()){
            cur_frm.remove_custom_button("Quotation", "Create")
             cur_frm.remove_custom_button("Supplier Quotation", "Create")
