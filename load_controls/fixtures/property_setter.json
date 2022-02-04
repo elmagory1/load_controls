@@ -120,23 +120,6 @@
  },
  {
   "default_value": null,
-  "doc_type": "Opportunity",
-  "docstatus": 0,
-  "doctype": "Property Setter",
-  "doctype_or_field": "DocField",
-  "field_name": "status",
-  "modified": "2022-01-21 11:05:07.949392",
-  "name": "Opportunity-status-options",
-  "parent": null,
-  "parentfield": null,
-  "parenttype": null,
-  "property": "options",
-  "property_type": "Text",
-  "row_name": null,
-  "value": "Open\nQualification\nQualified\nQuotation\nConverted\nLost\nReplied\nClosed\n"
- },
- {
-  "default_value": null,
   "doc_type": "Job Card",
   "docstatus": 0,
   "doctype": "Property Setter",
@@ -151,5 +134,39 @@
   "property_type": "Data",
   "row_name": null,
   "value": "eval: doc.quality_inspection_required"
+ },
+ {
+  "default_value": null,
+  "doc_type": "Opportunity",
+  "docstatus": 0,
+  "doctype": "Property Setter",
+  "doctype_or_field": "DocField",
+  "field_name": "status",
+  "modified": "2022-02-04 14:03:44.809303",
+  "name": "Opportunity-status-default",
+  "parent": null,
+  "parentfield": null,
+  "parenttype": null,
+  "property": "default",
+  "property_type": "Text",
+  "row_name": null,
+  "value": "Qualified"
+ },
+ {
+  "default_value": null,
+  "doc_type": "Opportunity",
+  "docstatus": 0,
+  "doctype": "Property Setter",
+  "doctype_or_field": "DocField",
+  "field_name": "status",
+  "modified": "2022-02-04 14:03:47.608446",
+  "name": "Opportunity-status-options",
+  "parent": null,
+  "parentfield": null,
+  "parenttype": null,
+  "property": "options",
+  "property_type": "Text",
+  "row_name": null,
+  "value": "\nQualification\nQualified\nQuotation\nClosed"
  }
 ]
