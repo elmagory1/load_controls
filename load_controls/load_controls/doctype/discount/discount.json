@@ -9,6 +9,10 @@
  "field_order": [
   "naming_series",
   "opportunity",
+  "column_break_3",
+  "fetch_item_groups",
+  "all_update_to_budget_bom",
+  "section_break_6",
   "discount_details"
  ],
  "fields": [
@@ -33,11 +37,29 @@
    "fieldtype": "Table",
    "label": "Discount Details",
    "options": "Discount Details"
+  },
+  {
+   "fieldname": "column_break_3",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "fetch_item_groups",
+   "fieldtype": "Button",
+   "label": "Fetch Item Groups"
+  },
+  {
+   "fieldname": "all_update_to_budget_bom",
+   "fieldtype": "Button",
+   "label": "All Update to Budget BOM"
+  },
+  {
+   "fieldname": "section_break_6",
+   "fieldtype": "Section Break"
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2021-12-30 11:57:28.530736",
+ "modified": "2022-02-04 14:52:16.881755",
  "modified_by": "Administrator",
  "module": "Load Controls",
  "name": "Discount",

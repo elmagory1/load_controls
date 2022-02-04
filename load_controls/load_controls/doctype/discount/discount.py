@@ -5,26 +5,64 @@ import frappe, json
 from frappe.model.document import Document
 
 class Discount(Document):
-	def on_trash(self):
-		bb = frappe.db.sql(""" SELECT * FROm `tabBudget BOM Raw Material` WHERE link_discount_amount=%s """, self.name,
-						   as_dict=1)
-		if len(bb) > 0:
-			for i in bb:
-				bb_status = frappe.db.sql(""" SELECT * FROm `tabBudget BOM` WHERE name=%s""", i.parent, as_dict=1)
-				if bb_status[0].docstatus == 1:
-					frappe.throw("Discount is linked with Submitted Budget BOM")
-		self.unlinked_discount()
+    @frappe.whitelist()
+    def fetch_item_groups(self, opportunity,item_groups):
+        if not opportunity:
+            frappe.throw("Please select Opportunity")
 
-	def unlinked_discount(self):
-		frappe.db.sql(
-			""" UPDATE `tabBudget BOM Raw Material` SET link_discount_amount=''  WHERE link_discount_amount=%s""",
-			(self.name))
-		frappe.db.commit()
+        data = item_groups
 
+        query = """ SELECT BBRM.item_group FROM `tabBudget BOM` BB 
+                    INNER JOIN `tabBudget BOM Raw Material` BBRM ON BBRM.parent = BB.name 
+                    WHERE BB.opportunity = '{0}' and BB.docstatus=1
+                """.format(opportunity)
+
+        budget_bom = frappe.db.sql(query,as_dict=1)
+        if len(budget_bom) == 0:
+            frappe.throw("No Item Groups Fetched")
+        item_groups_final = []
+        for i in budget_bom:
+            if not self.check_item_group(i, data,item_groups_final):
+                item_groups_final.append(i.item_group)
+        return item_groups_final
+
+    def check_item_group(self, budget_bom, data,item_groups_final):
+        for i in data:
+            if budget_bom.item_group == i['item_group']:
+                return True
+        return budget_bom.item_group in item_groups_final
+
+    def on_trash(self):
+        bb = frappe.db.sql(""" SELECT * FROm `tabBudget BOM Raw Material` WHERE link_discount_amount=%s """, self.name,
+                           as_dict=1)
+        if len(bb) > 0:
+            for i in bb:
+                bb_status = frappe.db.sql(""" SELECT * FROm `tabBudget BOM` WHERE name=%s""", i.parent, as_dict=1)
+                if bb_status[0].docstatus == 1:
+                    frappe.throw("Discount is linked with Submitted Budget BOM")
+        self.unlinked_discount()
+
+    def unlinked_discount(self):
+        frappe.db.sql(
+            """ UPDATE `tabBudget BOM Raw Material` SET link_discount_amount=''  WHERE link_discount_amount=%s""",
+            (self.name))
+        frappe.db.commit()
+
+@frappe.whitelist()
+def update_budget_boms(opportunity,item_groups):
+    data = json.loads(item_groups)
+    for i in data:
+        update_budget_bom(i,opportunity)
 
 @frappe.whitelist()
 def update_budget_bom(d, opportunity):
-    discount = json.loads(d)
+    try:
+        discount = json.loads(d)
+    except:
+        discount = d
+
+    print("DISCOUUUUUUUUNt")
+    print(discount)
     if not opportunity:
         frappe.throw("Please Select Opportunity")
 
@@ -42,7 +80,7 @@ def update_budget_bom(d, opportunity):
             discount_rate = amount / xx.qty
 
             frappe.db.sql(""" UPDATE `tabBudget BOM Raw Material` SET discount_percentage=%s, discount_amount=%s, amount=%s, discount_rate=%s, remarks=%s WHERE name=%s""",
-                          (discount_percentage, discount_amount, amount, discount_rate,discount['remarks'], xx.name))
+                          (discount_percentage, discount_amount, amount, discount_rate,discount['remarks'] if 'remarks' in discount else "", xx.name))
             frappe.db.commit()
 
         for xx in bb_details1:
@@ -53,7 +91,7 @@ def update_budget_bom(d, opportunity):
 
             frappe.db.sql(
                 """ UPDATE `tabBudget BOM Enclosure Raw Material` SET discount_percentage=%s, discount_amount=%s, amount=%s, discount_rate=%s, remarks=%s WHERE name=%s""",
-                (discount_percentage, discount_amount, amount, discount_rate, discount['remarks'], xx.name))
+                (discount_percentage, discount_amount, amount, discount_rate, discount['remarks'] if 'remarks' in discount else "", xx.name))
             frappe.db.commit()
 
         compute_bb = frappe.db.sql(""" SELECT * FROM `tabBudget BOM Raw Material` WHERE parent=%s""", i.name, as_dict=1)

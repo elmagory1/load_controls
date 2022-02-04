@@ -307,6 +307,8 @@ fixtures = [
                     "Job Card-quality_inspection_required",
                     "Work Order-budget_bom_reference",
                     "Work Order-reference",
+                    "Material Request Item-available_qty",
+                    "Material Request Item-required_qty",
 
 
 				]
@@ -330,6 +332,8 @@ fixtures = [
 					"Opportunity Item-qty-default",
 					"Opportunity-status-options",
 					"Job Card-quality_inspection-mandatory_depends_on",
+					"Opportunity-status-default",
+					"Opportunity-status-options",
 				]
 			]
 		]
