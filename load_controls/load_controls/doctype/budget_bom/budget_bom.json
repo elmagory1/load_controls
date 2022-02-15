@@ -377,6 +377,7 @@
    "label": "Finished Goods BOM Details"
   },
   {
+   "allow_on_submit": 1,
    "default": "0",
    "fieldname": "quotation_cancelled",
    "fieldtype": "Check",
@@ -653,8 +654,7 @@
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "migration_hash": "005d3b6f6bfb37ee8412352c8fef7f86",
- "modified": "2022-01-26 08:59:15.110093",
+ "modified": "2022-02-15 16:15:34.012050",
  "modified_by": "Administrator",
  "module": "Load Controls",
  "name": "Budget BOM",
