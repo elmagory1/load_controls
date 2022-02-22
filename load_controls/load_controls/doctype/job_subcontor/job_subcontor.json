@@ -9,6 +9,7 @@
   "budget_bom",
   "supplier",
   "supplier_name",
+  "required_by",
   "purchase_order",
   "column_break_4",
   "posting_date",
@@ -112,12 +113,18 @@
    "fieldtype": "Link",
    "label": "Purchase Order",
    "options": "Purchase Order"
+  },
+  {
+   "default": "Today",
+   "fieldname": "required_by",
+   "fieldtype": "Date",
+   "label": "Required By"
   }
  ],
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2022-02-22 14:38:38.650203",
+ "modified": "2022-02-22 17:05:57.102560",
  "modified_by": "Administrator",
  "module": "Load Controls",
  "name": "Job Subcontor",
