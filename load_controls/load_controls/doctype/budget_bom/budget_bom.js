@@ -450,6 +450,10 @@ frappe.ui.form.on('Budget BOM', {
                 return {}
             }
         })
+         cur_frm.fields_dict["electrical_bom_raw_material"].grid.add_custom_button(__('Update Tag'),
+			function() {
+	        update_tag_dialog(cur_frm, "electrical_bom_raw_material")
+        }).css('background-color','#bf4040').css('color','white').css('font-weight','bold').css('margin-left','10px')
         if(cur_frm.doc.status !== 'To Design'){
 
             cur_frm.fields_dict["electrical_bom_raw_material"].grid.add_custom_button(__('Update Discount'),
@@ -491,7 +495,10 @@ frappe.ui.form.on('Budget BOM', {
 
 	        cur_frm.trigger("item_templates")
         }).css('background-color','brown').css('color','white').css('font-weight','bold')
-
+ cur_frm.fields_dict["mechanical_bom_raw_material"].grid.add_custom_button(__('Update Tag'),
+			function() {
+            update_tag_dialog(cur_frm, "mechanical_bom_raw_material")
+        }).css('background-color','#bf4040').css('color','white').css('font-weight','bold').css('margin-left','10px')
         //MECHANICAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAL
             cur_frm.fields_dict["mechanical_bom_raw_material"].grid.add_custom_button(__('Update Discount'),
                 function() {
@@ -1752,4 +1759,69 @@ if(cur_frm.get_field("additional_operation_cost").grid.df.read_only){
     }
 }
 
+}
+
+function update_tag_dialog(cur_frm, table_name) {
+    	var data = [];
+
+    const dialog = new frappe.ui.Dialog({
+		title: __("Update Item Tag"),
+		fields: [
+			{fieldtype:'Section Break', label: __('Items')},
+			{
+				fieldname: "alternative_items", fieldtype: "Table", cannot_add_rows: true,
+				in_place_edit: true, data: data,
+				get_data: () => {
+					return data;
+				},
+				fields: [
+				    {
+                        fieldtype:'Data',
+                        fieldname:"docname",
+                        hidden: 1
+				    },
+                    {
+                        fieldtype:'Link',
+                        fieldname:"item_code",
+                        options: 'Item',
+                        in_list_view: 1,
+                        read_only: 1,
+                        label: __('Item Code')
+                    },
+                    {
+                        fieldtype:'Link',
+                        fieldname:"tag",
+                        options: 'Budget BOM Tag',
+                        in_list_view: 1,
+                        label: __('Tag'),
+                    }]
+			},
+		],
+		primary_action: function() {
+			const args = this.get_values()["alternative_items"];
+
+
+			args.forEach(d => {
+			    console.log("DDDDDDDDDDDDDDDDDDDdd")
+			    console.log(d)
+				frappe.model.set_value("Budget BOM Raw Material", d.docname, 'tag', d.tag);
+			});
+
+			refresh_field(table_name);
+			this.hide();
+		},
+		primary_action_label: __('Update')
+	});
+
+	cur_frm.doc[table_name].forEach(d => {
+        dialog.fields_dict.alternative_items.df.data.push({
+            "docname": d.name,
+            "item_code": d.item_code,
+            "tag": d.tag,
+        });
+	})
+
+	data = dialog.fields_dict.alternative_items.df.data;
+	dialog.fields_dict.alternative_items.grid.refresh();
+	dialog.show();
 }
