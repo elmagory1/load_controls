@@ -380,6 +380,36 @@ frappe.ui.form.on('Budget BOM', {
                 }
             }
         })
+        cur_frm.set_query("item_code","electrical_bom_raw_material", (frm, cdt, cdn) => {
+            var filters = {}
+            if(cur_frm.doc.item_group_electrical){
+                filters.item_group = cur_frm.doc.item_group_electrical
+            }
+            if(cur_frm.doc.brand_electrical){
+                filters.brand = cur_frm.doc.brand_electrical
+            }
+            return {filters}
+        })
+         cur_frm.set_query("item_code","mechanical_bom_raw_material", (frm, cdt, cdn) => {
+            var filters = {}
+            if(cur_frm.doc.item_group_mechanical){
+                filters.item_group = cur_frm.doc.item_group_mechanical
+            }
+            if(cur_frm.doc.brand_mechanical){
+                filters.brand = cur_frm.doc.brand_mechanical
+            }
+            return {filters}
+        })
+         cur_frm.set_query("item_code","fg_sellable_bom_raw_material", (frm, cdt, cdn) => {
+            var filters = {}
+            if(cur_frm.doc.item_group_enclosure){
+                filters.item_group = cur_frm.doc.item_group_enclosure
+            }
+            if(cur_frm.doc.brand_enclosure){
+                filters.brand = cur_frm.doc.brand_enclosure
+            }
+            return {filters}
+        })
         cur_frm.set_query("item_code","mechanical_bom_additiondeletion", (frm, cdt, cdn) => {
             var d = locals[cdt][cdn]
 

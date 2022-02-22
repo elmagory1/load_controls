@@ -1,0 +1,141 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "creation": "2022-02-22 14:30:42.711398",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "budget_bom",
+  "supplier",
+  "supplier_name",
+  "purchase_order",
+  "column_break_4",
+  "posting_date",
+  "project_code",
+  "sales_order",
+  "raw_materials_section",
+  "items",
+  "service_item_section",
+  "service_items",
+  "additional_cost_ledger_section",
+  "additional_cost",
+  "amended_from"
+ ],
+ "fields": [
+  {
+   "fieldname": "budget_bom",
+   "fieldtype": "Link",
+   "label": "Budget BOM",
+   "options": "Budget BOM"
+  },
+  {
+   "fieldname": "supplier",
+   "fieldtype": "Link",
+   "label": "Supplier",
+   "options": "Supplier"
+  },
+  {
+   "fetch_from": "supplier.supplier_name",
+   "fieldname": "supplier_name",
+   "fieldtype": "Data",
+   "label": "Supplier Name",
+   "read_only": 1
+  },
+  {
+   "fieldname": "column_break_4",
+   "fieldtype": "Column Break",
+   "read_only": 1
+  },
+  {
+   "default": "Today",
+   "fieldname": "posting_date",
+   "fieldtype": "Date",
+   "label": "Posting Date"
+  },
+  {
+   "fieldname": "project_code",
+   "fieldtype": "Link",
+   "label": "Project Code",
+   "options": "Project"
+  },
+  {
+   "fieldname": "sales_order",
+   "fieldtype": "Link",
+   "label": "Sales Order",
+   "options": "Sales Order"
+  },
+  {
+   "fieldname": "amended_from",
+   "fieldtype": "Link",
+   "label": "Amended From",
+   "no_copy": 1,
+   "options": "Job Subcontor",
+   "print_hide": 1,
+   "read_only": 1
+  },
+  {
+   "fieldname": "raw_materials_section",
+   "fieldtype": "Section Break",
+   "label": "Raw Materials"
+  },
+  {
+   "fieldname": "items",
+   "fieldtype": "Table",
+   "label": "Items",
+   "options": "Job Subcontor Raw Materials"
+  },
+  {
+   "fieldname": "service_item_section",
+   "fieldtype": "Section Break",
+   "label": "Service Item"
+  },
+  {
+   "fieldname": "service_items",
+   "fieldtype": "Table",
+   "label": "Items",
+   "options": "Job Subcontor Service Item"
+  },
+  {
+   "fieldname": "additional_cost_ledger_section",
+   "fieldtype": "Section Break",
+   "label": "Additional Cost Ledger"
+  },
+  {
+   "fieldname": "additional_cost",
+   "fieldtype": "Table",
+   "label": "Additional Cost",
+   "options": "Job Subcontor Additional Cost"
+  },
+  {
+   "fieldname": "purchase_order",
+   "fieldtype": "Link",
+   "label": "Purchase Order",
+   "options": "Purchase Order"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "is_submittable": 1,
+ "links": [],
+ "modified": "2022-02-22 14:38:38.650203",
+ "modified_by": "Administrator",
+ "module": "Load Controls",
+ "name": "Job Subcontor",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC"
+}

@@ -1,0 +1,202 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "creation": "2022-02-22 13:59:29.494587",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "status",
+  "budget_bom",
+  "customer",
+  "customer_name",
+  "source_warehouse",
+  "column_break_5",
+  "posting_date",
+  "required_by",
+  "project_code",
+  "sales_order",
+  "target_warehouse",
+  "change_request_items_section",
+  "addition",
+  "deletion",
+  "section_break_13",
+  "total_incoming_value",
+  "column_break_15",
+  "total_outgoing_value",
+  "total_value_difference",
+  "references_section",
+  "stock_entry",
+  "material_request",
+  "amended_from"
+ ],
+ "fields": [
+  {
+   "fieldname": "budget_bom",
+   "fieldtype": "Link",
+   "label": "Budget BOM",
+   "options": "Budget BOM"
+  },
+  {
+   "fetch_from": "budget_bom.customer",
+   "fieldname": "customer",
+   "fieldtype": "Link",
+   "label": "Customer",
+   "options": "Customer",
+   "read_only": 1
+  },
+  {
+   "fetch_from": "budget_bom.customer_name",
+   "fieldname": "customer_name",
+   "fieldtype": "Data",
+   "label": "Customer Name",
+   "read_only": 1
+  },
+  {
+   "fieldname": "source_warehouse",
+   "fieldtype": "Link",
+   "label": "Source Warehouse",
+   "options": "Warehouse"
+  },
+  {
+   "fieldname": "column_break_5",
+   "fieldtype": "Column Break"
+  },
+  {
+   "default": "Today",
+   "fieldname": "posting_date",
+   "fieldtype": "Date",
+   "label": "Posting Date"
+  },
+  {
+   "fieldname": "project_code",
+   "fieldtype": "Link",
+   "label": "Project Code",
+   "options": "Project"
+  },
+  {
+   "fieldname": "sales_order",
+   "fieldtype": "Link",
+   "label": "Sales Order",
+   "options": "Sales Order"
+  },
+  {
+   "fieldname": "target_warehouse",
+   "fieldtype": "Link",
+   "label": "Target Warehouse",
+   "options": "Warehouse"
+  },
+  {
+   "fieldname": "amended_from",
+   "fieldtype": "Link",
+   "label": "Amended From",
+   "no_copy": 1,
+   "options": "Product Change Request",
+   "print_hide": 1,
+   "read_only": 1
+  },
+  {
+   "fieldname": "change_request_items_section",
+   "fieldtype": "Section Break",
+   "label": "Change Request Items"
+  },
+  {
+   "fieldname": "addition",
+   "fieldtype": "Table",
+   "label": "Addition",
+   "options": "Product Change Request Addition"
+  },
+  {
+   "fieldname": "deletion",
+   "fieldtype": "Table",
+   "label": "Deletion",
+   "options": "Product Change Request Deletion"
+  },
+  {
+   "fieldname": "section_break_13",
+   "fieldtype": "Section Break"
+  },
+  {
+   "default": "0",
+   "fieldname": "total_incoming_value",
+   "fieldtype": "Currency",
+   "label": "Total Incoming Value",
+   "read_only": 1
+  },
+  {
+   "fieldname": "column_break_15",
+   "fieldtype": "Column Break"
+  },
+  {
+   "default": "0",
+   "fieldname": "total_outgoing_value",
+   "fieldtype": "Currency",
+   "label": "Total Outgoing Value",
+   "read_only": 1
+  },
+  {
+   "default": "0",
+   "fieldname": "total_value_difference",
+   "fieldtype": "Currency",
+   "label": "Total Value Difference",
+   "read_only": 1
+  },
+  {
+   "default": "Pending",
+   "fieldname": "status",
+   "fieldtype": "Select",
+   "label": "Status",
+   "options": "\nApproved\nRejected\nPending"
+  },
+  {
+   "default": "Today",
+   "description": "For Material Request",
+   "fieldname": "required_by",
+   "fieldtype": "Date",
+   "label": "Required By"
+  },
+  {
+   "fieldname": "references_section",
+   "fieldtype": "Section Break",
+   "label": "References"
+  },
+  {
+   "fieldname": "stock_entry",
+   "fieldtype": "Link",
+   "label": "Stock Entry",
+   "options": "Stock Entry",
+   "read_only": 1
+  },
+  {
+   "fieldname": "material_request",
+   "fieldtype": "Link",
+   "label": "Material Request",
+   "options": "Material Request",
+   "read_only": 1
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "is_submittable": 1,
+ "links": [],
+ "modified": "2022-02-22 16:47:44.528032",
+ "modified_by": "Administrator",
+ "module": "Load Controls",
+ "name": "Product Change Request",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC"
+}

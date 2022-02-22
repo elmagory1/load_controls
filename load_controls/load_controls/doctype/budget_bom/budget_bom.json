@@ -22,6 +22,11 @@
   "electrical_from_template",
   "electrical_item_template",
   "generate_electrical_item_template",
+  "section_break_17",
+  "item_group_electrical",
+  "column_break_18",
+  "brand_electrical",
+  "section_break_20",
   "electrical_bom_raw_material",
   "electrical_bom_additiondeletion",
   "section_break_19",
@@ -35,6 +40,11 @@
   "mechanical_from_template",
   "mechanical_item_template",
   "generate_mechanical_item_template",
+  "section_break_35",
+  "item_group_mechanical",
+  "column_break_35",
+  "brand_mechanical",
+  "section_break_37",
   "mechanical_bom_raw_material",
   "mechanical_bom_additiondeletion",
   "section_break_32",
@@ -44,9 +54,12 @@
   "column_break_36",
   "grand_total_mechanical_raw_material",
   "fgsellable_bom_section",
-  "fg_sellable_bom_raw_material",
-  "section_break_26",
+  "item_group_enclosure",
   "column_break_27",
+  "brand_enclosure",
+  "section_break_938",
+  "fg_sellable_bom_raw_material",
+  "section_break_54",
   "additiondeletion_raw_material_subtotal",
   "column_break_28",
   "enclosure_subtotal",
@@ -409,10 +422,6 @@
    "read_only": 1
   },
   {
-   "fieldname": "section_break_26",
-   "fieldtype": "Section Break"
-  },
-  {
    "fieldname": "column_break_27",
    "fieldtype": "Column Break"
   },
@@ -649,12 +658,80 @@
    "fieldtype": "Link",
    "label": "Project",
    "options": "LC Project"
+  },
+  {
+   "fieldname": "item_group_electrical",
+   "fieldtype": "Link",
+   "label": "Item Group",
+   "options": "Item Group"
+  },
+  {
+   "fieldname": "column_break_18",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "brand_electrical",
+   "fieldtype": "Link",
+   "label": "Brand",
+   "options": "Brand"
+  },
+  {
+   "fieldname": "section_break_20",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "item_group_mechanical",
+   "fieldtype": "Link",
+   "label": "Item Group",
+   "options": "Item Group"
+  },
+  {
+   "fieldname": "column_break_35",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "brand_mechanical",
+   "fieldtype": "Link",
+   "label": "Brand",
+   "options": "Brand"
+  },
+  {
+   "fieldname": "section_break_37",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "item_group_enclosure",
+   "fieldtype": "Link",
+   "label": "Item Group",
+   "options": "Item Group"
+  },
+  {
+   "fieldname": "brand_enclosure",
+   "fieldtype": "Link",
+   "label": "Brand",
+   "options": "Brand"
+  },
+  {
+   "fieldname": "section_break_54",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "section_break_17",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "section_break_35",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "section_break_938",
+   "fieldtype": "Section Break"
   }
  ],
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2022-02-15 16:15:34.012050",
+ "modified": "2022-02-22 12:49:02.502805",
  "modified_by": "Administrator",
  "module": "Load Controls",
  "name": "Budget BOM",
