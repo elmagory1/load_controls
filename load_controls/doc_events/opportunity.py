@@ -1,6 +1,6 @@
 import frappe
 from frappe.model.mapper import get_mapped_doc
-
+import json
 @frappe.whitelist()
 def make_bb(source_name, target_doc=None):
     doc = get_mapped_doc("Opportunity", source_name, {
@@ -84,9 +84,11 @@ def generate_budget_bom(selections, name):
     doc.project = opportunity.project
     doc.expected_closing_date = opportunity.expected_closing
     estimated_bom_operation_cost = 0
-
+    print(selections)
+    data_selections = json.loads(selections)
     for ii in opportunity.items:
-        if ii.item_code in selections:
+        if ii.item_code in data_selections:
+            print("==========================================================")
             hour_rate = frappe.db.get_value("Workstation", fg_workstation, "hour_rate")
             estimated_bom_operation_cost += hour_rate
             doc.append("fg_sellable_bom_details", {
@@ -118,3 +120,13 @@ def generate_budget_bom(selections, name):
     doc.total_cost = estimated_bom_operation_cost
     activity_planner = doc.insert()
     return activity_planner.name
+
+def item_exist(item, selections):
+
+    for i in selections:
+        print("============================")
+        print(item)
+        print(i)
+        if item == i:
+            return True
+    return False

@@ -38,6 +38,8 @@ frappe.ui.form.on("Opportunity", {
                             if(selections.length > 1){
                                 frappe.throw("Please Select Only 1 Item")
                             }
+                            console.log("SELECTIONS")
+                            console.log(selections)
                             if(selections.length > 0){
                                  frappe.call({
                                     method: 'load_controls.doc_events.opportunity.generate_budget_bom',
