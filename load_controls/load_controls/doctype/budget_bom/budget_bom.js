@@ -1767,7 +1767,48 @@ function update_tag_dialog(cur_frm, table_name) {
     const dialog = new frappe.ui.Dialog({
 		title: __("Update Item Tag"),
 		fields: [
-			{fieldtype:'Section Break', label: __('Items')},
+
+            {
+                fieldtype:'Check',
+                label: __('Hide Tagged Item'),
+                onchange: function(){
+                    console.log(this.last_value)
+                    if(this.last_value){
+                        var tagged_items = []
+                        dialog.fields_dict.alternative_items.df.data.forEach(d => {
+                            if(!d.tag){
+                                 tagged_items.push({
+                                    "docname": d.name,
+                                    "item_code": d.item_code,
+                                    "tag": d.tag,
+                                });
+                            }
+
+                        })
+
+                        dialog.fields_dict.alternative_items.df.data = tagged_items;
+                        dialog.fields_dict.alternative_items.grid.refresh();
+                    } else {
+                        if(!this.last_value){
+                            var tagged_items = []
+                           cur_frm.doc[table_name].forEach(d => {
+                                tagged_items.push({
+                                    "docname": d.name,
+                                    "item_code": d.item_code,
+                                    "tag": d.tag,
+                                });
+                            })
+
+                            dialog.fields_dict.alternative_items.df.data = tagged_items;
+                            dialog.fields_dict.alternative_items.grid.refresh();
+                        }
+                    }
+
+                }
+            },
+            {fieldtype:'Column Break'},
+            {fieldtype:'Button', label: __('Update All'),"fieldname": "update_all_button"},
+            {fieldtype:'Section Break', label: __('Items')},
 			{
 				fieldname: "alternative_items", fieldtype: "Table", cannot_add_rows: true,
 				in_place_edit: true, data: data,
@@ -1820,7 +1861,16 @@ function update_tag_dialog(cur_frm, table_name) {
             "tag": d.tag,
         });
 	})
-
+    dialog.fields_dict.update_all_button.onclick = function(){
+	   if(dialog.fields_dict.alternative_items.df.data[0].tag){
+                     dialog.fields_dict.alternative_items.df.data.forEach(d => {
+                        if(!d.tag){
+                            d.tag = dialog.fields_dict.alternative_items.df.data[0].tag
+                            dialog.fields_dict.alternative_items.grid.refresh();
+                        }
+                    })
+                }
+    }
 	data = dialog.fields_dict.alternative_items.df.data;
 	dialog.fields_dict.alternative_items.grid.refresh();
 	dialog.show();

@@ -63,6 +63,7 @@ class BudgetBOM(Document):
                     'item_group': item_master.item_group,
                     'uom': x.uom,
                     'qty': x.qty,
+                    'tag': x.tag,
                     'warehouse': raw_material_warehouse,
                     'rate': rate[0],
                     'amount': rate[0] * x.qty,
@@ -420,6 +421,7 @@ def get_template_items(items):
         items_.append({
             "item_code": i['item_code'],
             "item_name": item_master.item_name,
+            "tag": i['tag'] if 'tag' in i and i['tag'] else "",
             "batch": i['batch'] if 'batch' in i and i['batch'] else "",
             "qty": i['qty'],
             "uom": i['uom'] if 'uom' in i and i['uom'] else "",

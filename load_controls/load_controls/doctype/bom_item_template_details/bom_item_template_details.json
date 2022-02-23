@@ -7,6 +7,7 @@
  "field_order": [
   "item_code",
   "item_name",
+  "tag",
   "batch",
   "qty",
   "uom",
@@ -31,7 +32,6 @@
   {
    "fieldname": "batch",
    "fieldtype": "Link",
-   "in_list_view": 1,
    "label": "Brand",
    "options": "Brand"
   },
@@ -55,12 +55,19 @@
    "fieldtype": "Float",
    "label": "Conversion Factor",
    "read_only": 1
+  },
+  {
+   "fieldname": "tag",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Tag",
+   "options": "Budget BOM Tag"
   }
  ],
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2022-01-06 11:50:17.035256",
+ "modified": "2022-02-23 09:21:26.603695",
  "modified_by": "Administrator",
  "module": "Load Controls",
  "name": "BOM Item Template Details",

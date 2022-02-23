@@ -1,6 +1,21 @@
 // Copyright (c) 2022, jan and contributors
 // For license information, please see license.txt
 
+frappe.ui.form.on('Product Change Request Addition', {
+    addition_add: function (frm,cdt, cdn) {
+        var d =locals[cdt][cdn]
+        d.target_warehouse = cur_frm.doc.target_warehouse
+        cur_frm.refresh_field(d.parentfield)
+    }
+})
+
+frappe.ui.form.on('Product Change Request Deletion', {
+    deletion_add: function (frm,cdt, cdn) {
+        var d =locals[cdt][cdn]
+        d.source_warehouse = cur_frm.doc.source_warehouse
+        cur_frm.refresh_field(d.parentfield)
+    }
+})
 frappe.ui.form.on('Product Change Request', {
     source_warehouse: function () {
         if(cur_frm.doc.source_warehouse) {
@@ -30,14 +45,60 @@ frappe.ui.form.on('Product Change Request', {
                   cur_frm.doc.total_incoming_value = r.message[0]
                   cur_frm.doc.total_outgoing_value = r.message[1]
                   cur_frm.doc.total_value_difference = r.message[0] - r.message[1]
-                  cur_frm.refresh_fields(['total_incoming_value','total_outgoing_value','total_value_difference','addition','deletion'])
+                  cur_frm.doc.sales_order = r.message[2]
+                  cur_frm.refresh_fields(['total_incoming_value','total_outgoing_value','total_value_difference','addition','deletion',"sales_order"])
               }
           })
+            cur_frm.call({
+            doc: cur_frm.doc,
+            method: "get_bb_items",
+            async: false,
+            callback: function (r) {
+                console.log(r.message)
+               cur_frm.set_query("item","addition", () => {
+                   return {
+                       filters: [
+                           ["name", "in", r.message[0]]
+                       ]
+                   }
+               })
+                cur_frm.set_query("item","deletion", () => {
+                   return {
+                       filters: [
+                           ["name", "in", r.message[1]]
+                       ]
+                   }
+               })
+            }
+        })
         }
 
     },
 	refresh: function(frm) {
+        cur_frm.call({
+            doc: cur_frm.doc,
+            method: "get_bb_items",
+            async: false,
+            callback: function (r) {
+                console.log(r.message)
+               cur_frm.set_query("item","addition", () => {
+                   return {
+                       filters: [
+                           ["name", "in", r.message[0]]
+                       ]
+                   }
+               })
+                cur_frm.set_query("item","deletion", () => {
+                   return {
+                       filters: [
+                           ["name", "in", r.message[1]]
+                       ]
+                   }
+               })
+            }
+        })
 	    if(cur_frm.doc.docstatus && cur_frm.doc.status === 'Approved') {
+
 	        if(!cur_frm.doc.material_request){
 	            cur_frm.add_custom_button("Material Request", () => {
                 cur_frm.call({
