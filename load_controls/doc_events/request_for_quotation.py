@@ -48,7 +48,7 @@ def generate_rfq(name, values):
                 "supplier": item_supplier[0].supplier
             })
         else:
-            frappe.throw("Please set supplier in item master")
+            frappe.throw("Please set supplier in item master for item " + str(i.item_code))
     bb_doc.message_for_supplier = "Message for supplier here"
     final_items = bb_doc.items
 
@@ -69,3 +69,41 @@ def get_brand_items(brand, items):
         if item_master == brand:
             itemss.append(i)
     return itemss
+
+
+@frappe.whitelist()
+def get_mr(mr, item_group, brand):
+    data = json.loads(mr)
+    items = []
+    bb = []
+    suppliers = []
+    condition = ""
+    if item_group:
+        condition += " and MRI.item_group='{0}'".format(item_group)
+    for x in data:
+        bb_references = frappe.db.sql(""" SELECT * FROm `tabBudget BOM References` WHERE parent=%s """, x, as_dict=1)
+        for xx in bb_references:
+            if xx.budget_bom not in bb:
+                bb.append(xx.budget_bom)
+
+        mr = frappe.db.sql(""" SELECT item_code, item_name, description, uom,conversion_factor, stock_uom, qty,budget_bom_rate,rate, amount 
+                              FROM `tabMaterial Request Item` MRI WHERE MRI.parent=%s {0}""".format(condition), x,as_dict=1)
+        for i in mr:
+            item = frappe.get_doc("Item", i.item_code)
+            if not brand or item.brand == brand:
+                if len(item.supplier_items) > 0 and item.supplier_items[0].supplier not in suppliers:
+                    suppliers.append(item.supplier_items[0].supplier)
+                else:
+                    frappe.throw("Please select supplier in item master for item " + str(i.item_code))
+
+                for y in item.supplier_items:
+                    if not existing(items, i):
+                        items.append(i)
+    return items, bb, suppliers
+
+def existing(items, item):
+    for i in items:
+        if i.item_code == item.item_code and i.budget_bom_rate == item.budget_bom_rate:
+            i.qty += item.qty
+            return True
+    return False

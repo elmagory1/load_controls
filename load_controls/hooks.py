@@ -314,8 +314,13 @@ fixtures = [
                     "Work Order-reference",
                     "Material Request Item-available_qty",
                     "Material Request Item-required_qty",
+
                     "Request for Quotation-budget_bom_reference",
                     "Request for Quotation-reference",
+                    "Request for Quotation-section_break_10",
+                    "Request for Quotation-fetch_mr",
+                    "Request for Quotation-brand",
+                    "Request for Quotation-item_group",
 
 
 				]
