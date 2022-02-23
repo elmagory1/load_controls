@@ -46,7 +46,8 @@ frappe.ui.form.on('Product Change Request', {
                   cur_frm.doc.total_outgoing_value = r.message[1]
                   cur_frm.doc.total_value_difference = r.message[0] - r.message[1]
                   cur_frm.doc.sales_order = r.message[2]
-                  cur_frm.refresh_fields(['total_incoming_value','total_outgoing_value','total_value_difference','addition','deletion',"sales_order"])
+                  cur_frm.doc.project_code = r.message[3]
+                  cur_frm.refresh_fields(['total_incoming_value','total_outgoing_value','total_value_difference','addition','deletion',"sales_order","project_code"])
               }
           })
             cur_frm.call({

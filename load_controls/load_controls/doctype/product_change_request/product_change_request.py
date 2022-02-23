@@ -118,9 +118,11 @@ class ProductChangeRequest(Document):
                     outgoing_total += i.amount
         so = frappe.db.sql("""  SELECT * FROM `tabSales Order` SO INNER JOIN `tabBudget BOM References` BBR ON BBR.parent = SO.name WHERE SO.docstatus=1 """)
         so_name = ""
+        cost_center_name = ""
         if len(so) > 0:
             so_name = so[0].parent
-        return incoming_total, outgoing_total, so_name
+            cost_center_name = so[0].cost_center
+        return incoming_total, outgoing_total, so_name,cost_center_name
 
 
     @frappe.whitelist()

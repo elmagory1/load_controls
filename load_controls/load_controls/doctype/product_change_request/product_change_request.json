@@ -69,11 +69,10 @@
    "label": "Posting Date"
   },
   {
-   "fetch_from": "budget_bom.project",
    "fieldname": "project_code",
    "fieldtype": "Link",
    "label": "Project Code",
-   "options": "Project"
+   "options": "Cost Center"
   },
   {
    "fieldname": "sales_order",
@@ -179,7 +178,7 @@
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2022-02-23 09:29:16.425981",
+ "modified": "2022-02-23 10:55:11.094233",
  "modified_by": "Administrator",
  "module": "Load Controls",
  "name": "Product Change Request",

@@ -1763,48 +1763,15 @@ if(cur_frm.get_field("additional_operation_cost").grid.df.read_only){
 
 function update_tag_dialog(cur_frm, table_name) {
     	var data = [];
-
+        var hidden_rows = []
     const dialog = new frappe.ui.Dialog({
 		title: __("Update Item Tag"),
 		fields: [
 
             {
                 fieldtype:'Check',
+                fieldname:'hide_tag',
                 label: __('Hide Tagged Item'),
-                onchange: function(){
-                    console.log(this.last_value)
-                    if(this.last_value){
-                        var tagged_items = []
-                        dialog.fields_dict.alternative_items.df.data.forEach(d => {
-                            if(!d.tag){
-                                 tagged_items.push({
-                                    "docname": d.name,
-                                    "item_code": d.item_code,
-                                    "tag": d.tag,
-                                });
-                            }
-
-                        })
-
-                        dialog.fields_dict.alternative_items.df.data = tagged_items;
-                        dialog.fields_dict.alternative_items.grid.refresh();
-                    } else {
-                        if(!this.last_value){
-                            var tagged_items = []
-                           cur_frm.doc[table_name].forEach(d => {
-                                tagged_items.push({
-                                    "docname": d.name,
-                                    "item_code": d.item_code,
-                                    "tag": d.tag,
-                                });
-                            })
-
-                            dialog.fields_dict.alternative_items.df.data = tagged_items;
-                            dialog.fields_dict.alternative_items.grid.refresh();
-                        }
-                    }
-
-                }
             },
             {fieldtype:'Column Break'},
             {fieldtype:'Button', label: __('Update All'),"fieldname": "update_all_button"},
@@ -1843,10 +1810,20 @@ function update_tag_dialog(cur_frm, table_name) {
 
 
 			args.forEach(d => {
-			    console.log("DDDDDDDDDDDDDDDDDDDdd")
-			    console.log(d)
+			    console.log("ARGS")
+			    console.log(d.docname)
+			    console.log(d.tag)
+
 				frappe.model.set_value("Budget BOM Raw Material", d.docname, 'tag', d.tag);
 			});
+			console.log(!dialog.fields_dict.hide_tag.last_value)
+			if(dialog.fields_dict.hide_tag.last_value){
+			    hidden_rows.forEach(d => {
+                    console.log("HIDDEN ROWS")
+                    frappe.model.set_value("Budget BOM Raw Material", d.docname, 'tag', d.tag);
+                });
+            }
+
 
 			refresh_field(table_name);
 			this.hide();
@@ -1855,6 +1832,9 @@ function update_tag_dialog(cur_frm, table_name) {
 	});
 
 	cur_frm.doc[table_name].forEach(d => {
+	    console.log("TABEL DATA")
+	    console.log(d)
+	    console.log("TABEL DATA")
         dialog.fields_dict.alternative_items.df.data.push({
             "docname": d.name,
             "item_code": d.item_code,
@@ -1871,6 +1851,55 @@ function update_tag_dialog(cur_frm, table_name) {
                     })
                 }
     }
+    dialog.fields_dict.hide_tag.$input.on("change", (r)=>{
+        console.log(dialog.fields_dict.hide_tag.last_value)
+        if(!dialog.fields_dict.hide_tag.last_value){
+            var tagged_items = []
+            dialog.fields_dict.alternative_items.df.data.forEach(d => {
+                if(!d.tag){
+                     tagged_items.push({
+                        "docname": d.docname,
+                        "item_code": d.item_code,
+                        "tag": d.tag,
+                    });
+                } else {
+                    hidden_rows.push({
+                        "docname": d.docname,
+                        "item_code": d.item_code,
+                        "tag": d.tag,
+                    });
+                }
+
+            })
+             dialog.fields_dict.alternative_items.df.data = []
+                dialog.fields_dict.alternative_items.grid.refresh();
+            dialog.fields_dict.alternative_items.df.data = tagged_items;
+            dialog.fields_dict.alternative_items.grid.refresh();
+        } else {
+                var tagged_items_all = []
+               dialog.fields_dict.alternative_items.df.data.forEach(d => {
+                    tagged_items_all.push({
+                        "docname": d.docname,
+                        "item_code": d.item_code,
+                        "tag": d.tag,
+                    });
+                })
+                hidden_rows.forEach(d => {
+                    tagged_items_all.push({
+                        "docname": d.docname,
+                        "item_code": d.item_code,
+                        "tag": d.tag,
+                    });
+                })
+             dialog.fields_dict.alternative_items.df.data = []
+                dialog.fields_dict.alternative_items.grid.refresh();
+                hidden_rows = []
+                dialog.fields_dict.alternative_items.df.data = tagged_items_all;
+                dialog.fields_dict.alternative_items.grid.refresh();
+
+        }
+
+    })
 	data = dialog.fields_dict.alternative_items.df.data;
 	dialog.fields_dict.alternative_items.grid.refresh();
 	dialog.show();
