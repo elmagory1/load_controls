@@ -38,6 +38,7 @@ doctype_js = {
 	"Opportunity" : "public/js/opportunity.js",
 	"Sales Order" : "public/js/sales_order.js",
 	"Supplier Quotation" : "public/js/supplier_quotation.js",
+	"Request for Quotation" : "public/js/request_for_quotation.js",
 }
 doctype_list_js = {
 	"Quotation" : "public/js/quotation_list.js",
@@ -148,6 +149,10 @@ doc_events = {
 	},
 	"Work Order": {
 		"validate": "load_controls.doc_events.work_order.on_save_wo",
+	},
+	"Request for Quotation": {
+		"on_submit": "load_controls.doc_events.request_for_quotation.on_submit_rfq",
+		"on_cancel": "load_controls.doc_events.request_for_quotation.on_cancel_rfq",
 	}
 }
 
@@ -309,6 +314,8 @@ fixtures = [
                     "Work Order-reference",
                     "Material Request Item-available_qty",
                     "Material Request Item-required_qty",
+                    "Request for Quotation-budget_bom_reference",
+                    "Request for Quotation-reference",
 
 
 				]

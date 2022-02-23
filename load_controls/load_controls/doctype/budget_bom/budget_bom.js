@@ -1541,13 +1541,13 @@ function compute_total_cost(cur_frm) {
 }
 function compute_other_figures(cur_frm) {
     var item_row = cur_frm.doc
-    item_row.material_overhead_amount = cur_frm.doc.total_raw_material_cost * (cur_frm.doc.material_overhead / 100)
+    item_row.material_overhead_amount = (cur_frm.doc.total_raw_material_cost / cur_frm.doc.material_overhead ) - cur_frm.doc.total_raw_material_cost
     item_row.material_cost = item_row.total_raw_material_cost + (item_row.total_raw_material_cost * (item_row.material_overhead / 100 ))
 
     item_row.operation_overhead_amount = item_row.estimated_bom_operation_cost * (item_row.operation_overhead / 100 )
     item_row.operation_cost = item_row.estimated_bom_operation_cost + (item_row.estimated_bom_operation_cost * (item_row.operation_overhead / 100 ))
 
-    item_row.material_margin_amount = (item_row.material_cost / (1 - (item_row.material_margin / 100 ))) - item_row.material_cost
+    item_row.material_margin_amount = (item_row.material_cost / item_row.material_margin) - item_row.material_cost
     item_row.total_margin_cost = item_row.material_cost + item_row.material_margin_amount
 
 

@@ -43,6 +43,47 @@ frappe.ui.form.on("Material Request", {
       cur_frm.remove_custom_button("Product Bundle", "Get Items From")
     },
     refresh: function (frm, cdt, cdn) {
+
+         if(cur_frm.doc.docstatus){
+            cur_frm.add_custom_button("Request for Quotation",() => {
+                let d = new frappe.ui.Dialog({
+                    title: 'Enter details',
+                    fields: [
+                        {
+                            label: 'Item Group',
+                            fieldname: 'item_group',
+                            fieldtype: 'Link',
+                            options: 'Item Group',
+                        },
+                        {
+                            label: 'Brand',
+                            fieldname: 'brand',
+                            fieldtype: 'Link',
+                            options: 'Brand',
+                        }
+                    ],
+                    primary_action_label: 'Submit',
+                    primary_action(values) {
+                        console.log(values);
+                        frappe.call({
+                              method: "load_controls.doc_events.request_for_quotation.generate_rfq",
+                              args: {
+                                  name:cur_frm.doc.name,
+                                  values: values
+                              },
+                              async: false,
+                                  callback: function (r) {
+                                        frappe.set_route("Form", "Request for Quotation", r.message)
+                                  }
+                          })
+                        d.hide();
+                    }
+                });
+
+                d.show();
+
+            })
+        }
         cur_frm.set_query("budget_bom", "budget_bom_reference", () => {
             return {
                 filters: {
