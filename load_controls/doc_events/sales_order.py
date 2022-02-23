@@ -160,8 +160,7 @@ def generate_mr(budget_boms, schedule_date, transaction_date, so_name):
 
         for i in doc.items:
             i.schedule_date = transaction_date
-            available_qty = get_balance_qty(i.item_code, i.warehouse)
-            i.required_qty = i.qty - available_qty
+
 
         doc.items = consolidate_items(doc.items)
     mr = doc.insert()
@@ -187,21 +186,30 @@ def check_qty(item_code, items):
 def consolidate_items(items):
     c_items = []
     for i in items:
+
         add = False
         for x in c_items:
             if i.item_code == x.item_code:
                 if 'type' in i.__dict__ and i.type:
                     if i.type == 'Deletion':
                         x.qty -= i.qty
+
                     else:
                         x.qty += i.qty
                 else:
                     x.qty += i.qty
                 add = True
         if not add:
-            c_items.append(i)
 
+            c_items.append(i)
+    get_required_items(c_items)
     return c_items
+
+def get_required_items(items):
+
+    for i in items:
+        available_qty = get_balance_qty(i.item_code, i.warehouse)
+        i.required_qty = i.qty - available_qty
 
 def get_default_bom_item(item_code):
     bom = frappe.get_all('BOM', dict(item=item_code, is_active=True),

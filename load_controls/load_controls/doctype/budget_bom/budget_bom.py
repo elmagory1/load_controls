@@ -481,6 +481,7 @@ def make_mr(source_name, target_doc=None):
         "budget_bom": source_name
     })
     return doc
+
 def get_balance_qty(item_code, warehouse):
     time = frappe.utils.now_datetime().time()
     date = frappe.utils.now_datetime().date()
@@ -509,7 +510,14 @@ def consolidate_items(items):
         if not add:
             c_items.append(i)
 
+    get_required_items(c_items)
     return c_items
+
+def get_required_items(items):
+    for i in items:
+        available_qty = get_balance_qty(i.item_code, i.warehouse)
+        i.required_qty = i.qty - available_qty
+
 
 @frappe.whitelist()
 def get_rate(item_code, warehouse, based_on,price_list):
