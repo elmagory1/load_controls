@@ -1,6 +1,6 @@
 import frappe, json
 from frappe.model.mapper import get_mapped_doc
-
+from erpnext.stock.stock_ledger import get_previous_sle
 
 @frappe.whitelist()
 def get_budget_bom(doctype,target,e,r,t,filter):
@@ -114,4 +114,23 @@ def consolidate_items(items):
         if not add:
             c_items.append(i)
 
+    get_required_items(c_items)
     return c_items
+
+
+def get_required_items(items):
+    for i in items:
+        available_qty = get_balance_qty(i.item_code, i.warehouse)
+        i.required_qty = i.qty - available_qty
+
+def get_balance_qty(item_code, warehouse):
+    time = frappe.utils.now_datetime().time()
+    date = frappe.utils.now_datetime().date()
+    previous_sle = get_previous_sle({
+        "item_code": item_code,
+        "warehouse": warehouse,
+        "posting_date": date,
+        "posting_time": time
+    })
+    balance = previous_sle.get("qty_after_transaction") or 0
+    return balance
