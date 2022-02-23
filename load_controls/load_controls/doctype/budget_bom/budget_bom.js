@@ -222,7 +222,7 @@ frappe.ui.form.on('Budget BOM Raw Material Modifier', {
             d.triggered_discount_rate = 1
 
         } else {
-                    d.triggered_discount_rate = 0
+            d.triggered_discount_rate = 0
         }
         cur_frm.refresh_field(d.parentfield)
           if (d.rate > 0){

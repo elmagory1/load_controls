@@ -24,7 +24,7 @@ def po_received(name,amended_from):
     for i in quotation.budget_bom_reference:
         if i.budget_bom:
             frappe.db.sql(""" UPDATE `tabBudget BOM` SET status=%s, submitted_changes=0 WHERE name=%s  """,
-                          ("To Design" if not amended_from else "To Sales Order", i.budget_bom))
+                          ("To Design", i.budget_bom))
             frappe.db.commit()
 
 @frappe.whitelist()
