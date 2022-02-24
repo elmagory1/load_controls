@@ -202,14 +202,17 @@ def consolidate_items(items):
         if not add:
 
             c_items.append(i)
-    get_required_items(c_items)
-    return c_items
+    final_items = get_required_items(c_items)
+    return final_items
+
 
 def get_required_items(items):
-
+    f_items = []
     for i in items:
         available_qty = get_balance_qty(i.item_code, i.warehouse)
         i.required_qty = i.qty - available_qty
+        f_items.append(i)
+    return f_items
 
 def get_default_bom_item(item_code):
     bom = frappe.get_all('BOM', dict(item=item_code, is_active=True),
