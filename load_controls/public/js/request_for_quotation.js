@@ -88,5 +88,31 @@ frappe.ui.form.on("Request for Quotation", {
             }
         });
 
+    },
+    refresh: function () {
+        cur_frm.fields_dict["items"].grid.add_custom_button(__('Refresh Available Stock'),
+			function() {
+	        cur_frm.trigger("refresh_available_stock")
+        }).css('background-color','#00008B').css('color','white').css('margin-left','10px').css('margin-right','10px').css('font-weight','bold')
+
     }
 })
+
+cur_frm.cscript.refresh_available_stock = function () {
+     frappe.call({
+            method: "load_controls.load_controls.doctype.budget_bom.budget_bom.set_available_qty",
+            args: {
+                items: cur_frm.doc.items
+            },
+            callback: function (r) {
+                var objIndex = 0
+               for(var x=0;x<r.message.length;x+=1){
+                    console.log("NAA")
+                   objIndex = cur_frm.doc.items.findIndex(obj => obj.name === r.message[x]['name'])
+
+                    cur_frm.doc.items[objIndex].available_qty = r.message[x]['available_qty']
+                   cur_frm.refresh_field("items")
+               }
+            }
+        })
+}

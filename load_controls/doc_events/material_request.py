@@ -4,9 +4,6 @@ from erpnext.stock.stock_ledger import get_previous_sle
 
 @frappe.whitelist()
 def get_budget_bom(doctype,target,e,r,t,filter):
-    print("FILTEEEEEEEEEEEEEEEER")
-    print(filter)
-    print(tuple(filter['data']))
     condition = ""
     if len(filter['data']) == 1:
         condition += " and name!='{0}'".format(filter['data'][0])
@@ -114,14 +111,17 @@ def consolidate_items(items):
         if not add:
             c_items.append(i)
 
-    get_required_items(c_items)
-    return c_items
+    final_items = get_required_items(c_items)
+    return final_items
 
 
 def get_required_items(items):
+    f_items = []
     for i in items:
         available_qty = get_balance_qty(i.item_code, i.warehouse)
         i.required_qty = i.qty - available_qty
+        f_items.append(i)
+    return f_items
 
 def get_balance_qty(item_code, warehouse):
     time = frappe.utils.now_datetime().time()

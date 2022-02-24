@@ -1,5 +1,6 @@
 import frappe, json
 from frappe.model.mapper import get_mapped_doc
+from erpnext.stock.stock_ledger import get_previous_sle
 
 
 def on_submit_rfq(doc, method):
@@ -41,6 +42,7 @@ def generate_rfq(name, values):
     bb_doc.warehoused = default_warehouse if default_warehouse else ""
     for i in bb_doc.items:
         i.warehouse = default_warehouse if default_warehouse else ""
+        i.available_qty = get_balance_qty(i.item_code, default_warehouse if default_warehouse else i.warehouse)
 
         item_supplier = frappe.db.sql("""  SELECT * FROm `tabItem Supplier` WHERE parent=%s LIMIT 1""", i.item_code,as_dict=1)
         if len(item_supplier) > 0:
@@ -103,10 +105,11 @@ def get_mr(mr, item_group, brand, supplier):
             if xx.budget_bom not in bb:
                 bb.append(xx.budget_bom)
 
-        mr = frappe.db.sql(""" SELECT item_code, item_name, description, uom,conversion_factor, stock_uom, qty,budget_bom_rate,rate, amount,available_qty, required_qty 
+        mr = frappe.db.sql(""" SELECT warehouse,item_code, item_name, description, uom,conversion_factor, stock_uom, qty,budget_bom_rate,rate, amount,available_qty, required_qty 
                               FROM `tabMaterial Request Item` MRI WHERE MRI.parent=%s {0}""".format(condition), x,as_dict=1)
         for i in mr:
             i.warehouse = default_warehouse if default_warehouse else ""
+            i.available_qty = get_balance_qty(i.item_code, default_warehouse if default_warehouse else i.warehouse )
             item = frappe.get_doc("Item", i.item_code)
             if not brand or item.brand == brand:
                 if len(item.supplier_items) == 0 and not supplier:
@@ -134,3 +137,15 @@ def existing(items, item):
             i.required_qty = i.qty = i.available_qty
             return True
     return False
+
+def get_balance_qty(item_code, warehouse):
+    time = frappe.utils.now_datetime().time()
+    date = frappe.utils.now_datetime().date()
+    previous_sle = get_previous_sle({
+        "item_code": item_code,
+        "warehouse": warehouse,
+        "posting_date": date,
+        "posting_time": time
+    })
+    balance = previous_sle.get("qty_after_transaction") or 0
+    return balance

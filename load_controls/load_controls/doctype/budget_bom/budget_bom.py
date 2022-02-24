@@ -404,7 +404,8 @@ def set_available_qty(items):
     time = frappe.utils.now_datetime().time()
     date = frappe.utils.now_datetime().date()
     for d in data:
-
+        if 'warehouse' not in d:
+            frappe.throw("Please set warehouse first")
         previous_sle = get_previous_sle({
             "item_code": d['item_code'],
             "warehouse": d['warehouse'],
@@ -510,13 +511,17 @@ def consolidate_items(items):
         if not add:
             c_items.append(i)
 
-    get_required_items(c_items)
-    return c_items
+    final_items = get_required_items(c_items)
+    return final_items
+
 
 def get_required_items(items):
+    f_items = []
     for i in items:
         available_qty = get_balance_qty(i.item_code, i.warehouse)
         i.required_qty = i.qty - available_qty
+        f_items.append(i)
+    return f_items
 
 
 @frappe.whitelist()
