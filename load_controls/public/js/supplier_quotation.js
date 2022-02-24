@@ -1,10 +1,6 @@
 
 
 frappe.ui.form.on("Supplier Quotation", {
-    onload_post_render: function () {
-            cur_frm.remove_custom_button("Request for Quotation", "Get Items From")
-
-    },
     fetch_material_request: function () {
         if(cur_frm.doc.items.length > 0 && !cur_frm.doc.items[0].item_code){
             cur_frm.clear_table("items")

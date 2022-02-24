@@ -328,6 +328,7 @@ fixtures = [
                     "Manufacturing Settings-default_warehouse_for_request_for_quotation",
                     "Request for Quotation-references",
                     "Request for Quotation-material_request_reference",
+                    "Request for Quotation Item-budget_bom_rate",
 				]
 			]
 		]

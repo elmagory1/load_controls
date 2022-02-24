@@ -40,20 +40,25 @@ def generate_rfq(name, values):
         }
     })
     bb_doc.warehoused = default_warehouse if default_warehouse else ""
+    suppliers = []
     for i in bb_doc.items:
-        i.warehouse = default_warehouse if default_warehouse else ""
+        i.warehouse = default_warehouse if default_warehouse else i.warehouse
         i.available_qty = get_balance_qty(i.item_code, default_warehouse if default_warehouse else i.warehouse)
 
         item_supplier = frappe.db.sql("""  SELECT * FROm `tabItem Supplier` WHERE parent=%s LIMIT 1""", i.item_code,as_dict=1)
         if len(item_supplier) > 0:
             if 'supplier' in data and data['supplier'] and item_supplier[0].supplier == data['supplier']:
-                bb_doc.append("suppliers", {
-                    "supplier": item_supplier[0].supplier
-                })
+                if item_supplier[0].supplier not in suppliers:
+                    bb_doc.append("suppliers", {
+                        "supplier": item_supplier[0].supplier
+                    })
+                    suppliers.append(item_supplier[0].supplier)
             elif 'supplier' not in data:
-                bb_doc.append("suppliers", {
-                    "supplier": item_supplier[0].supplier
-                })
+                if item_supplier[0].supplier not in suppliers:
+                    bb_doc.append("suppliers", {
+                        "supplier": item_supplier[0].supplier
+                    })
+                    suppliers.append(item_supplier[0].supplier)
         else:
             frappe.throw("Please set supplier in item master for item " + str(i.item_code))
     bb_doc.message_for_supplier = "Message for supplier here"
