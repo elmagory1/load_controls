@@ -75,5 +75,12 @@ frappe.ui.form.on("Supplier Quotation", {
             }
         });
 
+    }.,
+    refresh: function () {
+         cur_frm.fields_dict["items"].grid.add_custom_button(__('Refresh Available Stock'),
+			function() {
+	        cur_frm.trigger("refresh_available_stock")
+        }).css('background-color','#00008B').css('color','white').css('margin-left','10px').css('margin-right','10px').css('font-weight','bold')
+
     }
 })

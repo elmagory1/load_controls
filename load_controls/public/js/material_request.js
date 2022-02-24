@@ -43,6 +43,10 @@ frappe.ui.form.on("Material Request", {
       cur_frm.remove_custom_button("Product Bundle", "Get Items From")
     },
     refresh: function (frm, cdt, cdn) {
+ cur_frm.fields_dict["items"].grid.add_custom_button(__('Refresh Available Stock'),
+			function() {
+	        cur_frm.trigger("refresh_available_stock")
+        }).css('background-color','#00008B').css('color','white').css('margin-left','10px').css('margin-right','10px').css('font-weight','bold')
 
          if(cur_frm.doc.docstatus){
             cur_frm.add_custom_button("Request for Quotation",() => {
