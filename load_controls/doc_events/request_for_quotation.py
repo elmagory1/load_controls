@@ -65,7 +65,7 @@ def generate_rfq(name, values):
     if 'item_group' in data:
         final_items = get_item_group_items(data['item_group'], final_items)
 
-    bb_doc.items = final_items
+    bb_doc.items = get_required_items(final_items)
     if len(bb_doc.items) == 0 :
         frappe.throw("No Items added")
     rqs = frappe.get_doc(bb_doc).insert()
@@ -110,6 +110,7 @@ def get_mr(mr, item_group, brand, supplier):
         for i in mr:
             i.warehouse = default_warehouse if default_warehouse else ""
             i.available_qty = get_balance_qty(i.item_code, default_warehouse if default_warehouse else i.warehouse )
+            i.required_qty = i.qty - i.available_qty
             item = frappe.get_doc("Item", i.item_code)
             if not brand or item.brand == brand:
                 if len(item.supplier_items) == 0 and not supplier:
@@ -127,17 +128,24 @@ def get_mr(mr, item_group, brand, supplier):
 
                     if not existing(items, i):
                         items.append(i)
+    final_items = get_required_items(items)
 
-    return items, bb, suppliers, default_warehouse
+    return final_items, bb, suppliers, default_warehouse
 
 def existing(items, item):
     for i in items:
         if i.item_code == item.item_code:
             i.qty += item.qty
-            i.required_qty = i.qty - i.available_qty
             return True
     return False
 
+def get_required_items(items):
+    f_items = []
+    for i in items:
+        available_qty = get_balance_qty(i.item_code, i.warehouse)
+        i.required_qty = i.qty - available_qty
+        f_items.append(i)
+    return f_items
 def get_balance_qty(item_code, warehouse):
     time = frappe.utils.now_datetime().time()
     date = frappe.utils.now_datetime().date()
