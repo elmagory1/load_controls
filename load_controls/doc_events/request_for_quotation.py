@@ -96,20 +96,27 @@ def get_mr(mr, item_group, brand, supplier):
         for i in mr:
             item = frappe.get_doc("Item", i.item_code)
             if not brand or item.brand == brand:
-                if len(item.supplier_items) > 0 and item.supplier_items[0].supplier not in suppliers and not supplier:
-                    suppliers.append(item.supplier_items[0].supplier)
-
-                elif len(item.supplier_items) > 0 and item.supplier_items[0].supplier not in suppliers and supplier and item.supplier_items[0].supplier == supplier:
-                    suppliers.append(item.supplier_items[0].supplier)
-
-                for y in item.supplier_items:
+                if len(item.supplier_items) == 0 and not supplier:
                     if not existing(items, i):
                         items.append(i)
+                elif len(item.supplier_items) > 0 and supplier and item.supplier_items[0].supplier == supplier :
+                    if item.supplier_items[0].supplier not in suppliers:
+                        suppliers.append(item.supplier_items[0].supplier)
+                    if not existing(items, i):
+                        items.append(i)
+
+                elif len(item.supplier_items) > 0 and not supplier:
+                    if item.supplier_items[0].supplier not in suppliers:
+                        suppliers.append(item.supplier_items[0].supplier)
+
+                    if not existing(items, i):
+                        items.append(i)
+
     return items, bb, suppliers
 
 def existing(items, item):
     for i in items:
-        if i.item_code == item.item_code and i.budget_bom_rate == item.budget_bom_rate:
+        if i.item_code == item.item_code:
             i.qty += item.qty
             return True
     return False
