@@ -209,8 +209,8 @@ def consolidate_items(items):
 def get_required_items(items):
     f_items = []
     for i in items:
-        available_qty = get_balance_qty(i.item_code, i.warehouse)
-        i.required_qty = i.qty - available_qty
+        i.available_qty = get_balance_qty(i.item_code, i.warehouse)
+        i.required_qty = i.qty - i.available_qty
         f_items.append(i)
     return f_items
 
