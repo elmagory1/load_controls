@@ -21,6 +21,7 @@ frappe.ui.form.on("Request for Quotation", {
               cur_frm.doc.items[x].warehouse = cur_frm.doc.warehouse
               cur_frm.refresh_field("items")
           }
+           cur_frm.trigger("refresh_available_stock")
       }
     },
     fetch_mr: function () {
