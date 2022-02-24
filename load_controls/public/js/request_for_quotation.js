@@ -1,10 +1,16 @@
 
-frappe.ui.form.on("Request for Quotation", {
+frappe.ui.form.on("Request for Quotation Item", {
     items_add: function (frm, cdt, cdn) {
         var d = locals[cdt][cdn]
         if(cur_frm.doc.warehouse){
             d.warehouse = cur_frm.doc.warehouse
             cur_frm.refresh_field(d.parentfield)
+        }
+    },
+    warehouse: function (frm, cdt, cdn) {
+        var d=locals[cdt][cdn]
+        if(d.warehouse){
+            cur_frm.trigger("refresh_available_stock")
         }
     }
 })
@@ -111,6 +117,7 @@ cur_frm.cscript.refresh_available_stock = function () {
                    objIndex = cur_frm.doc.items.findIndex(obj => obj.name === r.message[x]['name'])
 
                     cur_frm.doc.items[objIndex].available_qty = r.message[x]['available_qty']
+                    cur_frm.doc.items[objIndex].required_qty = r.message[x]['qty'] - r.message[x]['available_qty']
                    cur_frm.refresh_field("items")
                }
             }
