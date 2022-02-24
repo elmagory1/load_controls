@@ -151,11 +151,11 @@ function fetch_boms(cur_frm, selections) {
                         callback: function (r) {
                                 for(var x=0;x<r.message[0].length;x+=1){
                                     cur_frm.add_child("items",r.message[0][x])
-                                    cur_frm.refresh_fields("items")
+                                    cur_frm.refresh_field("items")
                                 }
                                 for(var x=0;x<r.message[1].length;x+=1){
                                     cur_frm.add_child("budget_bom_reference",r.message[1][x])
-                                    cur_frm.refresh_fields("budget_bom_reference")
+                                    cur_frm.refresh_field("budget_bom_reference")
                                 }
                         }
                     })

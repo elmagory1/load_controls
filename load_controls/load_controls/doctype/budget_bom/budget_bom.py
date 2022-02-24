@@ -475,8 +475,8 @@ def make_mr(source_name, target_doc=None):
     doc.schedule_date = str(frappe.db.get_value("Budget BOM", source_name, "expected_closing_date"))
     for i in doc.items:
         i.schedule_date = str(frappe.db.get_value("Budget BOM", source_name, "expected_closing_date"))
-        available_qty = get_balance_qty(i.item_code,i.warehouse )
-        i.required_qty = i.qty - available_qty
+        i.available_qty = get_balance_qty(i.item_code,i.warehouse )
+        i.required_qty = i.qty - i.available_qty
     doc.items = consolidate_items(doc.items)
     doc.append("budget_bom_reference", {
         "budget_bom": source_name
