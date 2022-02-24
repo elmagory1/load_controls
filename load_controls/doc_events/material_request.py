@@ -11,7 +11,7 @@ def get_budget_bom(doctype,target,e,r,t,filter):
     if len(filter['data']) > 1:
         condition += " and name not in {0}".format(tuple(filter['data']))
 
-    query = """ SELECT * FROM `tabBudget BOM` WHERE status='To Request for Quotation' and docstatus=1 {0}""".format(condition)
+    query = """ SELECT * FROM `tabBudget BOM` WHERE status in ('To Material Request and To Work Order', 'To Material Request') and docstatus=1 {0}""".format(condition)
     opportunities = frappe.db.sql(query,as_dict=1)
     return opportunities
 
