@@ -18,6 +18,12 @@ frappe.ui.form.on("Request for Quotation", {
       }
     },
     fetch_mr: function () {
+        var names = []
+        if(cur_frm.doc.references && cur_frm.doc.references.length > 0){
+
+          names = Array.from(cur_frm.doc.references, x => "material_request" in x ? x.material_request:"")
+
+        }
         if(cur_frm.doc.items.length > 0 && !cur_frm.doc.items[0].item_code){
             cur_frm.clear_table("items")
             cur_frm.refresh_field("items")
@@ -37,6 +43,7 @@ frappe.ui.form.on("Request for Quotation", {
                     filters: {
                         docstatus: ['!=', 2],
                         status: ['=', 'Pending'],
+                        name: ['not in', names],
                     }
                 }
             },
@@ -53,7 +60,7 @@ frappe.ui.form.on("Request for Quotation", {
                         callback: function (r) {
                             if(r.message[3]){
                                 cur_frm.doc.warehouse = r.message[3]
-                                cur_frm.refresh_field("warehouse)
+                                cur_frm.refresh_field("warehouse")
                             }
                                 for(var x=0;x<r.message[0].length;x+=1){
                                     cur_frm.add_child("items",r.message[0][x])
@@ -69,6 +76,10 @@ frappe.ui.form.on("Request for Quotation", {
                                  for(var x=0;x<r.message[2].length;x+=1){
                                     cur_frm.add_child("suppliers",{"supplier": r.message[2][x]})
                                     cur_frm.refresh_field("suppliers")
+                                }
+                                for(var x=0;x<selections.length;x+=1){
+                                    cur_frm.add_child("references",{"material_request": selections[x]})
+                                    cur_frm.refresh_field("references")
                                 }
                                 cur_dialog.hide()
                         }

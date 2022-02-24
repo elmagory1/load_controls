@@ -326,6 +326,8 @@ fixtures = [
                     "Request for Quotation Item-available_qty",
                     "Request for Quotation Item-required_qty",
                     "Manufacturing Settings-default_warehouse_for_request_for_quotation",
+                    "Request for Quotation-references",
+                    "Request for Quotation-material_request_reference",
 				]
 			]
 		]
