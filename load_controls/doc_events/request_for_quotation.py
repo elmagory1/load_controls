@@ -23,6 +23,7 @@ def generate_rfq(name, values):
     filters = {}
     if 'item_group' in data:
         filters['item_group'] = ["=", data['item_group']]
+
     bb_doc = get_mapped_doc("Material Request", name, {
         "Material Request": {
             "doctype": "Request for Quotation",
@@ -43,10 +44,14 @@ def generate_rfq(name, values):
     for i in bb_doc.items:
         item_supplier = frappe.db.sql("""  SELECT * FROm `tabItem Supplier` WHERE parent=%s LIMIT 1""", i.item_code,as_dict=1)
         if len(item_supplier) > 0:
-
-            bb_doc.append("suppliers", {
-                "supplier": item_supplier[0].supplier
-            })
+            if 'supplier' in data and data['supplier'] and item_supplier[0].supplier == data['supplier']:
+                bb_doc.append("suppliers", {
+                    "supplier": item_supplier[0].supplier
+                })
+            elif 'supplier' not in data:
+                bb_doc.append("suppliers", {
+                    "supplier": item_supplier[0].supplier
+                })
         else:
             frappe.throw("Please set supplier in item master for item " + str(i.item_code))
     bb_doc.message_for_supplier = "Message for supplier here"
@@ -72,7 +77,7 @@ def get_brand_items(brand, items):
 
 
 @frappe.whitelist()
-def get_mr(mr, item_group, brand):
+def get_mr(mr, item_group, brand, supplier):
     data = json.loads(mr)
     items = []
     bb = []
@@ -91,10 +96,11 @@ def get_mr(mr, item_group, brand):
         for i in mr:
             item = frappe.get_doc("Item", i.item_code)
             if not brand or item.brand == brand:
-                if len(item.supplier_items) > 0 and item.supplier_items[0].supplier not in suppliers:
+                if len(item.supplier_items) > 0 and item.supplier_items[0].supplier not in suppliers and not supplier:
                     suppliers.append(item.supplier_items[0].supplier)
-                else:
-                    frappe.throw("Please select supplier in item master for item " + str(i.item_code))
+
+                elif len(item.supplier_items) > 0 and item.supplier_items[0].supplier not in suppliers and supplier and item.supplier_items[0].supplier == supplier:
+                    suppliers.append(item.supplier_items[0].supplier)
 
                 for y in item.supplier_items:
                     if not existing(items, i):

@@ -60,6 +60,12 @@ frappe.ui.form.on("Material Request", {
                             fieldname: 'brand',
                             fieldtype: 'Link',
                             options: 'Brand',
+                        },
+                        {
+                            label: 'Supplier',
+                            fieldname: 'supplier',
+                            fieldtype: 'Link',
+                            options: 'Supplier',
                         }
                     ],
                     primary_action_label: 'Submit',

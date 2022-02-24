@@ -31,6 +31,7 @@ frappe.ui.form.on("Request for Quotation", {
                             mr: selections,
                             item_group: cur_frm.doc.item_group ? cur_frm.doc.item_group : "",
                             brand: cur_frm.doc.brand ? cur_frm.doc.brand : "",
+                            supplier: cur_frm.doc.supplier ? cur_frm.doc.supplier : "",
                         },
                         callback: function (r) {
                                 for(var x=0;x<r.message[0].length;x+=1){

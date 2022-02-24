@@ -321,6 +321,7 @@ fixtures = [
                     "Request for Quotation-fetch_mr",
                     "Request for Quotation-brand",
                     "Request for Quotation-item_group",
+                    "Request for Quotation-supplier",
 
 
 				]
