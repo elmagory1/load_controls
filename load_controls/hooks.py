@@ -111,7 +111,7 @@ doc_events = {
 	},
 	"Material Request": {
 		"on_submit": "load_controls.doc_events.utils.on_submit_record",
-		"on_cancel": "load_controls.doc_events.utils.on_cancel_record",
+		"on_cancel": "load_controls.doc_events.material_request.on_cancel_mr",
 		"on_trash": "load_controls.doc_events.utils.on_cancel_record",
 		"validate": "load_controls.doc_events.material_request.validate_mr",
 	},

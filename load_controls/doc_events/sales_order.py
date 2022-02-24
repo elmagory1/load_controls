@@ -8,7 +8,7 @@ def on_submit_so(doc, method):
         frappe.throw("Please Generate Project Code First")
     for i in doc.budget_bom_reference:
         if i.budget_bom:
-            frappe.db.sql(""" UPDATE `tabBudget BOM` SET status=%s, project_code=%s WHERE name=%s  """, ("To Material Request and To Work Order",doc.cost_center, i.budget_bom))
+            frappe.db.sql(""" UPDATE `tabBudget BOM` SET status=%s, project_code=%s WHERE name=%s  """, ("To Material Request",doc.cost_center, i.budget_bom))
             frappe.db.commit()
 
 

@@ -31,7 +31,12 @@ def validate_mr(doc, method):
                     if len(rate2) > 0:
                         ii.budget_bom_rate = ii.rate if len(rate2) > 0 and rate2[0].discount_rate == 0  else rate2[
                             0].discount_rate if len(rate2) > 0 and rate2[0].discount_rate > 0 else 0
-
+def on_cancel_mr(doc, method):
+    for i in doc.budget_bom_reference:
+        if i.budget_bom:
+            frappe.db.sql(""" UPDATE `tabBudget BOM` SET status=%s, project_code=%s WHERE name=%s  """,
+                          ("To Material Request", doc.cost_center, i.budget_bom))
+            frappe.db.commit()
 
 @frappe.whitelist()
 def get_bb(mr):
