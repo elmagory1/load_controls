@@ -1,4 +1,30 @@
+frappe.ui.form.on("Supplier Quotation Item", {
+    warehouse: function (frm, cdt, cdn) {
+        var d=locals[cdt][cdn]
+        if(d.warehouse){
+            cur_frm.trigger("refresh_available_stock")
+        }
+    }
+})
+cur_frm.cscript.refresh_available_stock = function () {
+     frappe.call({
+            method: "load_controls.load_controls.doctype.budget_bom.budget_bom.set_available_qty",
+            args: {
+                items: cur_frm.doc.items
+            },
+            callback: function (r) {
+                var objIndex = 0
+               for(var x=0;x<r.message.length;x+=1){
+                    console.log("NAA")
+                   objIndex = cur_frm.doc.items.findIndex(obj => obj.name === r.message[x]['name'])
 
+                    cur_frm.doc.items[objIndex].available_qty = r.message[x]['available_qty']
+                    cur_frm.doc.items[objIndex].required_qty = r.message[x]['qty'] - r.message[x]['available_qty']
+                   cur_frm.refresh_field("items")
+               }
+            }
+        })
+}
 
 frappe.ui.form.on("Supplier Quotation", {
     fetch_material_request: function () {
