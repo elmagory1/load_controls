@@ -20,7 +20,8 @@ def on_cancel_rfq(doc, method):
 @frappe.whitelist()
 def generate_rfq(name, values):
     data = json.loads(values)
-    filters = {}
+    default_warehouse = frappe.db.get_single_value('Manufacturing Settings', 'default_warehouse_for_request_for_quotation')
+
     bb_doc = get_mapped_doc("Material Request", name, {
         "Material Request": {
             "doctype": "Request for Quotation",
@@ -37,7 +38,10 @@ def generate_rfq(name, values):
             "field_map": {}
         }
     })
+    bb_doc.warehoused = default_warehouse if default_warehouse else ""
     for i in bb_doc.items:
+        i.warehouse = default_warehouse if default_warehouse else ""
+
         item_supplier = frappe.db.sql("""  SELECT * FROm `tabItem Supplier` WHERE parent=%s LIMIT 1""", i.item_code,as_dict=1)
         if len(item_supplier) > 0:
             if 'supplier' in data and data['supplier'] and item_supplier[0].supplier == data['supplier']:
@@ -89,6 +93,8 @@ def get_mr(mr, item_group, brand, supplier):
     bb = []
     suppliers = []
     condition = ""
+    default_warehouse = frappe.db.get_single_value('Manufacturing Settings', 'default_warehouse_for_request_for_quotation')
+
     if item_group:
         condition += " and MRI.item_group='{0}'".format(item_group)
     for x in data:
@@ -97,9 +103,10 @@ def get_mr(mr, item_group, brand, supplier):
             if xx.budget_bom not in bb:
                 bb.append(xx.budget_bom)
 
-        mr = frappe.db.sql(""" SELECT item_code, item_name, description, uom,conversion_factor, stock_uom, qty,budget_bom_rate,rate, amount 
+        mr = frappe.db.sql(""" SELECT item_code, item_name, description, uom,conversion_factor, stock_uom, qty,budget_bom_rate,rate, amount,available_qty, required_qty 
                               FROM `tabMaterial Request Item` MRI WHERE MRI.parent=%s {0}""".format(condition), x,as_dict=1)
         for i in mr:
+            i.warehouse = default_warehouse if default_warehouse else ""
             item = frappe.get_doc("Item", i.item_code)
             if not brand or item.brand == brand:
                 if len(item.supplier_items) == 0 and not supplier:
@@ -118,11 +125,12 @@ def get_mr(mr, item_group, brand, supplier):
                     if not existing(items, i):
                         items.append(i)
 
-    return items, bb, suppliers
+    return items, bb, suppliers, default_warehouse
 
 def existing(items, item):
     for i in items:
         if i.item_code == item.item_code:
             i.qty += item.qty
+            i.required_qty = i.qty = i.available_qty
             return True
     return False

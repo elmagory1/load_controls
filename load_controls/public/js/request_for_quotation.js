@@ -1,5 +1,22 @@
 
 frappe.ui.form.on("Request for Quotation", {
+    items_add: function (frm, cdt, cdn) {
+        var d = locals[cdt][cdn]
+        if(cur_frm.doc.warehouse){
+            d.warehouse = cur_frm.doc.warehouse
+            cur_frm.refresh_field(d.parentfield)
+        }
+    }
+})
+frappe.ui.form.on("Request for Quotation", {
+    warehouse: function () {
+      if(cur_frm.doc.warehouse){
+          for(var x=0;x<cur_frm.doc.items.length;x+=1){
+              cur_frm.doc.items[x].warehouse = cur_frm.doc.warehouse
+              cur_frm.refresh_field("items")
+          }
+      }
+    },
     fetch_mr: function () {
         if(cur_frm.doc.items.length > 0 && !cur_frm.doc.items[0].item_code){
             cur_frm.clear_table("items")
@@ -34,6 +51,10 @@ frappe.ui.form.on("Request for Quotation", {
                             supplier: cur_frm.doc.supplier ? cur_frm.doc.supplier : "",
                         },
                         callback: function (r) {
+                            if(r.message[3]){
+                                cur_frm.doc.warehouse = r.message[3]
+                                cur_frm.refresh_field("warehouse)
+                            }
                                 for(var x=0;x<r.message[0].length;x+=1){
                                     cur_frm.add_child("items",r.message[0][x])
                                     cur_frm.refresh_field("items")
@@ -49,6 +70,7 @@ frappe.ui.form.on("Request for Quotation", {
                                     cur_frm.add_child("suppliers",{"supplier": r.message[2][x]})
                                     cur_frm.refresh_field("suppliers")
                                 }
+                                cur_dialog.hide()
                         }
                     })
                 }
