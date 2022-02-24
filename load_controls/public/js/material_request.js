@@ -96,9 +96,9 @@ frappe.ui.form.on("Material Request", {
         }
         cur_frm.set_query("budget_bom", "budget_bom_reference", () => {
             return {
-                filters: {
-                    status: "To Material Request"
-                }
+                filters:[
+                    ["status", "in", ["To Material Request and To Work Order", "To Material Request"]]
+                ]
             }
         })
     if(cur_frm.is_new()){
