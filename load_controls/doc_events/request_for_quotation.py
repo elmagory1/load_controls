@@ -134,7 +134,7 @@ def existing(items, item):
     for i in items:
         if i.item_code == item.item_code:
             i.qty += item.qty
-            i.required_qty = i.qty = i.available_qty
+            i.required_qty = i.qty - i.available_qty
             return True
     return False
 
