@@ -75,7 +75,7 @@ frappe.ui.form.on("Supplier Quotation", {
             }
         });
 
-    }.,
+    },
     refresh: function () {
          cur_frm.fields_dict["items"].grid.add_custom_button(__('Refresh Available Stock'),
 			function() {
