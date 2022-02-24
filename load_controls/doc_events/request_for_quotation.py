@@ -21,9 +21,6 @@ def on_cancel_rfq(doc, method):
 def generate_rfq(name, values):
     data = json.loads(values)
     filters = {}
-    if 'item_group' in data:
-        filters['item_group'] = ["=", data['item_group']]
-
     bb_doc = get_mapped_doc("Material Request", name, {
         "Material Request": {
             "doctype": "Request for Quotation",
@@ -33,8 +30,7 @@ def generate_rfq(name, values):
         },
         "Material Request Item": {
             "doctype": "Request for Quotation Item",
-            "field_map": {},
-            "validation": filters
+            "field_map": {}
         },
         "Budget BOM Reference": {
             "doctype": "Budget BOM Reference",
@@ -60,6 +56,9 @@ def generate_rfq(name, values):
     if 'brand' in data:
         final_items = get_brand_items(data['brand'], bb_doc.items)
 
+    if 'item_group' in data:
+        final_items = get_item_group_items(data['item_group'], final_items)
+
     bb_doc.items = final_items
     if len(bb_doc.items) == 0 :
         frappe.throw("No Items added")
@@ -72,6 +71,13 @@ def get_brand_items(brand, items):
     for i in items:
         item_master = frappe.get_doc("Item", i.item_code)
         if item_master == brand:
+            itemss.append(i)
+    return itemss
+
+def get_item_group_items(item_group, items):
+    itemss = []
+    for i in items:
+        if i.item_group == item_group:
             itemss.append(i)
     return itemss
 
