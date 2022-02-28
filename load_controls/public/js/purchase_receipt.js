@@ -1,7 +1,7 @@
 
 
 frappe.ui.form.on("Purchase Receipt", {
-    onload_post_render: function () {
+    refresh: function () {
         if(cur_frm.is_new() && cur_frm.doc.items.length > 0){
             frappe.call({
                 method: "load_controls.doc_events.purchase_receipt.get_receive_qty",
@@ -10,8 +10,6 @@ frappe.ui.form.on("Purchase Receipt", {
                 },
                 callback: function (r) {
                         var objIndex = 0
-console.log("RECEIVED QTY")
-console.log(r.message)
                     for(var x=0;x<r.message.length;x+=1){
                          objIndex = cur_frm.doc.items.findIndex(obj => obj.name === r.message[x]['name'])
 
