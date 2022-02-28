@@ -203,8 +203,11 @@ class BudgetBOM(Document):
                            FROM `tabSales Order`as SO
                            INNER JOIN `tabBudget BOM References` as BBR ON BBR.parent = SO.name
                           WHERE BBR.budget_bom=%s and SO.docstatus < 2 and SO.status in ('To Deliver and Bill', 'Overdue')""", self.name, as_dict=1)
+        pcr = frappe.db.sql(""" SELECT COUNT(*) as count FROm `tabProduct Change Request` WHERE budget_bom=%s""",self.name,as_dict=1)
+        js = frappe.db.sql(""" SELECT COUNT(*) as count FROm `tabJob Subcontor` WHERE budget_bom=%s""",self.name,as_dict=1)
+        cin = frappe.db.sql(""" SELECT COUNT(*) as count FROm `tabConsumable Issue Note` WHERE budget_bom=%s""",self.name,as_dict=1)
 
-        return quotation[0].count > 0
+        return quotation[0].count > 0,pcr[0].count > 0,js[0].count > 0,cin[0].count > 0
 
     @frappe.whitelist()
     def amend_quotation(self):
@@ -334,6 +337,9 @@ class BudgetBOM(Document):
                 "time_in_mins": i.operation_time_in_minutes,
                 "operating_cost": i.net_hour_rate,
             })
+        print("OPERAAATIONS")
+        print(raw_material)
+        print(operations)
         return operations
     @frappe.whitelist()
     def get_raw_materials(self, raw_material, bom = None):
@@ -440,6 +446,91 @@ def generate_item_templates(items, description):
 
     frappe.get_doc(obj).insert()
     return data
+
+
+@frappe.whitelist()
+def make_cin(source_name, target_doc=None):
+    doc = get_mapped_doc("Budget BOM", source_name, {
+        "Budget BOM": {
+            "doctype": "Consumable Issue Note",
+            "validation": {
+                "docstatus": ["=", 1]
+            }
+        }
+    }, ignore_permissions=True)
+
+    bb = frappe.get_doc("Budget BOM", source_name)
+    addition_fields = ["electrical_bom_raw_material", "mechanical_bom_raw_material", "fg_sellable_bom_raw_material"]
+    for x in addition_fields:
+        for i in bb.__dict__[x]:
+            doc.append("items", {
+                "item": i.item_code,
+                "item_name": i.item_name,
+                "qty": i.qty,
+                "uom": i.uom,
+                "rate": i.rate,
+                "amount": i.amount,
+            })
+
+    return doc
+
+@frappe.whitelist()
+def make_js(source_name, target_doc=None):
+    doc = get_mapped_doc("Budget BOM", source_name, {
+        "Budget BOM": {
+            "doctype": "Job Subcontor",
+            "validation": {
+                "docstatus": ["=", 1]
+            }
+        }
+    }, ignore_permissions=True)
+
+    bb = frappe.get_doc("Budget BOM", source_name)
+    addition_fields = ["electrical_bom_raw_material", "mechanical_bom_raw_material", "fg_sellable_bom_raw_material"]
+    for x in addition_fields:
+        for i in bb.__dict__[x]:
+            doc.append("items", {
+                "item": i.item_code,
+                "item_name": i.item_name,
+                "qty": i.qty,
+                "uom": i.uom,
+                "rate": i.rate,
+                "amount": i.amount,
+            })
+
+    for i in bb.additional_operation_cost:
+        doc.append("additional_cost", {
+            "cost_type": i.account,
+            "description": i.description,
+            "amount": i.amount,
+        })
+
+    return doc
+
+@frappe.whitelist()
+def make_pcr(source_name, target_doc=None):
+    doc = get_mapped_doc("Budget BOM", source_name, {
+        "Budget BOM": {
+            "doctype": "Product Change Request",
+            "validation": {
+                "docstatus": ["=", 1]
+            }
+        }
+    }, ignore_permissions=True)
+
+    addition = frappe.db.sql(""" SELECT * FROM `tabBudget BOM Raw Material Modifier` WHERE type='Addition' and parent=%s """,source_name,as_dict=1)
+    deletion = frappe.db.sql(""" SELECT * FROM `tabBudget BOM Raw Material Modifier` WHERE type='Deletion' and parent=%s""",source_name,as_dict=1)
+    for i in addition:
+        del i['docstatus']
+        i.target_warehouse = i.warehouse
+        doc.append("addition", i)
+
+    for x in deletion:
+        i.source_warehouse = i.warehouse
+
+        del x['docstatus']
+        doc.append("deletion", x)
+    return doc
 
 @frappe.whitelist()
 def make_mr(source_name, target_doc=None):

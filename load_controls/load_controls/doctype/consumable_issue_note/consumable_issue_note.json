@@ -6,6 +6,7 @@
  "editable_grid": 1,
  "engine": "InnoDB",
  "field_order": [
+  "budget_bom",
   "sales_order",
   "customer",
   "customer_name",
@@ -118,12 +119,18 @@
    "label": "Stock Entry",
    "options": "Stock Entry",
    "read_only": 1
+  },
+  {
+   "fieldname": "budget_bom",
+   "fieldtype": "Link",
+   "label": "Budget BOM",
+   "options": "Budget BOM"
   }
  ],
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2022-02-22 09:32:22.713430",
+ "modified": "2022-02-28 17:12:43.495199",
  "modified_by": "Administrator",
  "module": "Load Controls",
  "name": "Consumable Issue Note",

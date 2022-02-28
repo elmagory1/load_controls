@@ -13,6 +13,8 @@
   "column_break_3",
   "posting_date",
   "purchase_order",
+  "reference_section",
+  "budget_bom_reference",
   "gate_pass_items_section",
   "items",
   "amended_from"
@@ -73,12 +75,23 @@
    "label": "Series",
    "options": "GP-",
    "read_only": 1
+  },
+  {
+   "fieldname": "reference_section",
+   "fieldtype": "Section Break",
+   "label": "Reference"
+  },
+  {
+   "fieldname": "budget_bom_reference",
+   "fieldtype": "Table",
+   "label": "Budget BOM Reference",
+   "options": "Budget BOM References"
   }
  ],
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2021-10-16 00:48:54.451258",
+ "modified": "2022-02-28 16:19:45.241261",
  "modified_by": "Administrator",
  "module": "Load Controls",
  "name": "Gate Pass",

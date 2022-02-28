@@ -1,5 +1,9 @@
 // Copyright (c) 2021, jan and contributors
 // For license information, please see license.txt
+var pcr = ""
+var js= ""
+var cin= ""
+
 var e_workstation = ""
 var m_workstation = ""
 var en_workstation = ""
@@ -592,7 +596,10 @@ cur_frm.fields_dict["fg_sellable_bom_raw_material"].grid.add_custom_button(__('U
                 freeze_message: "Checking Sales Order...",
                 async:false,
                 callback: (r) => {
-                    has_so= r.message
+                    has_so= r.message[0]
+                    pcr= r.message[1]
+                    js= r.message[2]
+                    cin= r.message[3]
                 }
             })
         cur_frm.call({
@@ -850,6 +857,34 @@ cur_frm.fields_dict["fg_sellable_bom_raw_material"].grid.add_custom_button(__('U
                     })
                 }
         }
+        if(check_bom && !pcr){
+            cur_frm.add_custom_button(__("Product Change Request"), () => {
+                   frappe.model.open_mapped_doc({
+                        method: "load_controls.load_controls.doctype.budget_bom.budget_bom.make_pcr",
+                        frm: cur_frm
+                    })
+                }, "Generate")
+        }
+
+        if(check_bom && !js){
+               cur_frm.add_custom_button(__("Job Subcontor"), () => {
+                    frappe.model.open_mapped_doc({
+                        method: "load_controls.load_controls.doctype.budget_bom.budget_bom.make_js",
+                        frm: cur_frm
+                    })
+                }, "Generate")
+        }
+
+
+        if(check_bom && !cin) {
+             cur_frm.add_custom_button(__("Consumable Issue Note"), () => {
+                    frappe.model.open_mapped_doc({
+                        method: "load_controls.load_controls.doctype.budget_bom.budget_bom.make_cin",
+                        frm: cur_frm
+                    })
+                }, "Generate")
+        }
+
 
     },
 

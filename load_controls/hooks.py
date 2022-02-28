@@ -333,6 +333,10 @@ fixtures = [
                     "Request for Quotation Item-budget_bom_rate",
 					"Purchase Receipt Item-po_qty",
 					"Purchase Receipt Item-gate_pass_qty",
+					"Stock Entry-budget_bom_reference",
+					"Job Card-budget_bom_reference",
+					"Stock Entry-reference",
+					"Job Card-reference",
 				]
 			]
 		]
