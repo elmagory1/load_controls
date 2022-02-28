@@ -127,6 +127,7 @@ doc_events = {
 	"Purchase Receipt": {
 		"on_submit": "load_controls.doc_events.purchase_receipt.on_submit_pr",
 		"on_cancel": "load_controls.doc_events.purchase_receipt.on_cancel_pr",
+		"validate": "load_controls.doc_events.purchase_receipt.validate_pr",
 	},
 	"Sales Order": {
 		"on_submit": "load_controls.doc_events.sales_order.on_submit_so",
