@@ -15,9 +15,8 @@ console.log(r.message)
                     for(var x=0;x<r.message.length;x+=1){
                          objIndex = cur_frm.doc.items.findIndex(obj => obj.name === r.message[x]['name'])
 
-                        cur_frm.doc.items[objIndex].received_qty = r.message[x]['received_qty']
                         cur_frm.doc.items[objIndex].po_qty = r.message[x]['po_qty']
-                        cur_frm.doc.items[objIndex].gate_pass_qty = r.message[x]['gate_pass_qty']
+                        cur_frm.doc.items[objIndex].gate_pass_qty = r.message[x]['received_qty']
                        cur_frm.refresh_field("items")
                     }
                 }
