@@ -15,7 +15,7 @@ frappe.ui.form.on("Purchase Receipt", {
 
                         cur_frm.doc.items[objIndex].po_qty = r.message[x]['po_qty']
                         cur_frm.doc.items[objIndex].gate_pass_qty = r.message[x]['received_qty']
-                        cur_frm.doc.items[objIndex].qty = r.message[x]['qty']
+                        cur_frm.doc.items[objIndex].qty = r.message[x]['gate_pass_qty']
                        cur_frm.refresh_field("items")
                     }
                 }
