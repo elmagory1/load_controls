@@ -27,6 +27,7 @@
    "fieldtype": "Data",
    "in_list_view": 1,
    "label": "Item Name",
+   "length": 500,
    "read_only": 1
   },
   {
@@ -67,7 +68,7 @@
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2022-02-23 09:21:26.603695",
+ "modified": "2022-02-28 09:30:12.771829",
  "modified_by": "Administrator",
  "module": "Load Controls",
  "name": "BOM Item Template Details",

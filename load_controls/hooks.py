@@ -33,6 +33,7 @@ app_license = "MIT"
 # include js in doctype views
 doctype_js = {
 	"Purchase Order" : "public/js/purchase_order.js",
+	"Purchase Receipt" : "public/js/purchase_receipt.js",
 	"Quotation" : "public/js/quotation.js",
 	"Material Request" : "public/js/material_request.js",
 	"Opportunity" : "public/js/opportunity.js",
@@ -329,6 +330,7 @@ fixtures = [
                     "Request for Quotation-references",
                     "Request for Quotation-material_request_reference",
                     "Request for Quotation Item-budget_bom_rate",
+					"Purchase Receipt Item-po_qty",
 				]
 			]
 		]
@@ -351,7 +353,7 @@ fixtures = [
 					"Opportunity-status-options",
 					"Job Card-quality_inspection-mandatory_depends_on",
 					"Opportunity-status-default",
-					"Opportunity-status-options",
+					"Opportunity-status-options"
 				]
 			]
 		]

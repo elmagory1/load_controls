@@ -13,6 +13,10 @@ def generate_gate_pass(source_name, target_doc=None):
         },
         "Purchase Order Item": {
             "doctype": "Gate Pass Items",
+            "field_map": {
+                "name": "purchase_order_detail",
+            }
+
         }
 
     }, target_doc)

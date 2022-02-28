@@ -16,10 +16,32 @@ frappe.ui.form.on('Gate Pass', {
                                  warehouse: doc.items[i].warehouse,
                                  rate:doc.items[i].rate,
                                  budget_bom_rate: doc.items[i].rate,
+                                 purchase_order_detail: doc.items[i].name
                              })
                              cur_frm.refresh_field("items")
                     }
             })
         }
 	}
+});
+
+frappe.ui.form.on('Gate Pass Items', {
+	received_qty: function (frm, cdt ,cdn) {
+	    var d = locals[cdt][cdn]
+        if(d.received_qty > d.qty){
+	        d.received_qty = 0
+	        frappe.throw("Received Qty must not be greater than Qty")
+                        cur_frm.refresh_field(d.parentfield)
+
+        }
+    },
+    qty: function (frm, cdt ,cdn) {
+	    var d = locals[cdt][cdn]
+        if(d.received_qty > d.qty){
+	        d.qty = 0
+	        frappe.throw("Received Qty must not be greater than Qty")
+                        cur_frm.refresh_field(d.parentfield)
+
+        }
+    }
 });
