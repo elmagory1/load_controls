@@ -26,9 +26,9 @@ frappe.ui.form.on("Purchase Receipt Item", {
     qty: function (frm, cdt, cdn) {
        var d = locals[cdt][cdn]
 
-        if(d.qty > d.received_qty){
+        if(d.qty > d.gate_pass_qty){
            d.qty = 0
-           frappe.throw("Qty must not be greater than Received Qty")
+           frappe.throw("Qty must not be greater than Gate Pass Qty")
             cur_frm.refresh_field(d.parentfield)
         }
     }
