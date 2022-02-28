@@ -15,6 +15,7 @@ frappe.ui.form.on("Purchase Receipt", {
 
                         cur_frm.doc.items[objIndex].po_qty = r.message[x]['po_qty']
                         cur_frm.doc.items[objIndex].gate_pass_qty = r.message[x]['received_qty']
+                        cur_frm.doc.items[objIndex].qty = r.message[x]['qty']
                        cur_frm.refresh_field("items")
                     }
                 }
@@ -26,9 +27,9 @@ frappe.ui.form.on("Purchase Receipt Item", {
     qty: function (frm, cdt, cdn) {
        var d = locals[cdt][cdn]
 
-        if(d.qty > d.gate_pass_qty){
+        if(d.qty !== d.gate_pass_qty){
            d.qty = 0
-           frappe.throw("Qty must not be greater than Gate Pass Qty")
+           frappe.throw("Qty must be equal to Gate Pass Qty")
             cur_frm.refresh_field(d.parentfield)
         }
     }
