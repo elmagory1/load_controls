@@ -17,6 +17,7 @@ console.log(r.message)
 
                         cur_frm.doc.items[objIndex].received_qty = r.message[x]['received_qty']
                         cur_frm.doc.items[objIndex].po_qty = r.message[x]['po_qty']
+                        cur_frm.doc.items[objIndex].gate_pass_qty = r.message[x]['gate_pass_qty']
                        cur_frm.refresh_field("items")
                     }
                 }

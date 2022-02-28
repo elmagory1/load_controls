@@ -26,10 +26,12 @@ def get_receive_qty(items):
                                     INNER JOIN `tabGate Pass Items` GPI ON GPI.parent = GP.name 
                                     WHERE GPI.purchase_order_detail=%s and GP.docstatus =1 """, i['purchase_order_item'],as_dict=1)
 
+
             po = frappe.db.sql(""" SELECT * FROM `tabPurchase Order Item` WHERE name=%s """,
                                 i['purchase_order_item'], as_dict=1)
 
             i['received_qty'] = gpd[0].received_qty if len(gpd) > 0 else 0
+            i['gate_pass_qty'] = gpd[0].qty if len(gpd) > 0 else 0
             i['po_qty'] = po[0].qty if len(po) > 0 else 0
 
     return data
