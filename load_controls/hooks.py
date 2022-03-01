@@ -37,6 +37,7 @@ doctype_js = {
 	"Quotation" : "public/js/quotation.js",
 	"Material Request" : "public/js/material_request.js",
 	"Opportunity" : "public/js/opportunity.js",
+	"Work Order" : "public/js/work_order.js",
 	"Sales Order" : "public/js/sales_order.js",
 	"Supplier Quotation" : "public/js/supplier_quotation.js",
 	"Request for Quotation" : "public/js/request_for_quotation.js",
@@ -155,6 +156,9 @@ doc_events = {
 	"Request for Quotation": {
 		"on_submit": "load_controls.doc_events.request_for_quotation.on_submit_rfq",
 		"on_cancel": "load_controls.doc_events.request_for_quotation.on_cancel_rfq",
+	},
+	"Pick List": {
+		"on_submit": "load_controls.doc_events.pick_list.on_submit_pl",
 	}
 }
 
@@ -337,6 +341,8 @@ fixtures = [
 					"Job Card-budget_bom_reference",
 					"Stock Entry-reference",
 					"Job Card-reference",
+					"Pick List Item-work_order_item",
+					"Work Order Item-picked_qty",
 				]
 			]
 		]

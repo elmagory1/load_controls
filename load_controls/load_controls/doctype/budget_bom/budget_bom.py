@@ -319,7 +319,6 @@ class BudgetBOM(Document):
                 "item": i.item_code,
                 "quantity": i.qty,
                 "with_operations": 1,
-                "allow_alternative_item":1,
                 "budget_bom": self.name,
                 "rm_cost_as_per": self.rate_of_materials_based_on,
                 "items": self.get_raw_materials("mechanical_bom_details", "Third") + self.get_raw_materials("electrical_bom_details", "Third") + self.get_raw_materials("fg_sellable_bom_raw_material"),
@@ -349,10 +348,6 @@ class BudgetBOM(Document):
         items = []
         for i in self.__dict__[raw_material]:
             additional_fn = "electrical_bom_additiondeletion" if raw_material == 'electrical_bom_raw_material' else 'mechanical_bom_additiondeletion' if raw_material == 'mechanical_bom_raw_material' else ""
-            print("======================== QTY ===================================")
-            print(i.qty)
-            print(self.get_raw_materials_additional(additional_fn, i.item_code))
-            print(self.get_raw_materials_additional(additional_fn, i.item_code))
             if i.qty + self.get_raw_materials_additional(additional_fn, i.item_code) > 0:
                 qty = i.qty + self.get_raw_materials_additional(additional_fn, i.item_code)
                 obj = {
