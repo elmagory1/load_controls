@@ -63,6 +63,7 @@ frappe.ui.form.on("Request for Quotation", {
                             item_group: cur_frm.doc.item_group ? cur_frm.doc.item_group : "",
                             brand: cur_frm.doc.brand ? cur_frm.doc.brand : "",
                             supplier: cur_frm.doc.supplier ? cur_frm.doc.supplier : "",
+                            main_items: cur_frm.doc.items.length > 0 ? cur_frm.doc.items : []
                         },
                         callback: function (r) {
                             if(r.message[3]){
@@ -89,6 +90,14 @@ frappe.ui.form.on("Request for Quotation", {
                                     cur_frm.refresh_field("references")
                                 }
                                 cur_dialog.hide()
+                            var objIndex =0
+                            for(var x=0;x<r.message[4].length;x+=1){
+                                console.log("NAA")
+                               objIndex = cur_frm.doc.items.findIndex(obj => obj.name === r.message[4][x]['name'])
+
+                                cur_frm.doc.items[objIndex].qty = r.message[4][x]['qty']
+                               cur_frm.refresh_field("items")
+                           }
                         }
                     })
                 }

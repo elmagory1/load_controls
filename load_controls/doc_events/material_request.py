@@ -34,8 +34,8 @@ def validate_mr(doc, method):
 def on_cancel_mr(doc, method):
     for i in doc.budget_bom_reference:
         if i.budget_bom:
-            frappe.db.sql(""" UPDATE `tabBudget BOM` SET status=%s, project_code=%s WHERE name=%s  """,
-                          ("To Material Request", doc.cost_center, i.budget_bom))
+            frappe.db.sql(""" UPDATE `tabBudget BOM` SET status=%s WHERE name=%s  """,
+                          ("To Material Request", i.budget_bom))
             frappe.db.commit()
 
 @frappe.whitelist()

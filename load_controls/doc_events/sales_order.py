@@ -288,7 +288,8 @@ def make_work_orders(items, sales_order, company, project=None):
             sales_order_item=i['sales_order_item'],
             project=project,
             fg_warehouse=i['warehouse'],
-            description=i['description']
+            description=i['description'],
+            allow_alternative_item=1
         ))
         references = frappe.get_doc("Sales Order",sales_order)
 

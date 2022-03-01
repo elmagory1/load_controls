@@ -94,8 +94,9 @@ def get_item_group_items(item_group, items):
 
 
 @frappe.whitelist()
-def get_mr(mr, item_group, brand, supplier):
+def get_mr(mr, item_group, brand, supplier,main_items):
     data = json.loads(mr)
+    data_items = json.loads(main_items)
     items = []
     bb = []
     suppliers = []
@@ -119,28 +120,33 @@ def get_mr(mr, item_group, brand, supplier):
             item = frappe.get_doc("Item", i.item_code)
             if not brand or item.brand == brand:
                 if len(item.supplier_items) == 0 and not supplier:
-                    if not existing(items, i):
+                    if not existing(items, i,data_items):
                         items.append(i)
                 elif len(item.supplier_items) > 0 and supplier and item.supplier_items[0].supplier == supplier :
                     if item.supplier_items[0].supplier not in suppliers:
                         suppliers.append(item.supplier_items[0].supplier)
-                    if not existing(items, i):
+                    if not existing(items, i,data_items):
                         items.append(i)
 
                 elif len(item.supplier_items) > 0 and not supplier:
                     if item.supplier_items[0].supplier not in suppliers:
                         suppliers.append(item.supplier_items[0].supplier)
 
-                    if not existing(items, i):
+                    if not existing(items, i,data_items):
                         items.append(i)
     final_items = get_required_items(items)
 
-    return final_items, bb, suppliers, default_warehouse
+    return final_items, bb, suppliers, default_warehouse,data_items
 
-def existing(items, item):
+def existing(items, item,data_items):
     for i in items:
         if i.item_code == item.item_code:
             i.qty += item.qty
+            return True
+
+    for i in data_items:
+        if i['item_code'] == item.item_code:
+            i['qty'] += item.qty
             return True
     return False
 
