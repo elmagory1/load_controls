@@ -1,7 +1,8 @@
 
 frappe.ui.form.on("Work Order", {
     refresh: function (frm) {
-        cur_frm.add_custom_button(__('Custom Create Pick List'), function() {
+        cur_frm.remove_custom_button("Create Pick List")
+        cur_frm.add_custom_button(__('Create Pick List'), function() {
            erpnext.work_order_custom.create_pick_list(frm);
         });
     }
