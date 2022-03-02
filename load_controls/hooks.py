@@ -159,6 +159,7 @@ doc_events = {
 	},
 	"Pick List": {
 		"on_submit": "load_controls.doc_events.pick_list.on_submit_pl",
+		"on_cancel": "load_controls.doc_events.pick_list.on_cancel_pl",
 	}
 }
 
