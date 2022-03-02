@@ -145,7 +145,7 @@ erpnext.work_order_custom = {
 	},
 
 	show_prompt_for_qty_input: function(frm, purpose) {
-		let max = this.get_max_transferable_qty(frm, purpose);
+		let max = 1;
 		return new Promise((resolve, reject) => {
 			frappe.prompt({
 				fieldtype: 'Float',
