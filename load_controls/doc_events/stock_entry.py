@@ -9,7 +9,9 @@ def on_submit_se(doc, method):
                 frappe.db.sql(""" UPDATE `tabBudget BOM` SET status=%s WHERE name=%s  """,
                               ("To Deliver", i.budget_bom))
                 frappe.db.commit()
-
+        frappe.db.sql(""" UPDATE `tabWork Order` SET material_transferred_for_manufacturing=1 WHERE name=%s  """,
+                      doc.work_order)
+        frappe.db.commit()
     if doc.stock_entry_type == 'Material Transfer for Manufacture' and doc.work_order:
         frappe.db.sql(""" UPDATE `tabWork Order` SET material_transferred_for_manufacturing=1 WHERE name=%s  """,doc.work_order)
         frappe.db.commit()
