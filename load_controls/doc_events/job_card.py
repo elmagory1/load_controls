@@ -9,4 +9,6 @@ def save_job_card(doc, method):
     if doc.work_order:
         wo = frappe.get_doc("Work Order", doc.work_order)
         for i in wo.budget_bom_reference:
-            doc.append("budget_bom_reference",i)
+            doc.append("budget_bom_reference",{
+                "budget_bom": i.budget_bom
+            })
