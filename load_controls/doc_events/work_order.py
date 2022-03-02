@@ -20,7 +20,7 @@ def create_pick_list(source_name, target_doc=None, for_qty=None):
     for_qty = for_qty or json.loads(target_doc).get('for_qty')
     max_finished_goods_qty = frappe.db.get_value('Work Order', source_name, 'qty')
     def update_item_quantity(source, target, source_parent):
-        pending_to_issue = flt(source.required_qty) - flt(source.transferred_qty) - flt(source.picked_qty)
+        pending_to_issue = flt(source.required_qty) - flt(source.picked_qty)
         desire_to_transfer = flt(source.required_qty) / max_finished_goods_qty * flt(for_qty)
 
         qty = 0
