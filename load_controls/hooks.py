@@ -37,6 +37,7 @@ doctype_js = {
 	"Quotation" : "public/js/quotation.js",
 	"Material Request" : "public/js/material_request.js",
 	"Opportunity" : "public/js/opportunity.js",
+	"Pick List" : "public/js/pick_list.js",
 	"Work Order" : "public/js/work_order.js",
 	"Sales Order" : "public/js/sales_order.js",
 	"Supplier Quotation" : "public/js/supplier_quotation.js",
@@ -344,6 +345,7 @@ fixtures = [
 					"Job Card-reference",
 					"Pick List Item-work_order_item",
 					"Work Order Item-picked_qty",
+					"Pick List Item-alternative_item",
 				]
 			]
 		]
@@ -366,7 +368,13 @@ fixtures = [
 					"Opportunity-status-options",
 					"Job Card-quality_inspection-mandatory_depends_on",
 					"Opportunity-status-default",
-					"Opportunity-status-options"
+					"Opportunity-status-options",
+
+
+					"Pick List Item-item_name-in_list_view",
+					"Pick List Item-qty-columns",
+                    "Pick List Item-picked_qty-columns",
+                    "Pick List Item-stock_qty-columns"
 				]
 			]
 		]
