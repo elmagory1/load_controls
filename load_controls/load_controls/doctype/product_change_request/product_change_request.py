@@ -17,7 +17,7 @@ class ProductChangeRequest(Document):
     def get_bb_items(self):
         items = []
         if self.work_order:
-            pick_items = frappe.db.sql(""" SELECT * FROm `tabPick List` PL INNER JOIN `tabPick List Item` PLI ON PLI.parent = PL.name WHERE PL.work_order=%s""",self.work_order)
+            pick_items = frappe.db.sql(""" SELECT * FROm `tabPick List` PL INNER JOIN `tabPick List Item` PLI ON PLI.parent = PL.name WHERE PL.work_order=%s""",self.work_order,as_dict=1)
             for i in pick_items:
                 item_code = i.alternative_item if i.alternative_item else i.item_code
                 items.append(item_code)
