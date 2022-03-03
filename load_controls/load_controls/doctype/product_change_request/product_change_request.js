@@ -16,6 +16,7 @@ frappe.ui.form.on('Product Change Request Deletion', {
         cur_frm.refresh_field(d.parentfield)
     }
 })
+var items = []
 frappe.ui.form.on('Product Change Request', {
     source_warehouse: function () {
         if(cur_frm.doc.source_warehouse) {
@@ -75,22 +76,32 @@ frappe.ui.form.on('Product Change Request', {
         }
 
     },
+    work_order: function () {
+         cur_frm.call({
+            doc: cur_frm.doc,
+            method: "get_bb_items",
+            async: false,
+            callback: function (r) {
+                items = r.message
+            }
+        })
+    },
 	refresh: function(frm) {
         cur_frm.call({
             doc: cur_frm.doc,
             method: "get_bb_items",
             async: false,
             callback: function (r) {
-
-                cur_frm.set_query("item","deletion", () => {
+                items = r.message
+            }
+        })
+        cur_frm.set_query("item","deletion", () => {
                    return {
                        filters: [
-                           ["name", "in", r.message]
+                           ["name", "in", items]
                        ]
                    }
                })
-            }
-        })
 	    if(cur_frm.doc.docstatus && cur_frm.doc.status === 'Approved') {
 
 	        if(!cur_frm.doc.material_request){

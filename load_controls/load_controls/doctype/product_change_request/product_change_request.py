@@ -15,9 +15,12 @@ class ProductChangeRequest(Document):
                 self.project_code = so[0].project_code
     @frappe.whitelist()
     def get_bb_items(self):
+        print("HERE")
         items = []
         if self.work_order:
             pick_items = frappe.db.sql(""" SELECT * FROm `tabPick List` PL INNER JOIN `tabPick List Item` PLI ON PLI.parent = PL.name WHERE PL.work_order=%s""",self.work_order,as_dict=1)
+            print("PICK ITEMS")
+            print(pick_items)
             for i in pick_items:
                 item_code = i.alternative_item if i.alternative_item else i.item_code
                 items.append(item_code)
@@ -65,6 +68,7 @@ class ProductChangeRequest(Document):
     def get_items(self):
         items = []
         for i in self.addition:
+            other_info = get_rate(i.item, i.target_warehouse, "Last Purchase Rate","")
             items.append({
                 "t_warehouse": i.target_warehouse,
                 "item_code": i.item,
@@ -72,8 +76,12 @@ class ProductChangeRequest(Document):
                 "uom": i.uom,
                 "conversion_factor": 1,
                 "basic_rate": i.rate,
+                "rate":other_info[0],
+                "available_qty":other_info[1],
             })
         for i in self.deletion:
+            other_info = get_rate(i.item, i.target_warehouse, "Last Purchase Rate","")
+
             items.append({
                 "s_warehouse": i.source_warehouse,
                 "item_code": i.item,
@@ -81,6 +89,8 @@ class ProductChangeRequest(Document):
                 "uom": i.uom,
                 "conversion_factor": 1,
                 "basic_rate": i.rate,
+                "rate":other_info[0],
+                "available_qty":other_info[1],
             })
         return items
 
