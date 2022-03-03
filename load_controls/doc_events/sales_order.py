@@ -3,12 +3,18 @@ from frappe.model.mapper import get_mapped_doc
 from frappe.utils import add_days, cint, cstr, flt, get_link_to_form, getdate, nowdate, strip_html
 from erpnext.stock.stock_ledger import get_previous_sle
 
+def get_cost_center(items,budget_bom):
+    for i in items:
+        if i.budget_bom == budget_bom:
+            return i.project_code
 def on_submit_so(doc, method):
     if not doc.cost_center:
         frappe.throw("Please Generate Project Code First")
     for i in doc.budget_bom_reference:
         if i.budget_bom:
-            frappe.db.sql(""" UPDATE `tabBudget BOM` SET status=%s, project_code=%s WHERE name=%s  """, ("To Material Request",doc.cost_center, i.budget_bom))
+            cost_center = get_cost_center(doc.items, i.budget_bom)
+
+            frappe.db.sql(""" UPDATE `tabBudget BOM` SET status=%s, project_code=%s WHERE name=%s  """, ("To Material Request",cost_center, i.budget_bom))
             frappe.db.commit()
 
 
