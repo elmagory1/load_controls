@@ -250,7 +250,8 @@ def get_work_order_items(so,for_raw_material_request=0):
                             warehouse = i.warehouse,
                             pending_qty = 1,
                             required_qty = 1 if for_raw_material_request else 0,
-                            sales_order_item = i.name
+                            sales_order_item = i.name,
+                            budget_bom= i.budget_bom
                         ))
                     else:
                         items.append(dict(
@@ -261,7 +262,8 @@ def get_work_order_items(so,for_raw_material_request=0):
                             warehouse = i.warehouse,
                             pending_qty = 1,
                             required_qty = 1 if for_raw_material_request else 0,
-                            sales_order_item = i.name
+                            sales_order_item = i.name,
+                            budget_bom= i.budget_bom
                         ))
     return items
 
@@ -294,9 +296,10 @@ def make_work_orders(items, sales_order, company, project=None):
         references = frappe.get_doc("Sales Order",sales_order)
 
         for x in references.budget_bom_reference:
-            work_order.append("budget_bom_reference",{
-                "budget_bom": x.budget_bom
-            })
+            if x.budget_bom == i['budget_bom']:
+                work_order.append("budget_bom_reference",{
+                    "budget_bom": x.budget_bom
+                })
 
         wo = work_order.insert()
         wo.set_work_order_operations()

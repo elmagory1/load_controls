@@ -161,3 +161,22 @@ def make_stock_entry(work_order_id, purpose, company, qty=None):
     print(stock_entry.items)
     print("============================== NEW STOCK ENTRY ======================================")
     return stock_entry.as_dict()
+
+
+@frappe.whitelist()
+def check_product_change_request(wo):
+
+    pcr = frappe.db.sql(""" SELECT COUNT(*) as count FROM `tabProduct Change Request` WHERE work_rder=%s""", wo, as_dict=1)
+
+    return pcr[0].count > 0
+@frappe.whitelist()
+def create_product_change_request(budget_bom, sales_order, wo):
+    data = json.loads(budget_bom)
+
+    obj = {
+        "doctype": "Product Change Request",
+        "budget_bom": data[0]['budget_bom'],
+        "sales_order": sales_order,
+        "work_order": wo,
+    }
+    frappe.get_doc(obj).insert()

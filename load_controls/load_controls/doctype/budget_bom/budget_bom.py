@@ -178,6 +178,7 @@ class BudgetBOM(Document):
                 "qty": self.fg_sellable_bom_details[0].qty,
                 "uom": self.fg_sellable_bom_details[0].uom,
                 "rate": self.total_cost,
+                "budget_bom": self.name
             }]
         }
         quotation = frappe.get_doc(obj).insert()

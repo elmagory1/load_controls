@@ -1,11 +1,40 @@
 
 frappe.ui.form.on("Work Order", {
     refresh: function (frm) {
-    	if(cur_frm.doc.docstatus){
+    	var has_product = false
+    	frappe.call({
+			method: "load_controls.doc_events.work_order.check_product_change_request",
+			args: {
+				wo: cur_frm.doc.name ? cur_frm.doc.name : "",
+			},
+			async: false,
+			callback: function(r){
+				has_product = r.message
+			}
+		})
+    	if(cur_frm.doc.docstatus && cur_frm.doc.status !== "Completed"){
     		 cur_frm.remove_custom_button("Create Pick List")
 			cur_frm.add_custom_button(__('Create Pick List'), function() {
 			   erpnext.work_order_custom.create_pick_list(frm);
 			});
+		}
+		if (cur_frm.doc.docstatus === 1 && !has_product &&  cur_frm.doc.status === "Completed") {
+    		var finish_btn = frm.add_custom_button(__('Product Change Request'), function() {
+					frappe.call({
+						method: "load_controls.doc_events.work_order.create_product_change_request",
+						args: {
+							budget_bom: cur_frm.doc.budget_bom_reference ? cur_frm.doc.budget_bom_reference : [],
+							sales_order: cur_frm.doc.sales_order ? cur_frm.doc.sales_order : "",
+							wo: cur_frm.doc.name ? cur_frm.doc.name : "",
+
+						},
+						async: false,
+						callback: function(r){
+							frappe.set_route("Form", "Product Change Request", r.message)
+						}
+					})
+				});
+				finish_btn.addClass('btn-primary');
 		}
 		if (cur_frm.doc.docstatus === 1 && cur_frm.doc.status !== "Closed") {
 			 cur_frm.remove_custom_button("Finish")
@@ -19,6 +48,8 @@ frappe.ui.form.on("Work Order", {
 				finish_btn.addClass('btn-primary');
 			}
 		}
+
+
 
 
     }

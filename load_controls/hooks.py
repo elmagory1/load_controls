@@ -346,6 +346,9 @@ fixtures = [
 					"Pick List Item-work_order_item",
 					"Work Order Item-picked_qty",
 					"Pick List Item-alternative_item",
+					"Sales Order Item-budget_bom",
+					"Quotation Item-references",
+					"Quotation Item-budget_bom",
 				]
 			]
 		]
