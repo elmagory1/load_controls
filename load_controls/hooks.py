@@ -378,7 +378,8 @@ fixtures = [
 					"Pick List Item-item_name-in_list_view",
 					"Pick List Item-qty-columns",
                     "Pick List Item-picked_qty-columns",
-                    "Pick List Item-stock_qty-columns"
+                    "Pick List Item-stock_qty-columns",
+                    "Opportunity Item-qty-read_only"
 				]
 			]
 		]

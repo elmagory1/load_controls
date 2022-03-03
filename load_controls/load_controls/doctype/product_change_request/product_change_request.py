@@ -6,6 +6,17 @@ from frappe.model.document import Document
 from load_controls.load_controls.doctype.budget_bom.budget_bom import get_rate
 class ProductChangeRequest(Document):
     @frappe.whitelist()
+    def update_specific_row_available_stock(self,item_code, warehouse):
+        return get_rate(item_code, warehouse, "Last Purchase Rate", "")[1] if  get_rate(item_code, warehouse, "Last Purchase Rate", "")[1] > 0 else get_rate(item_code, warehouse, "", "Standard Buying")[1]
+    @frappe.whitelist()
+    def update_available_stock(self):
+        for i in self.addition:
+
+            i.available_qty = get_rate(i.item, i.target_warehouse, "Last Purchase Rate", "")[1] if  get_rate(i.item, i.target_warehouse, "Last Purchase Rate", "")[1] > 0 else get_rate(i.item, i.target_warehouse, "", "Standard Buying")[1]
+
+        for i in self.deletion:
+            i.available_qty = get_rate(i.item,i.source_warehouse, "Last Purchase Rate", "")[1] if  get_rate(i.item, i.source_warehouse, "Last Purchase Rate", "")[1] > 0 else get_rate(i.item, i.source_warehouse, "", "Standard Buying")[1]
+    @frappe.whitelist()
     def validate(self):
         if not self.project_code:
             so = frappe.db.sql(

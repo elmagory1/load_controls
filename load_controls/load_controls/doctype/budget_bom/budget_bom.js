@@ -93,6 +93,11 @@ function get_rate_from_raw_material(item_code, parentfield, rate) {
 
     return rate
 }
+// function check_qty(qty, item_code,parentfield) {
+//     for(var x=0;x<cur_frm.doc[parentfield];x+=1){
+//
+//     }
+}
 frappe.ui.form.on('Budget BOM Raw Material Modifier', {
     electrical_bom_additiondeletion_remove: function () {
         compute_total_cost(cur_frm)
@@ -108,6 +113,7 @@ frappe.ui.form.on('Budget BOM Raw Material Modifier', {
     },
      qty: function(frm, cdt, cdn) {
         var d = locals[cdt][cdn]
+         // check_qty(d.qty, d.item_code, d.parentfield)
         d.amount = d.qty * d.rate
         cur_frm.refresh_field(d.parentfield)
 
@@ -1576,7 +1582,7 @@ function compute_total_cost(cur_frm) {
 }
 function compute_other_figures(cur_frm) {
     var item_row = cur_frm.doc
-    item_row.material_overhead_amount = cur_frm.doc.total_raw_material_cost > 0 ? (cur_frm.doc.total_raw_material_cost / cur_frm.doc.material_overhead ) - cur_frm.doc.total_raw_material_cost : 0
+    item_row.material_overhead_amount = cur_frm.doc.material_overhead > 0 ? (cur_frm.doc.total_raw_material_cost / cur_frm.doc.material_overhead ) - cur_frm.doc.total_raw_material_cost : 0
     item_row.material_cost = item_row.total_raw_material_cost + (item_row.total_raw_material_cost * (item_row.material_overhead / 100 ))
 
     item_row.operation_overhead_amount = item_row.estimated_bom_operation_cost * (item_row.operation_overhead / 100 )

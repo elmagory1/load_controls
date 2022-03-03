@@ -6,6 +6,44 @@ frappe.ui.form.on('Product Change Request Addition', {
         var d =locals[cdt][cdn]
         d.target_warehouse = cur_frm.doc.target_warehouse
         cur_frm.refresh_field(d.parentfield)
+
+    },
+    item: function (frm, cdt ,cdn) {
+        var d = locals[cdt][cdn]
+        if(d.item && d.target_warehouse){
+           cur_frm.call({
+            doc: cur_frm.doc,
+            method: "update_specific_row_available_stock",
+            async: false,
+            args: {
+                item_code: d.item,
+                warehouse: d.target_warehouse
+            },
+            callback: function (r) {
+                 d.available_qty = r.message
+                cur_frm.refresh_field(d.parentfield)
+            }
+        })
+        }
+
+    },
+    target_warehouse: function (frm, cdt,cdn) {
+       var d = locals[cdt][cdn]
+        if(d.item && d.target_warehouse){
+           cur_frm.call({
+            doc: cur_frm.doc,
+            method: "update_specific_row_available_stock",
+            async: false,
+            args: {
+                item_code: d.item,
+                warehouse: d.target_warehouse
+            },
+            callback: function (r) {
+                d.available_qty = r.message
+                cur_frm.refresh_field(d.parentfield)
+            }
+        })
+        }
     }
 })
 
@@ -14,10 +52,48 @@ frappe.ui.form.on('Product Change Request Deletion', {
         var d =locals[cdt][cdn]
         d.source_warehouse = cur_frm.doc.source_warehouse
         cur_frm.refresh_field(d.parentfield)
+    },
+    item: function (frm, cdt ,cdn) {
+                var d = locals[cdt][cdn]
+        if(d.item && d.source_warehouse){
+           cur_frm.call({
+            doc: cur_frm.doc,
+            method: "update_specific_row_available_stock",
+            async: false,
+            args: {
+                item_code: d.item,
+                warehouse: d.source_warehouse
+            },
+            callback: function (r) {
+                d.available_qty = r.message
+                cur_frm.refresh_field(d.parentfield)
+            }
+        })
+        }
+
+    },
+    source_warehouse: function (frm, cdt,cdn) {
+       var d = locals[cdt][cdn]
+        if(d.item && d.source_warehouse){
+           cur_frm.call({
+            doc: cur_frm.doc,
+            method: "update_specific_row_available_stock",
+            async: false,
+            args: {
+                item_code: d.item,
+                warehouse: d.source_warehouse
+            },
+            callback: function (r) {
+                 d.available_qty = r.message
+                cur_frm.refresh_field(d.parentfield)
+            }
+        })
+        }
     }
 })
 var items = []
 frappe.ui.form.on('Product Change Request', {
+
     source_warehouse: function () {
         if(cur_frm.doc.source_warehouse) {
 
@@ -26,15 +102,37 @@ frappe.ui.form.on('Product Change Request', {
                 cur_frm.refresh_field("deletion")
             }
         }
+         cur_frm.call({
+            doc: cur_frm.doc,
+            method: "update_available_stock",
+            async: false,
+            callback: function (r) {
+                cur_frm.refresh_field("deletion")
+            }
+        })
     },
       target_warehouse: function () {
         if(cur_frm.doc.target_warehouse){
              for(var x=0;x<cur_frm.doc.addition.length;x+=1){
-          cur_frm.doc.addition[x].target_warehouse = cur_frm.doc.target_warehouse
-          cur_frm.refresh_field("addition")
-      }
+              cur_frm.doc.addition[x].target_warehouse = cur_frm.doc.target_warehouse
+              cur_frm.refresh_field("addition")
+            }
         }
-
+         cur_frm.call({
+            doc: cur_frm.doc,
+            method: "update_available_stock",
+            async: false,
+            callback: function (r) {
+                cur_frm.call({
+            doc: cur_frm.doc,
+            method: "update_available_stock",
+            async: false,
+            callback: function (r) {
+                cur_frm.refresh_field("addition")
+            }
+        })
+            }
+        })
     },
     budget_bom: function () {
         if(cur_frm.doc.budget_bom){
