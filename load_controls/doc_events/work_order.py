@@ -166,7 +166,7 @@ def make_stock_entry(work_order_id, purpose, company, qty=None):
 @frappe.whitelist()
 def check_product_change_request(wo):
 
-    pcr = frappe.db.sql(""" SELECT COUNT(*) as count FROM `tabProduct Change Request` WHERE work_rder=%s""", wo, as_dict=1)
+    pcr = frappe.db.sql(""" SELECT COUNT(*) as count FROM `tabProduct Change Request` WHERE work_order=%s""", wo, as_dict=1)
 
     return pcr[0].count > 0
 @frappe.whitelist()
