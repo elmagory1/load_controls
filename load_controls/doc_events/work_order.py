@@ -170,7 +170,7 @@ def check_product_change_request(wo):
 
     return pcr[0].count > 0
 @frappe.whitelist()
-def create_product_change_request(budget_bom, sales_order, wo):
+def create_product_change_request(budget_bom, sales_order, wo, project_code):
     data = json.loads(budget_bom)
 
     obj = {
@@ -178,5 +178,7 @@ def create_product_change_request(budget_bom, sales_order, wo):
         "budget_bom": data[0]['budget_bom'],
         "sales_order": sales_order,
         "work_order": wo,
+        "project_code": project_code,
     }
-    frappe.get_doc(obj).insert()
+    pcr = frappe.get_doc(obj).insert()
+    return pcr.name

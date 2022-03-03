@@ -137,7 +137,13 @@ frappe.ui.form.on("Sales Order", {
 							fieldname: 'budget_bom',
 							reqd: 1,
 							label: __('Budget BOM'),
-							hidden: 0
+							hidden: 1
+						},{
+							fieldtype: 'Data',
+							fieldname: 'project_code',
+							reqd: 1,
+							label: __('Project Code'),
+							hidden: 1
 						}],
 						data: r.message,
 						get_data: () => {

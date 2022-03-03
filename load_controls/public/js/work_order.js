@@ -26,6 +26,7 @@ frappe.ui.form.on("Work Order", {
 							budget_bom: cur_frm.doc.budget_bom_reference ? cur_frm.doc.budget_bom_reference : [],
 							sales_order: cur_frm.doc.sales_order ? cur_frm.doc.sales_order : "",
 							wo: cur_frm.doc.name ? cur_frm.doc.name : "",
+							project_code: cur_frm.doc.project_code ? cur_frm.doc.project_code : "",
 
 						},
 						async: false,

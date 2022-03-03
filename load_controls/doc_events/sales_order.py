@@ -257,7 +257,8 @@ def get_work_order_items(so,for_raw_material_request=0):
                             pending_qty = 1,
                             required_qty = 1 if for_raw_material_request else 0,
                             sales_order_item = i.name,
-                            budget_bom= i.budget_bom
+                            budget_bom= i.budget_bom,
+                            project_code= i.project_code,
                         ))
                     else:
                         items.append(dict(
@@ -269,7 +270,8 @@ def get_work_order_items(so,for_raw_material_request=0):
                             pending_qty = 1,
                             required_qty = 1 if for_raw_material_request else 0,
                             sales_order_item = i.name,
-                            budget_bom= i.budget_bom
+                            budget_bom= i.budget_bom,
+                            project_code= i.project_code,
                         ))
     return items
 
@@ -285,7 +287,7 @@ def make_work_orders(items, sales_order, company, project=None):
             frappe.throw("Please select BOM against item {0}".format(i.get("item_code")))
         if not i.get("pending_qty"):
             frappe.throw("Please select Qty against item {0}".format(i.get("item_code")))
-
+        print(i)
         work_order = frappe.get_doc(dict(
             doctype='Work Order',
             production_item=i['item_code'],
@@ -297,7 +299,8 @@ def make_work_orders(items, sales_order, company, project=None):
             project=project,
             fg_warehouse=i['warehouse'],
             description=i['description'],
-            allow_alternative_item=1
+            allow_alternative_item=1,
+            project_code=i['project_code']
         ))
         references = frappe.get_doc("Sales Order",sales_order)
 

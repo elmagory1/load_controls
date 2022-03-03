@@ -6,23 +6,22 @@ from frappe.model.document import Document
 from load_controls.load_controls.doctype.budget_bom.budget_bom import get_rate
 class ProductChangeRequest(Document):
     @frappe.whitelist()
+    def validate(self):
+        if not self.project_code:
+            so = frappe.db.sql(
+                """  SELECT BBR.project_code FROM `tabSales Order` SO INNER JOIN `tabSales Order Item` BBR ON BBR.parent = SO.name WHERE SO.docstatus=1 and BBR.budget_bom=%s""",
+                self.budget_bom, as_dict=1)
+            if len(so) > 0:
+                self.project_code = so[0].project_code
+    @frappe.whitelist()
     def get_bb_items(self):
-        items_addition = []
-        items_deletion = []
-        if self.budget_bom:
-            bb = frappe.get_doc("Budget BOM", self.budget_bom)
-            addition_fields = ["electrical_bom_additiondeletion", "mechanical_bom_additiondeletion"]
-
-            for x in addition_fields:
-                for i in bb.__dict__[x]:
-                    if i.type == "Addition":
-                        items_addition.append(i.item_code)
-                    if i.type == "Deletion":
-                        items_deletion.append(i.item_code)
-        print("========================")
-        print(items_addition)
-        print(items_deletion)
-        return items_addition, items_deletion
+        items = []
+        if self.work_order:
+            pick_items = frappe.db.sql(""" SELECT * FROm `tabPick List` PL INNER JOIN `tabPick List Item` PLI ON PLI.parent = PL.name WHERE PL.work_order=%s""",self.work_order)
+            for i in pick_items:
+                item_code = i.alternative_item if i.alternative_item else i.item_code
+                items.append(item_code)
+        return items
     @frappe.whitelist()
     def get_mr_items(self):
         items = []
@@ -116,12 +115,14 @@ class ProductChangeRequest(Document):
                         "available_qty": i.available_qty,
                     })
                     outgoing_total += i.amount
-        so = frappe.db.sql("""  SELECT * FROM `tabSales Order` SO INNER JOIN `tabBudget BOM References` BBR ON BBR.parent = SO.name WHERE SO.docstatus=1 """)
+        so = frappe.db.sql(
+                """  SELECT BBR.project_code FROM `tabSales Order` SO INNER JOIN `tabSales Order Item` BBR ON BBR.parent = SO.name WHERE SO.docstatus=1 and BBR.budget_bom=%s""",
+                self.budget_bom, as_dict=1)
         so_name = ""
         cost_center_name = ""
         if len(so) > 0:
             so_name = so[0].parent
-            cost_center_name = so[0].cost_center
+            cost_center_name = so[0].project_code
         return incoming_total, outgoing_total, so_name,cost_center_name
 
 

@@ -81,18 +81,11 @@ frappe.ui.form.on('Product Change Request', {
             method: "get_bb_items",
             async: false,
             callback: function (r) {
-                console.log(r.message)
-               cur_frm.set_query("item","addition", () => {
-                   return {
-                       filters: [
-                           ["name", "in", r.message[0]]
-                       ]
-                   }
-               })
+
                 cur_frm.set_query("item","deletion", () => {
                    return {
                        filters: [
-                           ["name", "in", r.message[1]]
+                           ["name", "in", r.message]
                        ]
                    }
                })

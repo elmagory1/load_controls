@@ -349,6 +349,7 @@ fixtures = [
 					"Sales Order Item-budget_bom",
 					"Quotation Item-references",
 					"Quotation Item-budget_bom",
+					"Work Order-project_code",
 				]
 			]
 		]
