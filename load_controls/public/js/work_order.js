@@ -3,10 +3,23 @@ frappe.ui.form.on("Work Order", {
     refresh: function (frm) {
     	if(cur_frm.doc.docstatus){
     		 cur_frm.remove_custom_button("Create Pick List")
-        cur_frm.add_custom_button(__('Create Pick List'), function() {
-           erpnext.work_order_custom.create_pick_list(frm);
-        });
+			cur_frm.add_custom_button(__('Create Pick List'), function() {
+			   erpnext.work_order_custom.create_pick_list(frm);
+			});
 		}
+		if (cur_frm.doc.docstatus === 1 && cur_frm.doc.status !== "Closed") {
+			 cur_frm.remove_custom_button("Finish")
+    		if ((flt(cur_frm.doc.produced_qty) < flt(cur_frm.doc.qty)) && cur_frm.doc.status !== 'Stopped') {
+			 						console.log("CHANGED")
+
+				var finish_btn = frm.add_custom_button(__('Finish'), function() {
+					console.log("CHANGED1111")
+					erpnext.work_order_custom.make_se(frm, 'Manufacture');
+				});
+				finish_btn.addClass('btn-primary');
+			}
+		}
+
 
     }
 })
@@ -44,7 +57,7 @@ erpnext.work_order_custom = {
 						erpnext.work_order.create_pick_list(frm);
 					});
 					var start_btn = frm.add_custom_button(__('Start'), function() {
-						erpnext.work_order.make_se(frm, 'Material Transfer for Manufacture');
+						erpnext.work_order_custom.make_se(frm, 'Material Transfer for Manufacture');
 					});
 					start_btn.addClass('btn-primary');
 				}
@@ -77,7 +90,7 @@ erpnext.work_order_custom = {
 					}
 
 					var finish_btn = frm.add_custom_button(__('Finish'), function() {
-						erpnext.work_order.make_se(frm, 'Manufacture');
+						erpnext.work_order_custom.make_se(frm, 'Manufacture');
 					});
 
 					if(doc.material_transferred_for_manufacturing>=doc.qty) {
@@ -88,7 +101,7 @@ erpnext.work_order_custom = {
 			} else {
 				if ((flt(doc.produced_qty) < flt(doc.qty)) && frm.doc.status != 'Stopped') {
 					var finish_btn = frm.add_custom_button(__('Finish'), function() {
-						erpnext.work_order.make_se(frm, 'Manufacture');
+						erpnext.work_order_custom.make_se(frm, 'Manufacture');
 					});
 					finish_btn.addClass('btn-primary');
 				}
@@ -167,12 +180,14 @@ erpnext.work_order_custom = {
 	},
 
 	make_se: function(frm, purpose) {
+		console.log("MAKE SEEEEEEEEEEEEEEEe")
 		this.show_prompt_for_qty_input(frm, purpose)
 			.then(data => {
-				return frappe.xcall('erpnext.manufacturing.doctype.work_order.work_order.make_stock_entry', {
+				return frappe.xcall('load_controls.doc_events.work_order.make_stock_entry', {
 					'work_order_id': frm.doc.name,
 					'purpose': purpose,
-					'qty': data.qty
+					'qty': data.qty,
+					'company': frm.doc.company
 				});
 			}).then(stock_entry => {
 				frappe.model.sync(stock_entry);
