@@ -107,6 +107,10 @@ def consolidate(picked_items, company,stock_entry,pro_doc):
         item["to_warehouse"] = stock_entry.to_warehouse if stock_entry.purpose == "Send to Subcontractor" else ""
 
     stock_entry.add_to_stock_entry_detail(item_dict)
+
+    # add finished goods item
+    if stock_entry.purpose in ("Manufacture", "Repack"):
+        stock_entry.load_items_from_bom()
     stock_entry.set_scrap_items()
     stock_entry.set_actual_qty()
     stock_entry.update_items_for_process_loss()
