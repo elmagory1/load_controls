@@ -76,11 +76,15 @@ def consolidate(picked_items, company,stock_entry,pro_doc):
                                                                "backflush_raw_materials_based_on")
 
     for item in picked_items:
+        item_code = item.alternative_item if item.alternative_item else item.item_code
+        item.item_code = item_code
         if item.item_code in item_dict:
-            item_dict[item.item_code]["qty"] += flt(item.qty)
+            item_dict[item_code]["qty"] += flt(item.qty)
         else:
-            item_dict[item.item_code] = item
-
+            item_dict[item_code] = item
+    print("==============================================")
+    print("Item Diiiiiiiict")
+    print(item_dict)
     for item, item_details in item_dict.items():
         for d in [["Account", "expense_account", "stock_adjustment_account"],
                   ["Cost Center", "cost_center", "cost_center"], ["Warehouse", "default_warehouse", ""]]:
@@ -122,8 +126,7 @@ def get_bom_raw_materials(work_order, company,stock_entry,pro_doc):
                       INNER JOIN `tabPick List Item` PLI ON PLI.parent = PL.name 
                       WHERE PL.work_order=%s and PL.docstatus=1""", work_order,as_dict=1)
 
-    picked_items = consolidate(items, company,stock_entry,pro_doc)
-    return picked_items
+    consolidate(items, company,stock_entry,pro_doc)
 @frappe.whitelist()
 def make_stock_entry(work_order_id, purpose, company, qty=None):
     work_order = frappe.get_doc("Work Order", work_order_id)
